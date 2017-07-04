@@ -1,0 +1,14 @@
+version: '3'
+services:
+  client:
+    container_name: client
+    volumes:
+      - ./client:/root/client
+      - /root/client/node_modules/
+    image: node:8.1.2
+    working_dir: /root/client
+    environment:
+      - NODE_ENV=default
+    ports:
+      - "3000:3000"
+    command: bash -c 'npm install && npm start'
