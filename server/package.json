@@ -1,0 +1,13 @@
+{
+  "name": "server",
+  "private": true,
+  "scripts": {
+    "start": "node-dev server.js"
+  },
+  "dependencies": {
+    "express": "^4.15.3"
+  },
+  "devDependencies": {
+    "node-dev": "^3.1.3"
+  }
+}

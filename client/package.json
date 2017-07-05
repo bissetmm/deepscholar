@@ -1,6 +1,7 @@
 {
   "name": "client",
   "private": true,
+  "proxy": "http://deepscholar.server:3001/",
   "dependencies": {
     "react": "^15.6.1",
     "react-dom": "^15.6.1",

@@ -13,7 +13,62 @@ import {
 } from 'react-materialize';
 
 
+class Document extends Component {
+  render() {
+    const booktitle = this.props.data.booktitle;
+    const author = this.props.data.author;
+    const year = this.props.data.year;
+    const id = this.props.data.id;
+    const abstract = this.props.data.abstract;
+
+    return (
+      <CollectionItem>
+        <h3>{booktitle}</h3>
+        <Chip>{author}</Chip>
+        <Chip>{year}</Chip>
+        <Chip>{id}</Chip>
+        <p>{abstract}</p>
+      </CollectionItem>
+    );
+  }
+}
+
+class Documents extends Component {
+  render() {
+    const documents = this.props.data.map((document) => {
+      return <Document data={document} key={document.id}/>;
+    });
+
+    return (
+      <Collection>
+        {documents}
+      </Collection>
+    );
+  }
+}
+
+
 class App extends Component {
+  constructor(props) {
+    super(props);
+    this.state = {documents: []};
+  }
+
+  componentDidMount() {
+    fetch("api/search", {accept: "application/json"})
+      .then((response) => {
+        if (response.status >= 200 && response.status < 300) {
+          return response;
+        }
+      })
+      .then((response) => {
+        return response.json();
+      })
+      .then((json) => {
+        this.setState({documents: json});
+      })
+  }
+
   render() {
     return (
       <Row>
@@ -40,44 +95,7 @@ class App extends Component {
         </Col>
 
         <Col s={9}>
-          <Collection>
-            <CollectionItem>
-              <h3>Sixth Applied Natural Language Processing Conference</h3>
-              <Chip>Jonsson, Arne and Dahlback, Nils</Chip>
-              <Chip>2000</Chip>
-              <Chip>A00-1007</Chip>
-              <p>e report on a method for utilising corpora collected in natural settings. It is based on
-                distilling(re-writing) natural dialogues to elicit the type of dialogue that would occur if one the
-                dialogue participants was a computer instead of a human. The method is a complement to other means such
-                as Wizard of Oz-studies and un-distilled natural dialogues. We present the distilling method and
-                guidelines for distillation. We also illustrate how the method affects a corpus of dialogues and discuss
-                the pros and cons of three approaches in different phases of dialogue systems development</p>
-            </CollectionItem>
-            <CollectionItem>
-              <h3>Sixth Applied Natural Language Processing Conference</h3>
-              <Chip>Jonsson, Arne and Dahlback, Nils</Chip>
-              <Chip>2000</Chip>
-              <Chip>A00-1007</Chip>
-              <p>e report on a method for utilising corpora collected in natural settings. It is based on
-                distilling(re-writing) natural dialogues to elicit the type of dialogue that would occur if one the
-                dialogue participants was a computer instead of a human. The method is a complement to other means such
-                as Wizard of Oz-studies and un-distilled natural dialogues. We present the distilling method and
-                guidelines for distillation. We also illustrate how the method affects a corpus of dialogues and discuss
-                the pros and cons of three approaches in different phases of dialogue systems development</p>
-            </CollectionItem>
-            <CollectionItem>
-              <h3>Sixth Applied Natural Language Processing Conference</h3>
-              <Chip>Jonsson, Arne and Dahlback, Nils</Chip>
-              <Chip>2000</Chip>
-              <Chip>A00-1007</Chip>
-              <p>e report on a method for utilising corpora collected in natural settings. It is based on
-                distilling(re-writing) natural dialogues to elicit the type of dialogue that would occur if one the
-                dialogue participants was a computer instead of a human. The method is a complement to other means such
-                as Wizard of Oz-studies and un-distilled natural dialogues. We present the distilling method and
-                guidelines for distillation. We also illustrate how the method affects a corpus of dialogues and discuss
-                the pros and cons of three approaches in different phases of dialogue systems development</p>
-            </CollectionItem>
-          </Collection>
+          <Documents data={this.state.documents}/>
         </Col>
       </Row>
     );
