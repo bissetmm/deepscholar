@@ -21,3 +21,9 @@ $ docker-compose up
 ```
 
 You can see your application at [http://localhost:3000](http://localhost:3000)
+
+## Load sample data to Elasticsearch
+
+```
+$ ./es/create_index.sh acl_metadata 
+```
