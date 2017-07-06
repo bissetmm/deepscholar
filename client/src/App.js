@@ -3,13 +3,12 @@ import './App.css';
 import {
   Row,
   Navbar,
-  Collapsible,
-  CollapsibleItem,
   Input,
   Chip,
   Col,
   Collection,
-  CollectionItem
+  CollectionItem,
+  Icon
 } from 'react-materialize';
 
 
@@ -47,51 +46,53 @@ class Documents extends Component {
   }
 }
 
-
 class App extends Component {
   constructor(props) {
     super(props);
+    this.searchTimer = null;
     this.state = {documents: []};
   }
 
-  componentDidMount() {
-    fetch("api/search", {accept: "application/json"})
-      .then((response) => {
-        if (response.status >= 200 && response.status < 300) {
-          return response;
-        }
-      })
-      .then((response) => {
-        return response.json();
-      })
-      .then((json) => {
-        this.setState({documents: json});
-      })
+  handleTextChange(e) {
+    if (this.searchTimer !== null) {
+      clearTimeout(this.searchTimer);
+      this.searchTimer = null;
+    }
+
+    const query = e.target.value;
+    if (!query) {
+      return;
+    }
+
+    this.searchTimer = setTimeout(() => {
+      fetch(`api/search?q=${query}`, {accept: "application/json"})
+        .then((response) => {
+          if (response.status >= 200 && response.status < 300) {
+            return response;
+          }
+        })
+        .then((response) => {
+          return response.json();
+        })
+        .then((json) => {
+          console.log(json);
+          this.setState({documents: json});
+        });
+    }, 1000);
   }
 
   render() {
     return (
       <Row>
         <Navbar brand="Deep Scholar" className={"light-blue"}>
-
         </Navbar>
         <Col s={3}>
-          <Collapsible>
-            <CollapsibleItem header={"Filter Group 1"} node={"div"} icon={"insert_chart"} expanded={true}>
-              <Row>
-                <Input type="checkbox" value="1" label="Filter 1"></Input>
-                <Input type="checkbox" value="2" label="Filter 2"></Input>
-                <Input type="checkbox" value="3" label="Filter 3"></Input>
-              </Row>
-            </CollapsibleItem>
-            <CollapsibleItem header="Filter Group 2" node={"div"} icon="insert_chart" expanded={true}>
-              <Row>
-                <Input type="checkbox" value="1" label="Filter 1"></Input>
-                <Input type="checkbox" value="2" label="Filter 2"></Input>
-                <Input type="checkbox" value="3" label="Filter 3"></Input>
-              </Row>
-            </CollapsibleItem>
-          </Collapsible>
+          <Row>
+            <Input s={50} placeholder="booktitle:Test" label="Query" validate
+                   onChange={this.handleTextChange.bind(this)}>
+              <Icon>search</Icon>
+            </Input>
+          </Row>
         </Col>
 
         <Col s={9}>

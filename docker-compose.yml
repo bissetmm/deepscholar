@@ -23,6 +23,8 @@ services:
     working_dir: /root/server
     environment:
       - NODE_ENV=development
+    depends_on:
+      - deepscholar.elasticsearch
     ports:
       - "3001:3001"
     command: bash -c 'npm i && npm start'
