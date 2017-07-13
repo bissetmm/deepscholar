@@ -34,6 +34,28 @@ app.get("/api/search", (req, res) => {
     console.log(error);
   });
 });
+app.get("/api/count", (req, res) => {
+  const q = req.query.q;
+
+  if (!q) {
+    res.json({
+      error: "Missing required parameter `q`"
+    });
+    return;
+  }
+
+  client.count({
+    index: "documents",
+    q
+  }).then((json) => {
+    console.log(json)
+    res.json({
+      count: json.count
+    });
+  }, (error) => {
+    console.log(error);
+  });
+});
 
 app.listen(app.get("port"), () => {
   console.log(`Find the server at: http://localhost:${app.get("port")}/`);
