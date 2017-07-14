@@ -120,7 +120,7 @@ class App extends Component {
             <div className="nav-wrapper">
               <div className="row">
                 <div className="col s4 l3 hide-on-med-and-down">
-                  <a href="#" className="brand-logo"><i className="material-icons">cloud</i>Deep Scholar</a>
+                  <a href="#" className="brand-logo"><i className="material-icons">cloud</i>DeepScholar</a>
                 </div>
                 <div className="col s9 l7">
                   <div className="input-field">
