@@ -22,7 +22,8 @@ class Document extends Component {
     const year = this.props.data.year;
     const id = this.props.data.id;
     const abstract = this.props.data.abstract;
-    const pdfUrl = `#${id}`;
+    const url = this.props.data.url;
+    const pdfannoUrl = `http://pdfanno.hshindo.com/?pdf=${url}`;
 
     const authors = <Authors data={this.props.data.author}/>;
 
@@ -30,7 +31,7 @@ class Document extends Component {
       <article className="row">
         <div className="divider"></div>
         <header>
-          <h5><a href={pdfUrl}>{title}</a></h5>
+          <h5><a href={url} target="_blank">{title}</a></h5>
           {authors}
           <h6>{booktitle} {year}</h6>
         </header>
@@ -40,10 +41,10 @@ class Document extends Component {
         <footer>
           <ul className="meta links valign-wrapper blue-text">
             <li>
-              <div className="valign-wrapper"><i className="material-icons">picture_as_pdf</i><a href={pdfUrl}>pdf</a>
+              <div className="valign-wrapper"><i className="material-icons">picture_as_pdf</i><a href={url} target="_blank">pdf</a>
               </div>
             </li>
-            <li><a href="http://pdfanno.hshindo.com">pdfanno</a></li>
+            <li><a href={pdfannoUrl} target="_blank">pdfanno</a></li>
           </ul>
         </footer>
       </article>
