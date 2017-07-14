@@ -28,16 +28,14 @@ class Document extends Component {
     const authors = <Authors data={this.props.data.author}/>;
 
     return (
-      <article className="row">
+      <article className="document">
         <div className="divider"></div>
         <header>
           <h5><a href={url} target="_blank">{title}</a></h5>
           {authors}
           <h6>{booktitle} {year}</h6>
         </header>
-        <section className="section">
-          <blockquote>{abstract}</blockquote>
-        </section>
+        <blockquote>{abstract}</blockquote>
         <footer>
           <ul className="meta links valign-wrapper blue-text">
             <li>
@@ -88,6 +86,15 @@ class App extends Component {
       });
   }
 
+  componentDidMount() {
+    const e = {
+      target: {
+        value: 'test'
+      }
+    };
+    this.handleTextChange(e);
+  }
+
   handleTextChange(e) {
     if (this.searchTimer !== null) {
       clearTimeout(this.searchTimer);
@@ -116,7 +123,7 @@ class App extends Component {
     return (
       <div>
         <div className="navbar-fixed">
-          <nav className="light-blue accent-4">
+          <nav className="navy">
             <div className="nav-wrapper">
               <div className="row">
                 <div className="col s4 l3 hide-on-med-and-down">
