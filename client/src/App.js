@@ -4,13 +4,15 @@ import './App.css';
 
 class Authors extends Component {
   render() {
-    const authors = this.props.data.map((author) => {
+    const authors = this.props.data.slice(0, 2).map((author) => {
       return <li key={author} className="red-text">{author}</li>;
     });
+    const clampLetter = this.props.data.length > 3 ? <li key="clamp" className="red-text">...</li> : '';
 
     return (
       <ul className="meta authors">
         {authors}
+        {clampLetter}
       </ul>
     );
   }
@@ -101,16 +103,19 @@ class Paginator extends Component {
     const pages = _.range(start, end).map((i) => {
       const className = i === currentPage ? 'active' : 'waves-effect';
 
-      return <li key={i} className={className}><a href="#" onClick={this.handlePageClick.bind(this, i)}>{i + 1}</a></li>;
+      return <li key={i} className={className}><a href="#" onClick={this.handlePageClick.bind(this, i)}>{i + 1}</a>
+      </li>;
     });
 
     const prevClassName = currentPage === 0 ? 'disabled' : 'waves-effect';
     const nextClassName = currentPage === maxPage ? 'disabled' : 'waves-effect';
     return (
       <ul className="pagination center-align">
-        <li className={prevClassName}><a href="#" onClick={this.handlePrevClick.bind(this)}><i className="material-icons">chevron_left</i></a></li>
+        <li className={prevClassName}><a href="#" onClick={this.handlePrevClick.bind(this)}><i
+          className="material-icons">chevron_left</i></a></li>
         {pages}
-        <li className={nextClassName}><a href="#" onClick={this.handleNextClick.bind(this)}><i className="material-icons">chevron_right</i></a></li>
+        <li className={nextClassName}><a href="#" onClick={this.handleNextClick.bind(this)}><i
+          className="material-icons">chevron_right</i></a></li>
       </ul>
     );
   }
