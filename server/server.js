@@ -14,44 +14,19 @@ const client = new elasticsearch.Client({
 });
 
 app.get("/api/search", (req, res) => {
-  const q = req.query.q;
-
-  if (!q) {
+  if (!req.query.q) {
     res.json({
       error: "Missing required parameter `q`"
     });
     return;
   }
 
-  client.search({
-    index: "documents",
-    q
-  }).then((json) => {
-    res.json(json.hits.hits.map((item) => {
-      return item._source;
-    }));
-  }, (error) => {
-    console.log(error);
-  });
-});
-app.get("/api/count", (req, res) => {
-  const q = req.query.q;
+  const params = Object.assign({
+    index: "documents"
+  }, req.query);
 
-  if (!q) {
-    res.json({
-      error: "Missing required parameter `q`"
-    });
-    return;
-  }
-
-  client.count({
-    index: "documents",
-    q
-  }).then((json) => {
-    console.log(json)
-    res.json({
-      count: json.count
-    });
+  client.search(params).then((json) => {
+    res.json(json);
   }, (error) => {
     console.log(error);
   });
