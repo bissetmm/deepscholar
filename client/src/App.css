@@ -24,6 +24,12 @@ div.container {
 
 .document blockquote {
     margin: 6px 0;
+    display: -webkit-box;
+    overflow: hidden;
+    /* autoprefixer: off */
+    -webkit-line-clamp: 3;
+    -webkit-box-orient: vertical;
+    /* autoprefixer: on */
 }
 
 .document footer {
