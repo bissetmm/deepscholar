@@ -3,6 +3,7 @@
   "private": true,
   "proxy": "http://deepscholar.server:3001/",
   "dependencies": {
+    "lodash": "^4.17.4",
     "react": "^15.6.1",
     "react-dom": "^15.6.1",
     "react-scripts": "1.0.10"
@@ -14,6 +15,7 @@
     "eject": "react-scripts eject"
   },
   "devDependencies": {
-    "eslint": "^4.1.1"
+    "eslint": "^4.2.0",
+    "eslint-plugin-react": "^7.1.0"
   }
 }

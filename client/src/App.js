@@ -4,9 +4,9 @@ import './App.css';
 
 class Authors extends Component {
   render() {
-    const authors = this.props.data.slice(0, 2).map((author) => {
-      return <li key={author} className="red-text">{author}</li>;
-    });
+    const authors = this.props.data.slice(0, 2).map(author =>
+      <li key={author} className="red-text">{author}</li>
+    );
     const clampLetter = this.props.data.length > 3 ? <li key="clamp" className="red-text">...</li> : '';
 
     return (
@@ -20,15 +20,9 @@ class Authors extends Component {
 
 class Document extends Component {
   render() {
-    const title = this.props.data.title;
-    const booktitle = this.props.data.booktitle;
-    const year = this.props.data.year;
-    const id = this.props.data.id;
-    const abstract = this.props.data.abstract;
-    const url = this.props.data.url;
+    const {title, booktitle, year, abstract, url, author} = this.props.data;
     const pdfannoUrl = `http://pdfanno.hshindo.com/?pdf=${url}`;
-
-    const authors = <Authors data={this.props.data.author}/>;
+    const authors = <Authors data={author}/>;
 
     return (
       <article className="document">
@@ -42,8 +36,8 @@ class Document extends Component {
         <footer>
           <ul className="meta links valign-wrapper blue-text">
             <li>
-              <div className="valign-wrapper"><i className="material-icons">picture_as_pdf</i><a href={url}
-                                                                                                 target="_blank">pdf</a>
+              <div className="valign-wrapper">
+                <i className="material-icons">picture_as_pdf</i><a href={url} target="_blank">pdf</a>
               </div>
             </li>
             <li><a href={pdfannoUrl} target="_blank">pdfanno</a></li>
@@ -56,9 +50,9 @@ class Document extends Component {
 
 class Documents extends Component {
   render() {
-    const documents = this.props.data.map((document) => {
-      return <Document data={document} key={document.id}/>;
-    });
+    const documents = this.props.data.map((document) =>
+      <Document data={document} key={document.id}/>
+    );
 
     return (
       <div>
@@ -135,12 +129,8 @@ class App extends Component {
           return response;
         }
       })
-      .then((response) => {
-        return response.json();
-      })
-      .then((json) => {
-        return json;
-      });
+      .then((response) => response.json())
+      .then((json) => json);
   }
 
   componentDidMount() {
@@ -163,9 +153,7 @@ class App extends Component {
       return;
     }
 
-    this.searchTimer = setTimeout(() => {
-      this.search(query, 0);
-    }, 1000);
+    this.searchTimer = setTimeout(() => this.search(query, 0), 1000);
     this.setState({query: query, documentPage: 0});
   }
 
@@ -174,9 +162,7 @@ class App extends Component {
     this.fetchApi(`api/search?q=${this.state.query}&size=${this.state.documentsFetchSize}&from=${from}`)
       .then((json) => {
         this.setState({
-          documents: json.hits.hits.map((item) => {
-            return item._source;
-          })
+          documents: json.hits.hits.map((item) => item._source)
         });
         this.setState({documentsTotal: json.hits.total});
       });
@@ -269,4 +255,3 @@ class App extends Component {
 }
 
 export default App;
-
