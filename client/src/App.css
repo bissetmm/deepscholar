@@ -1,0 +1,53 @@
+.navy {
+    background-color: #151E3F;
+}
+
+a:hover {
+    text-decoration: underline;
+}
+
+.input-field input[type=search] {
+    height: 100%;
+}
+
+div.nav-wrapper .row, div.nav-wrapper .col {
+    height: 100%;
+}
+
+div.container {
+    width: 90%;
+}
+
+.document h5 {
+    margin: 26px 0 6px;
+}
+
+.document blockquote {
+    margin: 6px 0;
+    display: -webkit-box;
+    overflow: hidden;
+    /* autoprefixer: off */
+    -webkit-line-clamp: 3;
+    -webkit-box-orient: vertical;
+    /* autoprefixer: on */
+}
+
+.document footer {
+    margin: 6px 0 26px;
+}
+
+.document ul.meta {
+    margin: 6px 0;
+}
+
+.document ul.meta li {
+    display: inline-block;
+}
+
+.document ul.authors li {
+    margin: 0 4px 0 0;
+}
+
+.document ul.links li {
+    margin: 0 16px 0 0;
+}

@@ -1,0 +1,42 @@
+version: '3'
+services:
+  deepscholar.client:
+    container_name: deepscholar.client
+    volumes:
+      - ./client:/root/client
+      - /root/client/node_modules/
+    image: node:8.1.2
+    working_dir: /root/client
+    environment:
+      - NODE_ENV=development
+    depends_on:
+      - deepscholar.server
+    ports:
+      - "3000:3000"
+    command: bash -c 'npm i && npm start'
+  deepscholar.server:
+    container_name: deepscholar.server
+    volumes:
+      - ./server:/root/server
+      - /root/server/node_modules/
+    image: node:8.1.2
+    working_dir: /root/server
+    environment:
+      - NODE_ENV=development
+    depends_on:
+      - deepscholar.elasticsearch
+    ports:
+      - "3001:3001"
+    command: bash -c 'npm i && npm start'
+  deepscholar.elasticsearch:
+    container_name: deepscholar.elasticsearch
+    image: docker.elastic.co/elasticsearch/elasticsearch:5.4.3
+    environment:
+      - xpack.security.enabled=false
+    volumes:
+      - esdata:/usr/share/elasticsearch/data
+    ports:
+      - "9200:9200"
+volumes:
+  esdata:
+    driver: local
