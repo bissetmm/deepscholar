@@ -70,11 +70,11 @@ class Root extends Component {
   constructor(props) {
     super(props);
     const parsed = queryString.parse(window.location.search);
-    this.state = {query: parsed.q};
+    this.state = {query: parsed.q, page: (parsed.page || 1) - 1};
   }
 
   performSearch(query) {
-    this.setState({query: query});
+    this.setState({query: query, page: this.state.page});
   }
 
   render() {
@@ -92,7 +92,7 @@ class Root extends Component {
             <div>
               <Switch>
                 <Route exact path="/" component={(props) => (
-                  <App {...props} query={this.state.query}/>
+                  <App {...props} query={this.state.query} page={this.state.page}/>
                 )}/>
                 <Route exact path="/documents/:documentId" component={Detail}/>
               </Switch>

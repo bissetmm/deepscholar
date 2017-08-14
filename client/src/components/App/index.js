@@ -60,11 +60,20 @@ class Paginator extends Component {
 class App extends Component {
   constructor(props) {
     super(props);
-    this.state = {documents: [], documentsTotal: null, documentPage: 0, documentsFetchSize: 20};
+    this.state = {documents: [], documentsTotal: null, documentsFetchSize: 20, documentPage: 0};
+    this.prevProps = null;
   }
 
   componentDidMount() {
-    this.beginSearch(this.props.query || '*');
+    this.beginSearch(this.props.query);
+  }
+
+  componentDidUpdate() {
+    if (this.prevProps !== null && this.props.location !== this.prevProps.location) {
+      window.scrollTo(0, 0);
+    }
+
+    this.prevProps = this.props;
   }
 
   beginSearch(query) {
@@ -72,8 +81,8 @@ class App extends Component {
       return;
     }
 
-    this.search(query, 0);
-    this.setState({documentPage: 0});
+    this.search(query, this.props.page);
+    this.setState({documentPage: this.props.page});
   }
 
   search(query, page) {
@@ -88,6 +97,7 @@ class App extends Component {
   }
 
   handleChangePage(page) {
+    this.props.history.push(`/?q=${this.props.query}&page=${page + 1}`);
     this.search(this.props.query, page);
     this.setState({documentPage: page});
   }
