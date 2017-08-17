@@ -67,6 +67,15 @@ class App extends Component {
     this.beginSearch(this.props.query);
   }
 
+  componentDidUpdate() {
+    const scrollY = window.sessionStorage.getItem(this.props.location.key);
+    if (scrollY === null) {
+      return;
+    }
+
+    window.scrollTo(0, scrollY);
+  }
+
   beginSearch(query) {
     if (!query) {
       return;

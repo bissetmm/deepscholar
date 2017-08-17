@@ -1,6 +1,6 @@
 import React, {Component} from 'react';
 import {
-  Link
+  Link, withRouter
 } from 'react-router-dom';
 import './style.css';
 
@@ -20,7 +20,12 @@ export class Authors extends Component {
   }
 }
 
-export class Document extends Component {
+class DocumentInner extends Component {
+  handleClick(documentUrl, e) {
+    window.sessionStorage.setItem(this.props.location.key, window.scrollY);
+    this.props.history.push(documentUrl);
+  }
+
   render() {
     const {id, title, booktitle, year, abstract, url, author} = this.props.data;
     const documentUrl = `/documents/${id}`;
@@ -31,7 +36,7 @@ export class Document extends Component {
       <article className="document">
         <div className="divider"></div>
         <header>
-          <h5><Link to={documentUrl}>{title}</Link></h5>
+          <h5><a href="javascript:void(0)" onClick={this.handleClick.bind(this, documentUrl)}>{title}</a></h5>
           {authors}
           <h6>{booktitle} {year}</h6>
         </header>
@@ -50,6 +55,7 @@ export class Document extends Component {
     );
   }
 }
+export const Document = withRouter(DocumentInner);
 
 export class Documents extends Component {
   render() {
