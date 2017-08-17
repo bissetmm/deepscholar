@@ -61,19 +61,10 @@ class App extends Component {
   constructor(props) {
     super(props);
     this.state = {documents: [], documentsTotal: null, documentsFetchSize: 20, documentPage: 0};
-    this.prevProps = null;
   }
 
   componentDidMount() {
     this.beginSearch(this.props.query);
-  }
-
-  componentDidUpdate() {
-    if (this.prevProps !== null && this.props.location !== this.prevProps.location) {
-      window.scrollTo(0, 0);
-    }
-
-    this.prevProps = this.props;
   }
 
   beginSearch(query) {

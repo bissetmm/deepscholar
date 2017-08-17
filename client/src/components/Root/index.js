@@ -4,6 +4,7 @@ import {
 } from 'react-router-dom';
 import App from '../App';
 import Detail from '../Detail';
+import {ScrollToTop} from '../common';
 import './style.css';
 import queryString from 'query-string';
 
@@ -47,7 +48,8 @@ class NavBar extends Component {
           <div className="col s9 l7">
             <div className="input-field">
               <form onSubmit={this.handleSubmit.bind(this)}>
-                <input type="search" placeholder="Word Representations" onChange={this.handleChange.bind(this)} defaultValue={this.props.query}/>
+                <input type="search" placeholder="Word Representations" onChange={this.handleChange.bind(this)}
+                       defaultValue={this.props.query}/>
               </form>
               <label className="label-icon" htmlFor="search"><i className="material-icons">search</i>
               </label>
@@ -66,6 +68,7 @@ class NavBar extends Component {
     );
   }
 }
+
 class Root extends Component {
   constructor(props) {
     super(props);
@@ -92,7 +95,9 @@ class Root extends Component {
             <div>
               <Switch>
                 <Route exact path="/" component={(props) => (
-                  <App {...props} query={this.state.query} page={this.state.page}/>
+                  <ScrollToTop {...props} >
+                    <App {...props} query={this.state.query} page={this.state.page}/>
+                  </ScrollToTop>
                 )}/>
                 <Route exact path="/documents/:documentId" component={Detail}/>
               </Switch>
