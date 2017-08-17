@@ -95,7 +95,7 @@ class Root extends Component {
             <div>
               <Switch>
                 <Route exact path="/" component={(props) => (
-                  <ScrollToTop {...props} >
+                  <ScrollToTop {...props}>
                     <App {...props} query={this.state.query} page={this.state.page}/>
                   </ScrollToTop>
                 )}/>

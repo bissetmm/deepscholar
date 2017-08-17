@@ -27,7 +27,7 @@ class Detail extends Component {
       <div className="row">
         <div className="col s12">
           {this.props.history.length > 2 &&
-          <a className="back-to-results" href="javascript:void()" onClick={this.props.history.goBack}>Back to
+          <a className="back-to-results" href="javascript:void(0)" onClick={this.props.history.goBack}>Back to
             results</a>
           }
           {this.state.document !== null &&
