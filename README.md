@@ -27,3 +27,21 @@ You can see your application at [http://localhost:3000](http://localhost:3000)
 ```
 $ ./es/create_index.sh acl_metadata 
 ```
+
+## Developer's Guide
+```
+$ tree client/src/components/
+client/src/components/
+├── App
+│   ├── index.js # search index of '/'
+│   └── style.css
+├── Detail
+│   ├── index.js # details of '/documents/:documentId'
+│   └── style.css
+├── Root
+│   ├── index.js # entire screen including headers
+│   └── style.css
+└── common
+    ├── index.js # common part
+    └── style.css
+```
