@@ -45,3 +45,8 @@ client/src/components/
     ├── index.js # common part
     └── style.css
 ```
+
+### Delete
+```
+curl -XDELETE http://localhost:9200/*
+```
