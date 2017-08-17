@@ -35,7 +35,7 @@ export class Document extends Component {
           {authors}
           <h6>{booktitle} {year}</h6>
         </header>
-        <blockquote className="truncate">{abstract}</blockquote>
+        <blockquote className={this.props.isTruncate ? "truncate" : ""}>{abstract}</blockquote>
         <footer>
           <ul className="meta links valign-wrapper blue-text">
             <li>
@@ -54,7 +54,7 @@ export class Document extends Component {
 export class Documents extends Component {
   render() {
     const documents = this.props.data.map((document) =>
-      <Document data={document} key={document.id}/>
+      <Document data={document} key={document.id} isTruncate={true}/>
     );
 
     return (

@@ -31,7 +31,7 @@ class Detail extends Component {
             results</a>
           }
           {this.state.document !== null &&
-          <Document data={this.state.document} key={this.state.document.id}/>
+          <Document data={this.state.document} key={this.state.document.id} isTruncate={false}/>
           }
         </div>
       </div>
