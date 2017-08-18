@@ -46,6 +46,16 @@ client/src/components/
     └── style.css
 ```
 
+### Data Format
+* id
+* title
+* author
+* abstract
+* booktitle
+* year
+* page
+* url
+
 ### Delete
 ```
 curl -XDELETE http://localhost:9200/*
