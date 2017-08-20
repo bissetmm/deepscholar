@@ -30,20 +30,24 @@ $ ./es/create_index.sh acl_metadata
 
 ## Developer's Guide
 ```
-$ tree client/src/components/
-client/src/components/
-├── App
-│   ├── index.js # search index of '/'
-│   └── style.css
-├── Detail
-│   ├── index.js # details of '/documents/:documentId'
-│   └── style.css
-├── Root
-│   ├── index.js # entire screen including headers
-│   └── style.css
-└── common
-    ├── index.js # common part
-    └── style.css
+tree client/src
+client/src
+├── api.js # API for Elasticsearch
+├── components # Single React components
+│   ├── index.js
+│   └── style.css
+├── containers # React components (container) for each page
+│   ├── App # Entire application
+│   │   ├── index.js
+│   │   └── style.css
+│   ├── Detail # Details of document
+│   │   ├── index.js
+│   │   └── style.css
+│   └── Search # Search screen
+│       └── index.js
+├── index.js # Starting point of React
+├── module.js # Related to Redux
+└── registerServiceWorker.js # Something made by templates (not used yet)
 ```
 
 ### Data Format
