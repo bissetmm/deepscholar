@@ -1,32 +1,43 @@
 import React, {Component} from 'react';
 import _ from 'lodash';
-import {Documents} from '../common';
+import {connect} from 'react-redux';
+import {withRouter} from 'react-router-dom';
+import {Documents} from '../../components/index';
 import Api from '../../api';
-import './style.css';
+import {changePage, requestDocuments, receiveDocuments} from '../../module';
 
-class Paginator extends Component {
+function mapStateToProps(state) {
+  return {state};
+}
+
+const Paginator = withRouter(connect(mapStateToProps)(class Paginator extends Component {
   handlePageClick(i, e) {
     e.preventDefault();
-    this.props.handleChangePage(i);
+    this.changePage(i);
   }
 
   handlePrevClick(e) {
     e.preventDefault();
-    this.props.handleChangePage(this.props.currentPage - 1);
+    this.changePage(this.props.state.page - 1);
   }
 
   handleNextClick(e) {
     e.preventDefault();
-    this.props.handleChangePage(this.props.currentPage + 1);
+    this.changePage(this.props.state.page + 1);
+  }
+
+  changePage(page) {
+    this.props.history.push(`/?q=${this.props.state.q}&page=${page + 1}`);
+    this.props.dispatch(changePage(page));
   }
 
   render() {
-    const maxPage = this.props.maxPage;
+    const maxPage = Math.floor(this.props.state.documentsTotal / this.props.state.documentsFetchSize) || 0;
     if (maxPage === 0) {
       return null;
     }
 
-    const currentPage = this.props.currentPage;
+    const currentPage = this.props.state.page;
     let start, end;
     if (maxPage - currentPage > 5) {
       start = Math.max(currentPage - 4, 0);
@@ -55,19 +66,18 @@ class Paginator extends Component {
       </ul>
     );
   }
-}
+}));
 
-class App extends Component {
-  constructor(props) {
-    super(props);
-    this.state = {documents: [], documentsTotal: null, documentsFetchSize: 20, documentPage: 0};
-  }
-
+class Search extends Component {
   componentDidMount() {
-    this.beginSearch(this.props.query);
+    this.beginSearch();
   }
 
-  componentDidUpdate() {
+  componentDidUpdate(prevProps) {
+    if (prevProps.state.q !== this.props.state.q || prevProps.state.page !== this.props.state.page) {
+      this.beginSearch();
+    }
+
     const scrollY = window.sessionStorage.getItem(this.props.location.key);
     if (scrollY === null) {
       return;
@@ -76,33 +86,25 @@ class App extends Component {
     window.scrollTo(0, scrollY);
   }
 
-  beginSearch(query) {
-    if (!query) {
-      return;
-    }
-
-    this.search(query, this.props.page);
-    this.setState({documentPage: this.props.page});
+  beginSearch() {
+    this.search();
   }
 
-  search(query, page) {
-    const from = page * this.state.documentsFetchSize;
-    Api.search(`q=${query}&size=${this.state.documentsFetchSize}&from=${from}`)
+  search() {
+    const {q, page} = this.props.state;
+    if (!q) {
+      return;
+    }
+    this.props.dispatch(requestDocuments(q, page));
+    const from = page * this.props.state.documentsFetchSize;
+    Api.search(`q=${q}&size=${this.props.state.documentsFetchSize}&from=${from}`)
       .then((json) => {
-        this.setState({
-          documents: json.hits.hits.map((item) => item._source)
-        });
-        this.setState({documentsTotal: json.hits.total});
+        this.props.dispatch(receiveDocuments(json));
       });
   }
 
-  handleChangePage(page) {
-    this.props.history.push(`/?q=${this.props.query}&page=${page + 1}`);
-    this.search(this.props.query, page);
-    this.setState({documentPage: page});
-  }
-
   render() {
+    const {documents, documentsTotal} = this.props.state;
     return (
       <div className="row">
         <div className="col s4 l3">
@@ -139,17 +141,15 @@ class App extends Component {
           </ul>
         </div>
         <div className="col s8 l9">
-          {this.state.documentsTotal > 0 &&
-          <p>{this.state.documentsTotal} results</p>
+          {documentsTotal > 0 &&
+          <p>{documentsTotal} results</p>
           }
-          <Documents data={this.state.documents}/>
-          <Paginator handleChangePage={this.handleChangePage.bind(this)}
-                     maxPage={Math.floor(this.state.documentsTotal / this.state.documentsFetchSize) || 0}
-                     currentPage={this.state.documentPage}/>
+          <Documents data={documents}/>
+          <Paginator/>
         </div>
       </div>
     );
   }
 }
 
-export default App;
+export default connect(mapStateToProps)(Search);

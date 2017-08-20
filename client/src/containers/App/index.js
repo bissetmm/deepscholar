@@ -1,14 +1,19 @@
 import React, {Component} from 'react';
 import {
-  BrowserRouter as Router, Switch, Route, Link
+  BrowserRouter, Switch, Route, Link
 } from 'react-router-dom';
-import App from '../App';
-import Detail from '../Detail';
-import {ScrollToTop} from '../common';
+import {connect} from 'react-redux';
+import Search from '../Search/index';
+import Detail from '../Detail/index';
+import {ScrollToTop} from '../../components/index';
+import {changeQ} from '../../module';
 import './style.css';
-import queryString from 'query-string';
 
-class NavBar extends Component {
+function mapStateToProps(state) {
+  return {state};
+}
+
+const NavBar = connect(mapStateToProps)(class NavBar extends Component {
   constructor(props) {
     super(props);
     this.searchTimer = null;
@@ -30,7 +35,7 @@ class NavBar extends Component {
 
     this.searchTimer = setTimeout(() => {
       this.props.history.push(`/?q=${query}`);
-      this.props.performSearch(query);
+      this.props.dispatch(changeQ(query));
     }, 0);
   }
 
@@ -49,7 +54,7 @@ class NavBar extends Component {
             <div className="input-field">
               <form onSubmit={this.handleSubmit.bind(this)}>
                 <input type="search" placeholder="Word Representations" onChange={this.handleChange.bind(this)}
-                       defaultValue={this.props.query}/>
+                       defaultValue={this.props.state.q}/>
               </form>
               <label className="label-icon" htmlFor="search"><i className="material-icons">search</i>
               </label>
@@ -67,27 +72,21 @@ class NavBar extends Component {
       </div>
     );
   }
-}
+});
 
-class Root extends Component {
+class App extends Component {
   constructor(props) {
     super(props);
-    const parsed = queryString.parse(window.location.search);
-    this.state = {query: parsed.q, page: (parsed.page || 1) - 1};
-  }
-
-  performSearch(query) {
-    this.setState({query: query, page: this.state.page});
   }
 
   render() {
     return (
-      <Router>
+      <BrowserRouter>
         <div>
           <div className="navbar-fixed">
             <nav className="navy">
               <Route component={(props) => (
-                <NavBar {...props} performSearch={this.performSearch.bind(this)} query={this.state.query}/>
+                <NavBar {...props}/>
               )}/>
             </nav>
           </div>
@@ -96,7 +95,7 @@ class Root extends Component {
               <Switch>
                 <Route exact path="/" component={(props) => (
                   <ScrollToTop {...props}>
-                    <App {...props} query={this.state.query} page={this.state.page}/>
+                    <Search {...props}/>
                   </ScrollToTop>
                 )}/>
                 <Route exact path="/documents/:documentId" component={Detail}/>
@@ -104,9 +103,9 @@ class Root extends Component {
             </div>
           </div>
         </div>
-      </Router>
+      </BrowserRouter>
     );
   }
 }
 
-export default Root;
+export default App;

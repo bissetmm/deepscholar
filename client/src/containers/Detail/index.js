@@ -1,28 +1,26 @@
 import React, {Component} from 'react';
-import {Document} from '../common';
+import {Document} from '../../components/index';
+import {connect} from 'react-redux';
 import Api from '../../api';
+import {requestDocument, receiveDocument} from '../../module';
 import './style.css';
 
 class Detail extends Component {
-  constructor(props) {
-    super(props);
-    this.state = {document: null};
-  }
-
   componentDidMount() {
     this.search(this.props.match.params.documentId);
   }
 
   search(documentId) {
+    this.props.dispatch(requestDocument(documentId));
     Api.search(`q=id:"${documentId}"`)
       .then((json) => {
-        this.setState({
-          document: json.hits.hits.map((item) => item._source)[0]
-        });
+        this.props.dispatch(receiveDocument(json));
       });
   }
 
   render() {
+    const {document} = this.props.state;
+
     return (
       <div className="row">
         <div className="col s12">
@@ -30,8 +28,8 @@ class Detail extends Component {
           <a className="back-to-results" href="javascript:void(0)" onClick={this.props.history.goBack}>Back to
             results</a>
           }
-          {this.state.document !== null &&
-          <Document data={this.state.document} key={this.state.document.id} isTruncate={false}/>
+          {document !== null &&
+          <Document data={document} key={document.id} isTruncate={false}/>
           }
         </div>
       </div>
@@ -39,4 +37,7 @@ class Detail extends Component {
   }
 }
 
-export default Detail;
+function mapStateToProps(state) {
+  return {state};
+}
+export default connect(mapStateToProps)(Detail);

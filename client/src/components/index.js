@@ -1,7 +1,5 @@
 import React, {Component} from 'react';
-import {
-  Link, withRouter
-} from 'react-router-dom';
+import {withRouter} from 'react-router-dom';
 import './style.css';
 
 export class Authors extends Component {
@@ -20,7 +18,7 @@ export class Authors extends Component {
   }
 }
 
-class DocumentInner extends Component {
+export const Document = withRouter(class Document extends Component {
   handleClick(documentUrl, e) {
     window.sessionStorage.setItem(this.props.location.key, window.scrollY);
     this.props.history.push(documentUrl);
@@ -54,8 +52,7 @@ class DocumentInner extends Component {
       </article>
     );
   }
-}
-export const Document = withRouter(DocumentInner);
+});
 
 export class Documents extends Component {
   render() {
