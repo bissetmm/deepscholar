@@ -1,0 +1,25 @@
+body {
+    margin: 0;
+    padding: 0;
+    font-family: sans-serif;
+}
+
+.navy {
+    background-color: #151E3F;
+}
+
+a:hover {
+    text-decoration: underline;
+}
+
+.input-field input[type=search] {
+    height: 100%;
+}
+
+div.nav-wrapper .row, div.nav-wrapper .col {
+    height: 100%;
+}
+
+div.container {
+    width: 90%;
+}
