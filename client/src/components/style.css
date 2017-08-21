@@ -1,13 +1,18 @@
 .document h5 {
-    margin: 26px 0 6px;
+	font-size: 1.3em;
+	margin: 20px 0 10px;
 }
 
-.document blockquote {
-    margin: 6px 0;
+.document a:hover {
+    text-decoration: underline;
+}
+
+.document p {
+    margin: 10px 0;
     display: -webkit-box;
 }
 
-.document blockquote.truncate {
+.document p.truncate {
     overflow: hidden;;
     text-overflow: clip;
     white-space: inherit;
@@ -18,7 +23,7 @@
 }
 
 .document footer {
-    margin: 6px 0 26px;
+    margin: 6px 0 20px;
 }
 
 .document ul.meta {

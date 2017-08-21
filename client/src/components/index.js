@@ -5,9 +5,9 @@ import './style.css';
 export class Authors extends Component {
   render() {
     const authors = this.props.data.slice(0, 2).map(author =>
-      <li key={author} className="red-text">{author}</li>
+      <li key={author}>{author}</li>
     );
-    const clampLetter = this.props.data.length > 3 ? <li key="clamp" className="red-text">...</li> : '';
+    const clampLetter = this.props.data.length > 3 ? <li key="clamp">...</li> : '';
 
     return (
       <ul className="meta authors">
@@ -27,7 +27,7 @@ export const Document = withRouter(class Document extends Component {
   render() {
     const {id, title, booktitle, year, abstract, url, author} = this.props.data;
     const documentUrl = `/documents/${id}`;
-    const pdfannoUrl = `http://pdfanno.hshindo.com/?pdf=${url}`;
+    const pdfannoUrl = `https://paperai.github.io/pdfanno/?pdf=${url}`;
     const authors = <Authors data={author}/>;
 
     return (
@@ -38,7 +38,7 @@ export const Document = withRouter(class Document extends Component {
           {authors}
           <h6>{booktitle} {year}</h6>
         </header>
-        <blockquote className={this.props.isTruncate ? "truncate" : ""}>{abstract}</blockquote>
+        <p className={this.props.isTruncate ? "truncate" : ""}>{abstract}</p>
         <footer>
           <ul className="meta links valign-wrapper blue-text">
             <li>
