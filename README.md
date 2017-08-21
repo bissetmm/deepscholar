@@ -67,6 +67,7 @@ curl -XDELETE http://localhost:9200/*
 
 ### Development Tools
 
-|    Name     |                      URL                       |
-| ----------- | ---------------------------------------------- |
-| Kibana      | [http://localhost:5601](http://localhost:5601) |
+|        Name        |                      URL                       |
+| ------------------ | ---------------------------------------------- |
+| Kibana             | [http://localhost:5601](http://localhost:5601) |
+| elasticsearch-head | [http://localhost:9100](http://localhost:9100) |

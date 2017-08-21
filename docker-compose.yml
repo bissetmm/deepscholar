@@ -33,6 +33,8 @@ services:
     image: docker.elastic.co/elasticsearch/elasticsearch:5.4.3
     environment:
       - xpack.security.enabled=false
+      - http.cors.enabled=true
+      - http.cors.allow-origin=*
     volumes:
       - esdata:/usr/share/elasticsearch/data
     ports:
@@ -46,6 +48,13 @@ services:
       - deepscholar.elasticsearch
     ports:
       - "5601:5601"
+  deepscholar.elasticsearch-head:
+    container_name: deepscholar.elasticsearch-head
+    image: mobz/elasticsearch-head:5
+    depends_on:
+      - deepscholar.elasticsearch
+    ports:
+      - "9100:9100"
 volumes:
   esdata:
     driver: local
