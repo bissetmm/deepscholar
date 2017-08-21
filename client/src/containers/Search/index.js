@@ -112,15 +112,15 @@ class Search extends Component {
           <ul>
             <li>
               <input id="year1" type="checkbox" className="filled-in"/>
-              <label className="red-text" htmlFor="year1">2016 (321)</label>
+              <label htmlFor="year1">2016 (321)</label>
             </li>
             <li>
               <input id="year2" type="checkbox" className="filled-in"/>
-              <label className="red-text" htmlFor="year2">2015 (592)</label>
+              <label htmlFor="year2">2015 (592)</label>
             </li>
             <li>
               <input id="year3" type="checkbox" className="filled-in"/>
-              <label className="red-text" htmlFor="year3">2014 (507)</label>
+              <label htmlFor="year3">2014 (507)</label>
             </li>
           </ul>
 
@@ -128,15 +128,15 @@ class Search extends Component {
           <ul>
             <li>
               <input id="author1" type="checkbox" className="filled-in"/>
-              <label className="red-text" htmlFor="author1">Yoshua Bengio (67)</label>
+              <label htmlFor="author1">Yoshua Bengio (67)</label>
             </li>
             <li>
               <input id="author2" type="checkbox" className="filled-in"/>
-              <label className="red-text" htmlFor="author2">Richard Socher (29)</label>
+              <label htmlFor="author2">Richard Socher (29)</label>
             </li>
             <li>
               <input id="author3" type="checkbox" className="filled-in"/>
-              <label className="red-text" htmlFor="author3">Andrew Y. Ng (18)</label>
+              <label htmlFor="author3">Andrew Y. Ng (18)</label>
             </li>
           </ul>
         </div>

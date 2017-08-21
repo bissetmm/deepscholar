@@ -5,11 +5,7 @@ body {
 }
 
 .navy {
-    background-color: #151E3F;
-}
-
-a:hover {
-    text-decoration: underline;
+    background-color: #3f51b5;
 }
 
 .input-field input[type=search] {
