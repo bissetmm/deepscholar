@@ -60,6 +60,26 @@ client/src
 * page
 * url
 
+### Import
+
+1. Create data file named `acl_metadata` like the following  
+    ```
+    { "index":  { "_index": "documents", "_type": "lang" }}
+    {"booktitle":"...","author":["...","...","..."], ...}
+    { "index":  { "_index": "documents", "_type": "lang" }}
+    {"booktitle":"...","author":["...","...","..."], ...}
+    ...
+    ```
+    
+    - 1st line says the next line should be imported as record.
+    - 2nd line is the data should be imported
+    - Loop those 2 lines for each records
+
+2. Import data using `curl`
+    ```
+    curl -XPOST "localhost:9200/documents/_bulk" --data-binary @acl_metadata
+    ``` 
+ 
 ### Delete
 ```
 curl -XDELETE http://localhost:9200/*
