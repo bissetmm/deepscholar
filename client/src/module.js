@@ -8,7 +8,8 @@ const initialState = {
   document: null,
   documents: [],
   documentTotal: 0,
-  documentsFetchSize: 20
+  documentsFetchSize: 20,
+  enabledFullTextDocumentIds: new Set()
 };
 
 export function reducers(state = initialState, action) {
@@ -38,6 +39,15 @@ export function reducers(state = initialState, action) {
       return Object.assign({}, state, {
         documents: action.documents,
         documentsTotal: action.documentsTotal
+      });
+    case TOGGLE_FULL_TEXT:
+      if (state.enabledFullTextDocumentIds.has(action.id)) {
+        state.enabledFullTextDocumentIds.delete(action.id);
+      } else {
+        state.enabledFullTextDocumentIds.add(action.id);
+      }
+      return Object.assign({}, state, {
+        enabledFullTextDocumentIds: state.enabledFullTextDocumentIds
       });
     default:
       return state;
@@ -97,5 +107,14 @@ export function receiveDocuments(json) {
     type: RECEIVE_DOCUMENTS,
     documents: json.hits.hits.map((item) => item._source),
     documentsTotal: json.hits.total
+  };
+}
+
+const TOGGLE_FULL_TEXT = "TOGGLE_FULL_TEXT";
+
+export function toggleFullText(id) {
+  return {
+    type: TOGGLE_FULL_TEXT,
+    id: id
   };
 }

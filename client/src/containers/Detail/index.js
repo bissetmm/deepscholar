@@ -29,7 +29,7 @@ class Detail extends Component {
             results</a>
           }
           {document !== null &&
-          <Document data={document} key={document.id} isTruncate={false}/>
+          <Document data={document} isForceFullText={true}/>
           }
         </div>
       </div>

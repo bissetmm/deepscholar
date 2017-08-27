@@ -1,6 +1,12 @@
 import React, {Component} from 'react';
+import {connect} from 'react-redux';
 import {withRouter} from 'react-router-dom';
 import './style.css';
+import {toggleFullText} from "../module";
+
+function mapStateToProps(state) {
+  return {state};
+}
 
 export class Authors extends Component {
   render() {
@@ -18,17 +24,43 @@ export class Authors extends Component {
   }
 }
 
-export const Document = withRouter(class Document extends Component {
+const FullTextToggle = connect(mapStateToProps)(class AbstractChanger extends Component {
+  constructor(props) {
+    super(props);
+  }
+
+  handleClick() {
+    this.props.dispatch(toggleFullText(this.props.documentId));
+  }
+
+  render() {
+    const isFullTextEnabled = this.props.state.enabledFullTextDocumentIds.has(this.props.documentId);
+    const label = isFullTextEnabled ? "Less" : "More";
+    const prefix = isFullTextEnabled ? "" : "...";
+    return (
+      <span>
+        {prefix}<a href="javascript:void(0)" onClick={this.handleClick.bind(this)}>({label})</a>
+      </span>
+    );
+  }
+});
+
+export const Document = withRouter(connect(mapStateToProps)(class Document extends Component {
   handleClick(documentUrl, e) {
     window.sessionStorage.setItem(this.props.location.key, window.scrollY);
     this.props.history.push(documentUrl);
   }
 
   render() {
-    const {id, title, booktitle, year, abstract, url, author} = this.props.data;
+    const {id, title, booktitle, year, url, author} = this.props.data;
+    let {abstract} = this.props.data;
     const documentUrl = `/documents/${id}`;
     const pdfannoUrl = `https://paperai.github.io/pdfanno/?pdf=${url}`;
     const authors = <Authors data={author}/>;
+
+    if (!this.props.isForceFullText) {
+      abstract = this.props.state.enabledFullTextDocumentIds.has(id) ? abstract : abstract.substr(0, 400);
+    }
 
     return (
       <article className="document">
@@ -38,7 +70,7 @@ export const Document = withRouter(class Document extends Component {
           {authors}
           <h6>{booktitle} {year}</h6>
         </header>
-        <p className={this.props.isTruncate ? "truncate" : ""}>{abstract}</p>
+        <p>{abstract}{!this.props.isForceFullText && <FullTextToggle documentId={id}/>}</p>
         <footer>
           <ul className="meta links valign-wrapper blue-text">
             <li>
@@ -52,12 +84,12 @@ export const Document = withRouter(class Document extends Component {
       </article>
     );
   }
-});
+}));
 
 export class Documents extends Component {
   render() {
     const documents = this.props.data.map((document) =>
-      <Document data={document} key={document.id} isTruncate={true}/>
+      <Document data={document} key={document.id} isForceFullText={false}/>
     );
 
     return (
