@@ -2,7 +2,7 @@ import React, {Component} from 'react';
 import {connect} from 'react-redux';
 import {withRouter} from 'react-router-dom';
 import './style.css';
-import {toggleFullText} from "../module";
+import {saveScrollY, toggleFullText} from "../module";
 
 function mapStateToProps(state) {
   return {state};
@@ -47,7 +47,7 @@ const FullTextToggle = connect(mapStateToProps)(class AbstractChanger extends Co
 
 export const Document = withRouter(connect(mapStateToProps)(class Document extends Component {
   handleClick(documentUrl, e) {
-    window.sessionStorage.setItem(this.props.location.key, window.scrollY);
+    this.props.dispatch(saveScrollY(this.props.location.key, window.scrollY));
     this.props.history.push(documentUrl);
   }
 
