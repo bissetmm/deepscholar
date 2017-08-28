@@ -2,29 +2,49 @@ import React, {Component} from 'react';
 import {connect} from 'react-redux';
 import {withRouter} from 'react-router-dom';
 import './style.css';
-import {saveScrollY, toggleFullText} from "../module";
+import {saveScrollY, toggleAllAuthors, toggleFullText} from "../module";
 
 function mapStateToProps(state) {
   return {state};
 }
 
-export class Authors extends Component {
+const AllAuthorsToggle = connect(mapStateToProps)(class AllAuthorsToggle extends Component {
+  handleClick() {
+    this.props.dispatch(toggleAllAuthors(this.props.documentId));
+  }
+
   render() {
-    const authors = this.props.data.slice(0, 2).map(author =>
+    const isAllAuthorsEnabled = this.props.state.enabledAllAuthorsDocumentIds.has(this.props.documentId);
+    const label = isAllAuthorsEnabled ? "Less" : "More";
+    const prefix = isAllAuthorsEnabled ? "" : "...";
+    return (
+      <span>
+        {prefix}<a href="javascript:void(0)" onClick={this.handleClick.bind(this)}>({label})</a>
+      </span>
+    );
+  }
+});
+
+const Authors = connect(mapStateToProps)(class Authors extends Component {
+  render() {
+    let data = this.props.data;
+    if (!this.props.isForceAllAuthors && !this.props.state.enabledAllAuthorsDocumentIds.has(this.props.documentId)) {
+      data = this.props.data.slice(0, 2);
+    }
+    const authors = data.map(author =>
       <li key={author}>{author}</li>
     );
-    const clampLetter = this.props.data.length > 3 ? <li key="clamp">...</li> : '';
+    let haveMore = this.props.data.length > 2;
 
     return (
       <ul className="meta authors">
-        {authors}
-        {clampLetter}
+        {authors}{!this.props.isForceAllAuthors && haveMore && <AllAuthorsToggle documentId={this.props.documentId}/>}
       </ul>
     );
   }
-}
+});
 
-const FullTextToggle = connect(mapStateToProps)(class AbstractChanger extends Component {
+const FullTextToggle = connect(mapStateToProps)(class AllAuthorsToggle extends Component {
   constructor(props) {
     super(props);
   }
@@ -56,7 +76,7 @@ export const Document = withRouter(connect(mapStateToProps)(class Document exten
     let {abstract} = this.props.data;
     const documentUrl = `/documents/${id}`;
     const pdfannoUrl = `https://paperai.github.io/pdfanno/?pdf=${url}`;
-    const authors = <Authors data={author}/>;
+    const authors = <Authors data={author} documentId={id} isForceAllAuthors={this.props.isForceFullText}/>;
 
     if (!this.props.isForceFullText) {
       abstract = this.props.state.enabledFullTextDocumentIds.has(id) ? abstract : abstract.substr(0, 400);

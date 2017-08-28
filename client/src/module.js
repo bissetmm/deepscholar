@@ -10,6 +10,7 @@ const initialState = {
   documentTotal: 0,
   documentsFetchSize: 20,
   enabledFullTextDocumentIds: new Set(),
+  enabledAllAuthorsDocumentIds: new Set(),
   scrollYPositions: new Map()
 };
 
@@ -50,6 +51,15 @@ export function reducers(state = initialState, action) {
       }
       return Object.assign({}, state, {
         enabledFullTextDocumentIds: state.enabledFullTextDocumentIds
+      });
+    case TOGGLE_ALL_AUTHORS:
+      if (state.enabledAllAuthorsDocumentIds.has(action.id)) {
+        state.enabledAllAuthorsDocumentIds.delete(action.id);
+      } else {
+        state.enabledAllAuthorsDocumentIds.add(action.id);
+      }
+      return Object.assign({}, state, {
+        enabledAllAuthorsDocumentIds: state.enabledAllAuthorsDocumentIds
       });
     case SAVE_SCROLL_Y:
       state.scrollYPositions.set(action.locationKey, action.y);
@@ -131,6 +141,15 @@ const TOGGLE_FULL_TEXT = "TOGGLE_FULL_TEXT";
 export function toggleFullText(id) {
   return {
     type: TOGGLE_FULL_TEXT,
+    id: id
+  };
+}
+
+const TOGGLE_ALL_AUTHORS = "TOGGLE_ALL_AUTHORS";
+
+export function toggleAllAuthors(id) {
+  return {
+    type: TOGGLE_ALL_AUTHORS,
     id: id
   };
 }
