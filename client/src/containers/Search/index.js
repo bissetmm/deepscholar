@@ -4,7 +4,7 @@ import {connect} from 'react-redux';
 import {withRouter} from 'react-router-dom';
 import {Documents} from '../../components/index';
 import Api from '../../api';
-import {changePage, requestDocuments, receiveDocuments} from '../../module';
+import {changePage, requestDocuments, receiveDocuments, deleteScrollY} from '../../module';
 
 function mapStateToProps(state) {
   return {state};
@@ -78,10 +78,12 @@ class Search extends Component {
       this.beginSearch();
     }
 
-    const scrollY = window.sessionStorage.getItem(this.props.location.key);
-    if (scrollY === null) {
+    const locationKey = this.props.location.key;
+    if (!this.props.state.scrollYPositions.has(locationKey)) {
       return;
     }
+    const scrollY = this.props.state.scrollYPositions.get(locationKey);
+    this.props.dispatch(deleteScrollY(locationKey));
 
     window.scrollTo(0, scrollY);
   }

@@ -6,7 +6,7 @@ import {connect} from 'react-redux';
 import Search from '../Search/index';
 import Detail from '../Detail/index';
 import {ScrollToTop} from '../../components/index';
-import {changeQ} from '../../module';
+import {changeQ, deleteAllScrollY} from '../../module';
 import './style.css';
 
 function mapStateToProps(state) {
@@ -34,6 +34,7 @@ const NavBar = connect(mapStateToProps)(class NavBar extends Component {
     }
 
     this.searchTimer = setTimeout(() => {
+      this.props.dispatch(deleteAllScrollY());
       this.props.history.push(`/?q=${query}`);
       this.props.dispatch(changeQ(query));
     }, 0);
