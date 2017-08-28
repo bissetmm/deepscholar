@@ -29,7 +29,7 @@ class Detail extends Component {
             results</a>
           }
           {document !== null &&
-          <Document data={document} isForceFullText={true}/>
+          <Document data={document} asFull={true}/>
           }
         </div>
       </div>

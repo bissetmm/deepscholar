@@ -28,7 +28,7 @@ const AllAuthorsToggle = connect(mapStateToProps)(class AllAuthorsToggle extends
 const Authors = connect(mapStateToProps)(class Authors extends Component {
   render() {
     let data = this.props.data;
-    if (!this.props.isForceAllAuthors && !this.props.state.enabledAllAuthorsDocumentIds.has(this.props.documentId)) {
+    if (!this.props.asFull && !this.props.state.enabledAllAuthorsDocumentIds.has(this.props.documentId)) {
       data = this.props.data.slice(0, 2);
     }
     const authors = data.map(author =>
@@ -38,17 +38,13 @@ const Authors = connect(mapStateToProps)(class Authors extends Component {
 
     return (
       <ul className="meta authors">
-        {authors}{!this.props.isForceAllAuthors && haveMore && <AllAuthorsToggle documentId={this.props.documentId}/>}
+        {authors}{!this.props.asFull && haveMore && <AllAuthorsToggle documentId={this.props.documentId}/>}
       </ul>
     );
   }
 });
 
-const FullTextToggle = connect(mapStateToProps)(class AllAuthorsToggle extends Component {
-  constructor(props) {
-    super(props);
-  }
-
+const FullTextToggle = connect(mapStateToProps)(class FullTextToggle extends Component {
   handleClick() {
     this.props.dispatch(toggleFullText(this.props.documentId));
   }
@@ -76,9 +72,9 @@ export const Document = withRouter(connect(mapStateToProps)(class Document exten
     let {abstract} = this.props.data;
     const documentUrl = `/documents/${id}`;
     const pdfannoUrl = `https://paperai.github.io/pdfanno/?pdf=${url}`;
-    const authors = <Authors data={author} documentId={id} isForceAllAuthors={this.props.isForceFullText}/>;
+    const authors = <Authors data={author} documentId={id} asFull={this.props.asFull}/>;
 
-    if (!this.props.isForceFullText) {
+    if (!this.props.asFull) {
       abstract = this.props.state.enabledFullTextDocumentIds.has(id) ? abstract : abstract.substr(0, 400);
     }
 
@@ -90,7 +86,7 @@ export const Document = withRouter(connect(mapStateToProps)(class Document exten
           {authors}
           <h6>{booktitle} {year}</h6>
         </header>
-        <p>{abstract}{!this.props.isForceFullText && <FullTextToggle documentId={id}/>}</p>
+        <p>{abstract}{!this.props.asFull && <FullTextToggle documentId={id}/>}</p>
         <footer>
           <ul className="meta links valign-wrapper blue-text">
             <li>
@@ -109,7 +105,7 @@ export const Document = withRouter(connect(mapStateToProps)(class Document exten
 export class Documents extends Component {
   render() {
     const documents = this.props.data.map((document) =>
-      <Document data={document} key={document.id} isForceFullText={false}/>
+      <Document data={document} key={document.id} asFull={false}/>
     );
 
     return (
