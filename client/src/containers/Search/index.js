@@ -99,10 +99,24 @@ class Search extends Component {
     }
     this.props.dispatch(requestDocuments(q, page));
     const from = page * this.props.state.documentsFetchSize;
-    Api.search(`q=${q}&size=${this.props.state.documentsFetchSize}&from=${from}`)
-      .then((json) => {
-        this.props.dispatch(receiveDocuments(json));
-      });
+    const body = JSON.stringify({
+      query: {
+        multi_match: {
+          query: q,
+          fields: ["id", "title", "booktitle", "url", "author"]
+        }
+      },
+      from,
+      size: this.props.state.documentsFetchSize,
+      aggs: {
+        year: {
+          histogram: {field: "year", interval: 1}
+        }
+      }
+    });
+    Api.search({body}).then((json) => {
+      this.props.dispatch(receiveDocuments(json));
+    });
   }
 
   render() {

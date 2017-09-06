@@ -9,6 +9,7 @@ const initialState = {
   documents: [],
   documentTotal: 0,
   documentsFetchSize: 20,
+  aggregations: null,
   enabledFullTextDocumentIds: new Set(),
   enabledAllAuthorsDocumentIds: new Set(),
   scrollYPositions: new Map()
@@ -41,7 +42,8 @@ export function reducers(state = initialState, action) {
     case RECEIVE_DOCUMENTS:
       return Object.assign({}, state, {
         documents: action.documents,
-        documentsTotal: action.documentsTotal
+        documentsTotal: action.documentsTotal,
+        aggregations: action.aggregations
       });
     case TOGGLE_FULL_TEXT:
       if (state.enabledFullTextDocumentIds.has(action.id)) {
@@ -132,7 +134,8 @@ export function receiveDocuments(json) {
   return {
     type: RECEIVE_DOCUMENTS,
     documents: json.hits.hits.map((item) => item._source),
-    documentsTotal: json.hits.total
+    documentsTotal: json.hits.total,
+    aggregations: json.aggregations
   };
 }
 

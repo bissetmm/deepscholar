@@ -12,10 +12,16 @@ class Detail extends Component {
 
   search(documentId) {
     this.props.dispatch(requestDocument(documentId));
-    Api.search(`q=id:"${documentId}"`)
-      .then((json) => {
-        this.props.dispatch(receiveDocument(json));
-      });
+    const body = JSON.stringify({
+      query: {
+        match: {
+          id: documentId
+        }
+      }
+    });
+    Api.search({body}).then((json) => {
+      this.props.dispatch(receiveDocument(json));
+    });
   }
 
   render() {
@@ -40,4 +46,5 @@ class Detail extends Component {
 function mapStateToProps(state) {
   return {state};
 }
+
 export default connect(mapStateToProps)(Detail);

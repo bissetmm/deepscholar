@@ -1,6 +1,6 @@
 class Api {
-  static fetchApi(path) {
-    return fetch(path, {accept: "application/json"})
+  static fetchApi(options) {
+    return fetch("/_search", options)
       .then((response) => {
         if (response.status >= 200 && response.status < 300) {
           return response;
@@ -11,8 +11,17 @@ class Api {
       .catch(console.log);
   }
 
-  static search(query) {
-    return Api.fetchApi(`/api/search?${query}`);
+  static search(options) {
+    const headers = new Headers();
+    headers.append("Content-Type", "application/json");
+
+    const o = Object.assign({
+      accept: "application/json",
+      headers,
+      method: "post",
+      body: null
+    }, options);
+    return Api.fetchApi(o);
   }
 }
 
