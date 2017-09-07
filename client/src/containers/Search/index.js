@@ -103,7 +103,7 @@ class Search extends Component {
       query: {
         multi_match: {
           query: q,
-          fields: ["id", "title", "booktitle", "url", "author"]
+          fields: ["id", "title", "booktitle", "abstract", "url", "author"]
         }
       },
       from,
