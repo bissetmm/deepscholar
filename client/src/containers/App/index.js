@@ -6,7 +6,7 @@ import {connect} from 'react-redux';
 import Search from '../Search/index';
 import Detail from '../Detail/index';
 import {ScrollToTop} from '../../components/index';
-import {changeQ, deleteAllScrollY} from '../../module';
+import {changeQuery, deleteAllScrollY} from '../../module';
 import './style.css';
 
 function mapStateToProps(state) {
@@ -36,7 +36,7 @@ const NavBar = connect(mapStateToProps)(class NavBar extends Component {
     this.searchTimer = setTimeout(() => {
       this.props.dispatch(deleteAllScrollY());
       this.props.history.push(`/?q=${query}`);
-      this.props.dispatch(changeQ(query));
+      this.props.dispatch(changeQuery(query));
     }, 0);
   }
 
@@ -55,11 +55,10 @@ const NavBar = connect(mapStateToProps)(class NavBar extends Component {
             <div className="input-field">
               <form onSubmit={this.handleSubmit.bind(this)}>
 <input type="search" placeholder="Search" onChange={this.handleChange.bind(this)}
-                       defaultValue={this.props.state.q}/>
+                       defaultValue={this.props.state.query}/>
               </form>
               <label className="label-icon" htmlFor="search"><i className="material-icons">search</i>
               </label>
-              <i className="material-icons closed">close</i>
             </div>
           </div>
           <div className="col s3 l2 right">

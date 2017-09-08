@@ -2,9 +2,15 @@ import React, {Component} from 'react';
 import _ from 'lodash';
 import {connect} from 'react-redux';
 import {withRouter} from 'react-router-dom';
+import Slider from 'rc-slider';
 import {Documents} from '../../components/index';
 import Api from '../../api';
-import {changePage, requestDocuments, receiveDocuments, deleteScrollY} from '../../module';
+import {
+  changePage, requestDocuments, receiveDocuments, deleteScrollY, changeYears,
+  requestAggregations, receiveAggregations
+} from '../../module';
+import './style.css';
+import 'rc-slider/assets/index.css';
 
 function mapStateToProps(state) {
   return {state};
@@ -27,7 +33,7 @@ const Paginator = withRouter(connect(mapStateToProps)(class Paginator extends Co
   }
 
   changePage(page) {
-    this.props.history.push(`/?q=${this.props.state.q}&page=${page + 1}`);
+    this.props.history.push(`/?q=${this.props.state.query}&page=${page + 1}`);
     this.props.dispatch(changePage(page));
   }
 
@@ -70,12 +76,15 @@ const Paginator = withRouter(connect(mapStateToProps)(class Paginator extends Co
 
 class Search extends Component {
   componentDidMount() {
-    this.beginSearch();
+    this.searchAggregations();
+    this.search();
   }
 
   componentDidUpdate(prevProps) {
-    if (prevProps.state.q !== this.props.state.q || prevProps.state.page !== this.props.state.page) {
-      this.beginSearch();
+    const {query: oldQuery, gte: oldGte, lte: oldLte, page: oldPage} = prevProps.state;
+    const {query: newQuery, gte: newGte, lte: newLte, page: newPage} = this.props.state;
+    if (oldQuery !== newQuery || oldPage !== newPage || oldGte !== newGte || oldLte !== newLte) {
+      this.search();
     }
 
     const locationKey = this.props.location.key;
@@ -88,26 +97,52 @@ class Search extends Component {
     window.scrollTo(0, scrollY);
   }
 
-  beginSearch() {
-    this.search();
-  }
-
   search() {
-    const {q, page} = this.props.state;
-    if (!q) {
+    const {query, page, gte, lte} = this.props.state;
+    if (!query) {
       return;
     }
-    this.props.dispatch(requestDocuments(q, page));
+    this.props.dispatch(requestDocuments(query, page));
     const from = page * this.props.state.documentsFetchSize;
-    const body = JSON.stringify({
-      query: {
-        multi_match: {
-          query: q,
-          fields: ["id", "title", "booktitle", "abstract", "url", "author"]
+    const esQuery = {
+      bool: {
+        must: {
+          multi_match: {
+            query,
+            fields: [
+              "id",
+              "title",
+              "booktitle",
+              "abstract",
+              "url",
+              "author"
+            ]
+          }
+        },
+        filter: {
+          range: {
+            year: {
+              gte,
+              lte
+            }
+          }
         }
-      },
+      }
+    };
+    const body = JSON.stringify({
+      query: esQuery,
       from,
-      size: this.props.state.documentsFetchSize,
+      size: this.props.state.documentsFetchSize
+    });
+    Api.search({body}).then((json) => {
+      this.props.dispatch(receiveDocuments(json));
+    });
+  }
+
+  searchAggregations() {
+    this.props.dispatch(requestAggregations());
+    const body = JSON.stringify({
+      size: 0,
       aggs: {
         year: {
           histogram: {field: "year", interval: 1}
@@ -115,30 +150,34 @@ class Search extends Component {
       }
     });
     Api.search({body}).then((json) => {
-      this.props.dispatch(receiveDocuments(json));
+      this.props.dispatch(receiveAggregations(json));
     });
   }
 
+  handleAfterChange(range) {
+    this.props.dispatch(changeYears(range[0], range[1]));
+  }
+
   render() {
-    const {documents, documentsTotal} = this.props.state;
+    const Range = Slider.createSliderWithTooltip(Slider.Range);
+    const {documents, documentsTotal, aggregations} = this.props.state;
+
+    let year;
+    if (aggregations.year.buckets.length > 1) {
+      const {gte, lte} = this.props.state;
+      const min = aggregations.year.buckets[0].key;
+      const max = aggregations.year.buckets[aggregations.year.buckets.length - 1].key;
+      year = <Range min={min} max={max} defaultValue={[gte || min, lte || max]}
+                    onAfterChange={this.handleAfterChange.bind(this)}/>
+    }
+
     return (
       <div className="row">
         <div className="col s4 l3">
-          <p>Publication Year</p>
-          <ul>
-            <li>
-              <input id="year1" type="checkbox" className="filled-in"/>
-              <label htmlFor="year1">2016 (321)</label>
-            </li>
-            <li>
-              <input id="year2" type="checkbox" className="filled-in"/>
-              <label htmlFor="year2">2015 (592)</label>
-            </li>
-            <li>
-              <input id="year3" type="checkbox" className="filled-in"/>
-              <label htmlFor="year3">2014 (507)</label>
-            </li>
-          </ul>
+          <p>Publication Yearo</p>
+          <div className="publication-year">
+            {year}
+          </div>
 
           <p>Author</p>
           <ul>

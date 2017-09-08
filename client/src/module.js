@@ -2,14 +2,20 @@ import queryString from 'query-string';
 
 const parsed = queryString.parse(window.location.search);
 const initialState = {
-  q: parsed.q,
+  query: parsed.q,
+  gte: null,
+  lte: null,
   page: (parsed.page || 1) - 1,
   documentId: null,
   document: null,
   documents: [],
   documentTotal: 0,
   documentsFetchSize: 20,
-  aggregations: null,
+  aggregations: {
+    year: {
+      buckets: []
+    }
+  },
   enabledFullTextDocumentIds: new Set(),
   enabledAllAuthorsDocumentIds: new Set(),
   scrollYPositions: new Map()
@@ -17,9 +23,17 @@ const initialState = {
 
 export function reducers(state = initialState, action) {
   switch (action.type) {
-    case CHANGE_Q:
+    case CHANGE_QUERY:
       return Object.assign({}, state, {
-        q: action.q,
+        query: action.query,
+        page: 0,
+        scrollYPositions: new Map()
+      });
+    case CHANGE_YEARS:
+      return Object.assign({}, state, {
+        gte: action.gte,
+        lte: action.lte,
+        page: 0,
         scrollYPositions: new Map()
       });
     case CHANGE_PAGE:
@@ -36,13 +50,18 @@ export function reducers(state = initialState, action) {
       });
     case REQUEST_DOCUMENTS:
       return Object.assign({}, state, {
-        q: action.q,
+        query: action.query,
         page: action.page
       });
     case RECEIVE_DOCUMENTS:
       return Object.assign({}, state, {
         documents: action.documents,
-        documentsTotal: action.documentsTotal,
+        documentsTotal: action.documentsTotal
+      });
+    case REQUEST_AGGREGATIONS:
+      return state;
+    case RECEIVE_AGGREGATIONS:
+      return Object.assign({}, state, {
         aggregations: action.aggregations
       });
     case TOGGLE_FULL_TEXT:
@@ -82,12 +101,22 @@ export function reducers(state = initialState, action) {
   }
 }
 
-const CHANGE_Q = "CHANGE_Q";
+const CHANGE_QUERY = "CHANGE_QUERY";
 
-export function changeQ(q) {
+export function changeQuery(query) {
   return {
-    type: CHANGE_Q,
-    q
+    type: CHANGE_QUERY,
+    query
+  };
+}
+
+const CHANGE_YEARS = "CHANGE_YEARS";
+
+export function changeYears(gte, lte) {
+  return {
+    type: CHANGE_YEARS,
+    gte,
+    lte
   };
 }
 
@@ -120,10 +149,10 @@ export function receiveDocument(json) {
 
 const REQUEST_DOCUMENTS = "REQUEST_DOCUMENTS";
 
-export function requestDocuments(q, page) {
+export function requestDocuments(query, page) {
   return {
     type: REQUEST_DOCUMENTS,
-    q,
+    query,
     page
   };
 }
@@ -134,7 +163,23 @@ export function receiveDocuments(json) {
   return {
     type: RECEIVE_DOCUMENTS,
     documents: json.hits.hits.map((item) => item._source),
-    documentsTotal: json.hits.total,
+    documentsTotal: json.hits.total
+  };
+}
+
+const REQUEST_AGGREGATIONS = "REQUEST_AGGREGATIONS";
+
+export function requestAggregations() {
+  return {
+    type: REQUEST_AGGREGATIONS
+  };
+}
+
+const RECEIVE_AGGREGATIONS = "RECEIVE_AGGREGATIONS";
+
+export function receiveAggregations(json) {
+  return {
+    type: RECEIVE_AGGREGATIONS,
     aggregations: json.aggregations
   };
 }
