@@ -76,7 +76,6 @@ const Paginator = withRouter(connect(mapStateToProps)(class Paginator extends Co
 
 class Search extends Component {
   componentDidMount() {
-    this.searchAggregations();
     this.search();
   }
 
@@ -104,53 +103,45 @@ class Search extends Component {
     }
     this.props.dispatch(requestDocuments(query, page));
     const from = page * this.props.state.documentsFetchSize;
-    const esQuery = {
-      bool: {
-        must: {
-          multi_match: {
-            query,
-            fields: [
-              "id",
-              "title",
-              "booktitle",
-              "abstract",
-              "url",
-              "author"
-            ]
-          }
-        },
-        filter: {
-          range: {
-            year: {
-              gte,
-              lte
+    const body = JSON.stringify({
+      query: {
+        bool: {
+          must: {
+            multi_match: {
+              query,
+              fields: [
+                "id",
+                "title",
+                "booktitle",
+                "abstract",
+                "url",
+                "author"
+              ]
             }
           }
         }
-      }
-    };
-    const body = JSON.stringify({
-      query: esQuery,
+      },
+      post_filter: {
+        range: {
+          year: {
+            gte,
+            lte
+          }
+        }
+      },
       from,
-      size: this.props.state.documentsFetchSize
-    });
-    Api.search({body}).then((json) => {
-      this.props.dispatch(receiveDocuments(json));
-    });
-  }
-
-  searchAggregations() {
-    this.props.dispatch(requestAggregations());
-    const body = JSON.stringify({
-      size: 0,
+      size: this.props.state.documentsFetchSize,
       aggs: {
         year: {
-          histogram: {field: "year", interval: 1}
+          histogram: {
+            field: "year",
+            interval: 1
+          }
         }
       }
     });
     Api.search({body}).then((json) => {
-      this.props.dispatch(receiveAggregations(json));
+      this.props.dispatch(receiveDocuments(json));
     });
   }
 

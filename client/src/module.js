@@ -26,6 +26,8 @@ export function reducers(state = initialState, action) {
     case CHANGE_QUERY:
       return Object.assign({}, state, {
         query: action.query,
+        gte: null,
+        lte: null,
         page: 0,
         scrollYPositions: new Map()
       });
@@ -56,12 +58,7 @@ export function reducers(state = initialState, action) {
     case RECEIVE_DOCUMENTS:
       return Object.assign({}, state, {
         documents: action.documents,
-        documentsTotal: action.documentsTotal
-      });
-    case REQUEST_AGGREGATIONS:
-      return state;
-    case RECEIVE_AGGREGATIONS:
-      return Object.assign({}, state, {
+        documentsTotal: action.documentsTotal,
         aggregations: action.aggregations
       });
     case TOGGLE_FULL_TEXT:
@@ -163,23 +160,7 @@ export function receiveDocuments(json) {
   return {
     type: RECEIVE_DOCUMENTS,
     documents: json.hits.hits.map((item) => item._source),
-    documentsTotal: json.hits.total
-  };
-}
-
-const REQUEST_AGGREGATIONS = "REQUEST_AGGREGATIONS";
-
-export function requestAggregations() {
-  return {
-    type: REQUEST_AGGREGATIONS
-  };
-}
-
-const RECEIVE_AGGREGATIONS = "RECEIVE_AGGREGATIONS";
-
-export function receiveAggregations(json) {
-  return {
-    type: RECEIVE_AGGREGATIONS,
+    documentsTotal: json.hits.total,
     aggregations: json.aggregations
   };
 }
