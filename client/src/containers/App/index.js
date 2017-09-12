@@ -3,9 +3,9 @@ import {
   BrowserRouter, Switch, Route, Link
 } from 'react-router-dom';
 import {connect} from 'react-redux';
-import Search from '../Search/index';
-import Detail from '../Detail/index';
-import {ScrollToTop} from '../../components/index';
+import Search from '../Search/index.js';
+import Detail from '../Detail/index.js';
+import {ScrollToTop} from '../../components/index.js';
 import {changeQuery, deleteAllScrollY} from '../../module';
 import './style.css';
 

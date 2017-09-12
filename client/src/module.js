@@ -1,3 +1,4 @@
+import update from 'immutability-helper';
 import queryString from 'query-string';
 
 const parsed = queryString.parse(window.location.search);
@@ -5,6 +6,7 @@ const initialState = {
   query: parsed.q,
   gte: null,
   lte: null,
+  authors: new Set(),
   page: (parsed.page || 1) - 1,
   documentId: null,
   document: null,
@@ -13,6 +15,9 @@ const initialState = {
   documentsFetchSize: 20,
   aggregations: {
     year: {
+      buckets: []
+    },
+    author: {
       buckets: []
     }
   },
@@ -28,6 +33,7 @@ export function reducers(state = initialState, action) {
         query: action.query,
         gte: null,
         lte: null,
+        authors: new Set(),
         page: 0,
         scrollYPositions: new Map()
       });
@@ -38,6 +44,19 @@ export function reducers(state = initialState, action) {
         page: 0,
         scrollYPositions: new Map()
       });
+    case CHANGE_AUTHOR:
+      const newAuthors = new Set(state.authors);
+      if (newAuthors.has(action.author)) {
+        newAuthors.delete(action.author);
+      } else {
+        newAuthors.add(action.author);
+      }
+      const newState = update(state, {
+        page: {$set: 0},
+        scrollYPositions: {$set: new Map()},
+        authors: {$set: newAuthors}
+      });
+      return newState;
     case CHANGE_PAGE:
       return Object.assign({}, state, {
         page: action.page
@@ -114,6 +133,15 @@ export function changeYears(gte, lte) {
     type: CHANGE_YEARS,
     gte,
     lte
+  };
+}
+
+const CHANGE_AUTHOR = "CHANGE_AUTHOR";
+
+export function changeAuthor(author) {
+  return {
+    type: CHANGE_AUTHOR,
+    author
   };
 }
 

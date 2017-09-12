@@ -16,7 +16,8 @@
             "keyword": {
               "type": "keyword"
             }
-          }
+          },
+          "fielddata": true
         },
         "booktitle": {
           "type": "text",

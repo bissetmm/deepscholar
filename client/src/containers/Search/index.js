@@ -3,11 +3,11 @@ import _ from 'lodash';
 import {connect} from 'react-redux';
 import {withRouter} from 'react-router-dom';
 import Slider from 'rc-slider';
-import {Documents} from '../../components/index';
+import {Documents} from '../../components/index.js';
 import Api from '../../api';
 import {
   changePage, requestDocuments, receiveDocuments, deleteScrollY, changeYears,
-  requestAggregations, receiveAggregations
+  requestAggregations, receiveAggregations, changeAuthor
 } from '../../module';
 import './style.css';
 import 'rc-slider/assets/index.css';
@@ -80,9 +80,9 @@ class Search extends Component {
   }
 
   componentDidUpdate(prevProps) {
-    const {query: oldQuery, gte: oldGte, lte: oldLte, page: oldPage} = prevProps.state;
-    const {query: newQuery, gte: newGte, lte: newLte, page: newPage} = this.props.state;
-    if (oldQuery !== newQuery || oldPage !== newPage || oldGte !== newGte || oldLte !== newLte) {
+    const {query: oldQuery, gte: oldGte, lte: oldLte, authors: oldAuthors, page: oldPage} = prevProps.state;
+    const {query: newQuery, gte: newGte, lte: newLte, authors: newAuthors, page: newPage} = this.props.state;
+    if (oldQuery !== newQuery || oldPage !== newPage || oldGte !== newGte || oldLte !== newLte || Array.from(oldAuthors).join("") !== Array.from(newAuthors).join("")) {
       this.search();
     }
 
@@ -97,12 +97,30 @@ class Search extends Component {
   }
 
   search() {
-    const {query, page, gte, lte} = this.props.state;
+    const {query, page, gte, lte, authors} = this.props.state;
     if (!query) {
       return;
     }
     this.props.dispatch(requestDocuments(query, page));
     const from = page * this.props.state.documentsFetchSize;
+
+    const must = [];
+    must.push({
+      range: {
+        year: {
+          gte,
+          lte
+        }
+      }
+    });
+    if (authors.size > 0) {
+      must.push({
+        terms: {
+          author: Array.from(authors)
+        }
+      });
+    }
+
     const body = JSON.stringify({
       query: {
         bool: {
@@ -122,11 +140,8 @@ class Search extends Component {
         }
       },
       post_filter: {
-        range: {
-          year: {
-            gte,
-            lte
-          }
+        bool: {
+          must
         }
       },
       from,
@@ -136,6 +151,12 @@ class Search extends Component {
           histogram: {
             field: "year",
             interval: 1
+          }
+        },
+        author: {
+          terms: {
+            field: "author",
+            size: 10
           }
         }
       }
@@ -149,9 +170,13 @@ class Search extends Component {
     this.props.dispatch(changeYears(range[0], range[1]));
   }
 
+  handleChange(key) {
+    this.props.dispatch(changeAuthor(key));
+  }
+
   render() {
     const Range = Slider.createSliderWithTooltip(Slider.Range);
-    const {documents, documentsTotal, aggregations} = this.props.state;
+    const {documents, documentsTotal, aggregations, authors} = this.props.state;
 
     let year;
     if (aggregations.year.buckets.length > 1) {
@@ -160,6 +185,19 @@ class Search extends Component {
       const max = aggregations.year.buckets[aggregations.year.buckets.length - 1].key;
       year = <Range min={min} max={max} defaultValue={[gte || min, lte || max]}
                     onAfterChange={this.handleAfterChange.bind(this)}/>
+    }
+
+    let authorComponents;
+    if (aggregations.author.buckets.length > 1) {
+      authorComponents = aggregations.author.buckets.map((author, index) => {
+        const id = `author${index}`;
+        return (
+          <li key={id}>
+            <input id={id} type="checkbox" className="filled-in" onChange={this.handleChange.bind(this, author.key)} checked={authors.has(author.key)}/>
+            <label htmlFor={id}>{author.key} ({author.doc_count})</label>
+          </li>
+        );
+      });
     }
 
     return (
@@ -172,18 +210,7 @@ class Search extends Component {
 
           <p>Author</p>
           <ul>
-            <li>
-              <input id="author1" type="checkbox" className="filled-in"/>
-              <label htmlFor="author1">Yoshua Bengio (67)</label>
-            </li>
-            <li>
-              <input id="author2" type="checkbox" className="filled-in"/>
-              <label htmlFor="author2">Richard Socher (29)</label>
-            </li>
-            <li>
-              <input id="author3" type="checkbox" className="filled-in"/>
-              <label htmlFor="author3">Andrew Y. Ng (18)</label>
-            </li>
+            {authorComponents}
           </ul>
         </div>
         <div className="col s8 l9">

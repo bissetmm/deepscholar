@@ -1,5 +1,5 @@
 import React, {Component} from 'react';
-import {Document} from '../../components/index';
+import {Document} from '../../components/index.js';
 import {connect} from 'react-redux';
 import Api from '../../api';
 import {requestDocument, receiveDocument} from '../../module';

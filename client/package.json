@@ -3,14 +3,15 @@
   "private": true,
   "proxy": "http://deepscholar.server:3001/",
   "dependencies": {
+    "immutability-helper": "github:kolodny/immutability-helper",
     "lodash": "^4.17.4",
     "query-string": "^5.0.0",
     "rc-slider": "^8.3.1",
     "react": "^15.6.1",
     "react-dom": "^15.6.1",
     "react-redux": "^5.0.6",
-    "react-router": "^4.1.2",
-    "react-router-dom": "^4.1.2",
+    "react-router": "^4.2.0",
+    "react-router-dom": "^4.2.2",
     "react-scripts": "1.0.10",
     "redux": "^3.7.2",
     "strict-uri-encode": "^2.0.0"
@@ -22,7 +23,7 @@
     "eject": "react-scripts eject"
   },
   "devDependencies": {
-    "eslint": "^4.2.0",
-    "eslint-plugin-react": "^7.1.0"
+    "eslint": "^4.6.1",
+    "eslint-plugin-react": "^7.3.0"
   }
 }
