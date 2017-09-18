@@ -3,11 +3,11 @@ import queryString from 'query-string';
 
 const parsed = queryString.parse(window.location.search);
 const initialState = {
-  query: parsed.q,
-  gte: null,
-  lte: null,
-  authors: new Set(),
-  booktitles: new Set(),
+  query: parsed.q || null,
+  gte: parsed.gte || null,
+  lte: parsed.lte || null,
+  authors: new Set(parsed["author[]"] || []),
+  booktitles: new Set(parsed["booktitle[]"] || []),
   page: (parsed.page || 1) - 1,
   documentId: null,
   document: null,

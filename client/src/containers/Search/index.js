@@ -33,7 +33,6 @@ const Paginator = withRouter(connect(mapStateToProps)(class Paginator extends Co
   }
 
   changePage(page) {
-    this.props.history.push(`/?q=${this.props.state.query}&page=${page + 1}`);
     this.props.dispatch(changePage(page));
   }
 
