@@ -25,7 +25,8 @@
             "keyword": {
               "type": "keyword"
             }
-          }
+          },
+          "fielddata": true
         },
         "id": {
           "type": "text",

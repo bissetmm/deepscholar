@@ -7,7 +7,7 @@ import {Documents} from '../../components/index.js';
 import Api from '../../api';
 import {
   changePage, requestDocuments, receiveDocuments, deleteScrollY, changeYears,
-  requestAggregations, receiveAggregations, changeAuthor
+  requestAggregations, receiveAggregations, changeAuthor, changeBooktitle
 } from '../../module';
 import './style.css';
 import 'rc-slider/assets/index.css';
@@ -80,9 +80,9 @@ class Search extends Component {
   }
 
   componentDidUpdate(prevProps) {
-    const {query: oldQuery, gte: oldGte, lte: oldLte, authors: oldAuthors, page: oldPage} = prevProps.state;
-    const {query: newQuery, gte: newGte, lte: newLte, authors: newAuthors, page: newPage} = this.props.state;
-    if (oldQuery !== newQuery || oldPage !== newPage || oldGte !== newGte || oldLte !== newLte || Array.from(oldAuthors).join("") !== Array.from(newAuthors).join("")) {
+    const {query: oldQuery, gte: oldGte, lte: oldLte, authors: oldAuthors, booktitles: oldBooktitles, page: oldPage} = prevProps.state;
+    const {query: newQuery, gte: newGte, lte: newLte, authors: newAuthors, booktitles: newBooktitles, page: newPage} = this.props.state;
+    if (oldQuery !== newQuery || oldPage !== newPage || oldGte !== newGte || oldLte !== newLte || Array.from(oldAuthors).join("") !== Array.from(newAuthors).join("") || Array.from(oldBooktitles).join("") !== Array.from(newBooktitles).join("")) {
       this.search();
     }
 
@@ -97,7 +97,7 @@ class Search extends Component {
   }
 
   search() {
-    const {query, page, gte, lte, authors} = this.props.state;
+    const {query, page, gte, lte, authors, booktitles} = this.props.state;
     if (!query) {
       return;
     }
@@ -117,6 +117,13 @@ class Search extends Component {
       must.push({
         terms: {
           author: Array.from(authors)
+        }
+      });
+    }
+    if (booktitles.size > 0) {
+      must.push({
+        terms: {
+          booktitle: Array.from(booktitles)
         }
       });
     }
@@ -158,6 +165,12 @@ class Search extends Component {
             field: "author",
             size: 10
           }
+        },
+        booktitle: {
+          terms: {
+            field: "booktitle",
+            size: 10
+          }
         }
       }
     });
@@ -170,13 +183,17 @@ class Search extends Component {
     this.props.dispatch(changeYears(range[0], range[1]));
   }
 
-  handleChange(key) {
+  handleChangeAuthor(key) {
     this.props.dispatch(changeAuthor(key));
+  }
+
+  handleChangeBooktitle(key) {
+    this.props.dispatch(changeBooktitle(key));
   }
 
   render() {
     const Range = Slider.createSliderWithTooltip(Slider.Range);
-    const {documents, documentsTotal, aggregations, authors} = this.props.state;
+    const {documents, documentsTotal, aggregations, authors, booktitles} = this.props.state;
 
     let year;
     if (aggregations.year.buckets.length > 1) {
@@ -193,8 +210,21 @@ class Search extends Component {
         const id = `author${index}`;
         return (
           <li key={id}>
-            <input id={id} type="checkbox" className="filled-in" onChange={this.handleChange.bind(this, author.key)} checked={authors.has(author.key)}/>
+            <input id={id} type="checkbox" className="filled-in" onChange={this.handleChangeAuthor.bind(this, author.key)} checked={authors.has(author.key)}/>
             <label htmlFor={id}>{author.key} ({author.doc_count})</label>
+          </li>
+        );
+      });
+    }
+
+    let booktitleComponents;
+    if (aggregations.booktitle.buckets.length > 1) {
+      booktitleComponents = aggregations.booktitle.buckets.map((booktitle, index) => {
+        const id = `booktitle${index}`;
+        return (
+          <li key={id}>
+            <input id={id} type="checkbox" className="filled-in" onChange={this.handleChangeBooktitle.bind(this, booktitle.key)} checked={booktitles.has(booktitle.key)}/>
+            <label htmlFor={id}>{booktitle.key} ({booktitle.doc_count})</label>
           </li>
         );
       });
@@ -211,6 +241,11 @@ class Search extends Component {
           <p>Author</p>
           <ul>
             {authorComponents}
+          </ul>
+
+          <p>Booktitle</p>
+          <ul>
+            {booktitleComponents}
           </ul>
         </div>
         <div className="col s8 l9">

@@ -7,6 +7,7 @@ const initialState = {
   gte: null,
   lte: null,
   authors: new Set(),
+  booktitles: new Set(),
   page: (parsed.page || 1) - 1,
   documentId: null,
   document: null,
@@ -18,6 +19,9 @@ const initialState = {
       buckets: []
     },
     author: {
+      buckets: []
+    },
+    booktitle: {
       buckets: []
     }
   },
@@ -34,6 +38,7 @@ export function reducers(state = initialState, action) {
         gte: null,
         lte: null,
         authors: new Set(),
+        booktitles: new Set(),
         page: 0,
         scrollYPositions: new Map()
       });
@@ -44,7 +49,7 @@ export function reducers(state = initialState, action) {
         page: 0,
         scrollYPositions: new Map()
       });
-    case CHANGE_AUTHOR:
+    case CHANGE_AUTHOR: {
       const newAuthors = new Set(state.authors);
       if (newAuthors.has(action.author)) {
         newAuthors.delete(action.author);
@@ -57,6 +62,21 @@ export function reducers(state = initialState, action) {
         authors: {$set: newAuthors}
       });
       return newState;
+    }
+    case CHANGE_BOOKTITLE: {
+      const newBooktitles = new Set(state.booktitles);
+      if (newBooktitles.has(action.booktitle)) {
+        newBooktitles.delete(action.booktitle);
+      } else {
+        newBooktitles.add(action.booktitle);
+      }
+      const newState = update(state, {
+        page: {$set: 0},
+        scrollYPositions: {$set: new Map()},
+        booktitles: {$set: newBooktitles}
+      });
+      return newState;
+    }
     case CHANGE_PAGE:
       return Object.assign({}, state, {
         page: action.page
@@ -142,6 +162,15 @@ export function changeAuthor(author) {
   return {
     type: CHANGE_AUTHOR,
     author
+  };
+}
+
+const CHANGE_BOOKTITLE = "CHANGE_BOOKTITLE";
+
+export function changeBooktitle(booktitle) {
+  return {
+    type: CHANGE_BOOKTITLE,
+    booktitle
   };
 }
 
