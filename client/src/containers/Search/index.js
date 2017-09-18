@@ -203,7 +203,7 @@ class Search extends Component {
     return (
       <div className="row">
         <div className="col s4 l3">
-          <p>Publication Yearo</p>
+          <p>Publication Year</p>
           <div className="publication-year">
             {year}
           </div>
