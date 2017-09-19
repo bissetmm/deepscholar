@@ -115,14 +115,14 @@ class Search extends Component {
     if (authors.size > 0) {
       must.push({
         terms: {
-          author: Array.from(authors)
+          "author.keyword": Array.from(authors)
         }
       });
     }
     if (booktitles.size > 0) {
       must.push({
         terms: {
-          booktitle: Array.from(booktitles)
+          "booktitle.keyword": Array.from(booktitles)
         }
       });
     }
@@ -161,13 +161,13 @@ class Search extends Component {
         },
         author: {
           terms: {
-            field: "author",
+            field: "author.keyword",
             size: 10
           }
         },
         booktitle: {
           terms: {
-            field: "booktitle",
+            field: "booktitle.keyword",
             size: 10
           }
         }
