@@ -4,8 +4,8 @@ import queryString from 'query-string';
 const parsed = queryString.parse(window.location.search);
 const initialState = {
   query: parsed.q || null,
-  gte: parsed.gte || null,
-  lte: parsed.lte || null,
+  gte: Number(parsed.gte) || null,
+  lte: Number(parsed.lte) || null,
   authors: new Set(parsed["author[]"] || []),
   booktitles: new Set(parsed["booktitle[]"] || []),
   page: (parsed.page || 1) - 1,

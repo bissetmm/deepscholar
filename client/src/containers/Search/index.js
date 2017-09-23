@@ -2,14 +2,16 @@ import React, {Component} from 'react';
 import _ from 'lodash';
 import {connect} from 'react-redux';
 import {withRouter} from 'react-router-dom';
+import {RangeSliderHistogram} from 'searchkit';
 import Slider from 'rc-slider';
 import {Documents} from '../../components/index.js';
 import Api from '../../api';
 import {
   changePage, requestDocuments, receiveDocuments, deleteScrollY, changeYears,
-  requestAggregations, receiveAggregations, changeAuthor, changeBooktitle
+  changeAuthor, changeBooktitle
 } from '../../module';
 import './style.css';
+import 'searchkit/release/theme.css';
 import 'rc-slider/assets/index.css';
 
 function mapStateToProps(state) {
@@ -72,6 +74,32 @@ const Paginator = withRouter(connect(mapStateToProps)(class Paginator extends Co
     );
   }
 }));
+
+const PublicationFilter = connect(mapStateToProps)(class PublicationFilter extends Component {
+  componentDidUpdate() {
+    this.minValue = this.maxValue = null;
+  }
+
+  handleOnChange(range) {
+    this.minValue = range.min;
+    this.maxValue = range.max;
+    this.forceUpdate();
+  }
+
+  handleOnFinished(range) {
+    this.props.dispatch(changeYears(range.min, range.max));
+  }
+
+  render() {
+    return <RangeSliderHistogram items={this.props.items}
+                                 min={this.props.min}
+                                 max={this.props.max}
+                                 minValue={this.minValue || this.props.minValue}
+                                 maxValue={this.maxValue || this.props.maxValue}
+                                 onChange={this.handleOnChange.bind(this)}
+                                 onFinished={this.handleOnFinished.bind(this)}/>;
+  }
+});
 
 class Search extends Component {
   componentDidMount() {
@@ -178,10 +206,6 @@ class Search extends Component {
     });
   }
 
-  handleAfterChange(range) {
-    this.props.dispatch(changeYears(range[0], range[1]));
-  }
-
   handleChangeAuthor(key) {
     this.props.dispatch(changeAuthor(key));
   }
@@ -191,7 +215,6 @@ class Search extends Component {
   }
 
   render() {
-    const Range = Slider.createSliderWithTooltip(Slider.Range);
     const {documents, documentsTotal, aggregations, authors, booktitles} = this.props.state;
 
     let year;
@@ -199,8 +222,11 @@ class Search extends Component {
       const {gte, lte} = this.props.state;
       const min = aggregations.year.buckets[0].key;
       const max = aggregations.year.buckets[aggregations.year.buckets.length - 1].key;
-      year = <Range min={min} max={max} defaultValue={[gte || min, lte || max]}
-                    onAfterChange={this.handleAfterChange.bind(this)}/>
+      year = <PublicationFilter items={aggregations.year.buckets}
+                                min={min}
+                                max={max}
+                                minValue={gte || min}
+                                maxValue={lte || max}/>
     }
 
     let authorComponents;
@@ -209,7 +235,8 @@ class Search extends Component {
         const id = `author${index}`;
         return (
           <li key={id}>
-            <input id={id} type="checkbox" className="filled-in" onChange={this.handleChangeAuthor.bind(this, author.key)} checked={authors.has(author.key)}/>
+            <input id={id} type="checkbox" className="filled-in"
+                   onChange={this.handleChangeAuthor.bind(this, author.key)} checked={authors.has(author.key)}/>
             <label htmlFor={id}>{author.key} ({author.doc_count})</label>
           </li>
         );
@@ -222,7 +249,9 @@ class Search extends Component {
         const id = `booktitle${index}`;
         return (
           <li key={id}>
-            <input id={id} type="checkbox" className="filled-in" onChange={this.handleChangeBooktitle.bind(this, booktitle.key)} checked={booktitles.has(booktitle.key)}/>
+            <input id={id} type="checkbox" className="filled-in"
+                   onChange={this.handleChangeBooktitle.bind(this, booktitle.key)}
+                   checked={booktitles.has(booktitle.key)}/>
             <label htmlFor={id}>{booktitle.key} ({booktitle.doc_count})</label>
           </li>
         );
@@ -240,6 +269,7 @@ class Search extends Component {
           <p>Author</p>
           <ul>
             {authorComponents}
+
           </ul>
 
           <p>Booktitle</p>
