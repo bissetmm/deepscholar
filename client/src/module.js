@@ -1,14 +1,30 @@
+import update from 'immutability-helper';
 import queryString from 'query-string';
 
 const parsed = queryString.parse(window.location.search);
 const initialState = {
-  q: parsed.q,
+  query: parsed.q || null,
+  gte: Number(parsed.gte) || null,
+  lte: Number(parsed.lte) || null,
+  authors: new Set(parsed["author[]"] || []),
+  booktitles: new Set(parsed["booktitle[]"] || []),
   page: (parsed.page || 1) - 1,
   documentId: null,
   document: null,
   documents: [],
   documentTotal: 0,
   documentsFetchSize: 20,
+  aggregations: {
+    year: {
+      buckets: []
+    },
+    author: {
+      buckets: []
+    },
+    booktitle: {
+      buckets: []
+    }
+  },
   enabledFullTextDocumentIds: new Set(),
   enabledAllAuthorsDocumentIds: new Set(),
   scrollYPositions: new Map()
@@ -16,11 +32,51 @@ const initialState = {
 
 export function reducers(state = initialState, action) {
   switch (action.type) {
-    case CHANGE_Q:
+    case CHANGE_QUERY:
       return Object.assign({}, state, {
-        q: action.q,
+        query: action.query,
+        gte: null,
+        lte: null,
+        authors: new Set(),
+        booktitles: new Set(),
+        page: 0,
         scrollYPositions: new Map()
       });
+    case CHANGE_YEARS:
+      return Object.assign({}, state, {
+        gte: action.gte,
+        lte: action.lte,
+        page: 0,
+        scrollYPositions: new Map()
+      });
+    case CHANGE_AUTHOR: {
+      const newAuthors = new Set(state.authors);
+      if (newAuthors.has(action.author)) {
+        newAuthors.delete(action.author);
+      } else {
+        newAuthors.add(action.author);
+      }
+      const newState = update(state, {
+        page: {$set: 0},
+        scrollYPositions: {$set: new Map()},
+        authors: {$set: newAuthors}
+      });
+      return newState;
+    }
+    case CHANGE_BOOKTITLE: {
+      const newBooktitles = new Set(state.booktitles);
+      if (newBooktitles.has(action.booktitle)) {
+        newBooktitles.delete(action.booktitle);
+      } else {
+        newBooktitles.add(action.booktitle);
+      }
+      const newState = update(state, {
+        page: {$set: 0},
+        scrollYPositions: {$set: new Map()},
+        booktitles: {$set: newBooktitles}
+      });
+      return newState;
+    }
     case CHANGE_PAGE:
       return Object.assign({}, state, {
         page: action.page
@@ -35,13 +91,14 @@ export function reducers(state = initialState, action) {
       });
     case REQUEST_DOCUMENTS:
       return Object.assign({}, state, {
-        q: action.q,
+        query: action.query,
         page: action.page
       });
     case RECEIVE_DOCUMENTS:
       return Object.assign({}, state, {
         documents: action.documents,
-        documentsTotal: action.documentsTotal
+        documentsTotal: action.documentsTotal,
+        aggregations: action.aggregations
       });
     case TOGGLE_FULL_TEXT:
       if (state.enabledFullTextDocumentIds.has(action.id)) {
@@ -80,12 +137,40 @@ export function reducers(state = initialState, action) {
   }
 }
 
-const CHANGE_Q = "CHANGE_Q";
+const CHANGE_QUERY = "CHANGE_QUERY";
 
-export function changeQ(q) {
+export function changeQuery(query) {
   return {
-    type: CHANGE_Q,
-    q
+    type: CHANGE_QUERY,
+    query
+  };
+}
+
+const CHANGE_YEARS = "CHANGE_YEARS";
+
+export function changeYears(gte, lte) {
+  return {
+    type: CHANGE_YEARS,
+    gte,
+    lte
+  };
+}
+
+const CHANGE_AUTHOR = "CHANGE_AUTHOR";
+
+export function changeAuthor(author) {
+  return {
+    type: CHANGE_AUTHOR,
+    author
+  };
+}
+
+const CHANGE_BOOKTITLE = "CHANGE_BOOKTITLE";
+
+export function changeBooktitle(booktitle) {
+  return {
+    type: CHANGE_BOOKTITLE,
+    booktitle
   };
 }
 
@@ -118,10 +203,10 @@ export function receiveDocument(json) {
 
 const REQUEST_DOCUMENTS = "REQUEST_DOCUMENTS";
 
-export function requestDocuments(q, page) {
+export function requestDocuments(query, page) {
   return {
     type: REQUEST_DOCUMENTS,
-    q,
+    query,
     page
   };
 }
@@ -132,7 +217,8 @@ export function receiveDocuments(json) {
   return {
     type: RECEIVE_DOCUMENTS,
     documents: json.hits.hits.map((item) => item._source),
-    documentsTotal: json.hits.total
+    documentsTotal: json.hits.total,
+    aggregations: json.aggregations
   };
 }
 

@@ -58,7 +58,13 @@ client/src
 
 ### Import
 
-1. Create data file named `acl_metadata` like the following  
+1. Create index using the following command
+    ```
+    cd index_schemes
+    curl -XPUT 'http://localhost:9200/documents' --data-binary @documents.json
+    ```
+
+2. Create data file named `acl_metadata` like the following  
     ```
     { "index":  { "_index": "documents", "_type": "lang" }}
     {"booktitle":"...","author":["...","...","..."], ...}
@@ -71,7 +77,7 @@ client/src
     - 2nd line is the data should be imported
     - Loop those 2 lines for each records
 
-2. Import data using `curl`
+3. Import data using `curl`
     ```
     curl -XPOST "localhost:9200/documents/_bulk" --data-binary @acl_metadata
     ``` 
