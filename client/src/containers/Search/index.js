@@ -3,7 +3,6 @@ import _ from 'lodash';
 import {connect} from 'react-redux';
 import {withRouter} from 'react-router-dom';
 import {RangeSliderHistogram} from 'searchkit';
-import Slider from 'rc-slider';
 import {Documents} from '../../components/index.js';
 import Api from '../../api';
 import {
@@ -12,7 +11,6 @@ import {
 } from '../../module';
 import './style.css';
 import 'searchkit/release/theme.css';
-import 'rc-slider/assets/index.css';
 
 function mapStateToProps(state) {
   return {state};
