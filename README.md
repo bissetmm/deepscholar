@@ -2,6 +2,8 @@
 
 <p align="center"><img src="https://github.com/paperai/deepscholar/blob/master/deepscholar.png" width="1000"></p>
 
+`DeepScholar` is an AI-powered search engine for scholarly papers.
+
 ## Requirements
 
 ### Install Docker
