@@ -1,7 +1,7 @@
 # DeepScholar
-`DeepScholar` is an AI-powered search engine for scholarly papers.
+<p align="center"><img src="https://github.com/paperai/deepscholar/blob/master/deepscholar_logo.png" width="500"></p>
 
-<p align="center"><img src="https://github.com/paperai/deepscholar/blob/master/deepscholar.png" width="1000"></p>
+`DeepScholar` is an AI-powered search engine for scholarly papers.
 
 ## Requirements
 
@@ -16,7 +16,7 @@ $ cd deepscholar
 $ npm install
 ```
 
-## Run application 
+## Run application
 
 ```
 $ cd deepscholar
@@ -73,7 +73,7 @@ client/src
     {"booktitle":"...","author":["...","...","..."], ...}
     ...
     ```
-    
+
     - 1st line says the next line should be imported as record.
     - 2nd line is the data should be imported
     - Loop those 2 lines for each records
@@ -81,8 +81,8 @@ client/src
 3. Import data using `curl`
     ```
     curl -XPOST "localhost:9200/documents/_bulk" --data-binary @acl_metadata
-    ``` 
- 
+    ```
+
 ### Delete
 ```
 curl -XDELETE http://localhost:9200/*
