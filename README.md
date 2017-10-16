@@ -1,6 +1,6 @@
-# DeepScholar
-<p align="center"><img src="https://github.com/paperai/deepscholar/blob/master/deepscholar_logo.png" width="500"></p>
+<p align="center"><img src="https://github.com/paperai/deepscholar/blob/master/deepscholar_logo.png" width="400"></p>
 
+# DeepScholar
 `DeepScholar` is an AI-powered search engine for scholarly papers.
 
 ## Requirements
