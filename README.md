@@ -25,6 +25,29 @@ $ docker-compose up
 
 You can see your application at [http://localhost:3000](http://localhost:3000)
 
+## Run application with custom port settings
+Default ports settings are defined in `.env` file as environment variables
+
+```
+$ cat .env
+DS_CLIENT_PORT=3000
+DS_SERVER_PORT=3001
+DS_ES_PORT=9200
+DS_KIBANA_PORT=5601
+DS_ESHEAD_PORT=9100
+```
+
+If you want to run applications using different ports, pass ports as environment variables.
+```
+env \
+DS_CLIENT_PORT=13000 \
+DS_SERVER_PORT=13001 \
+DS_ES_PORT=19200 \
+DS_KIBANA_PORT=15601 \
+DS_ESHEAD_PORT=19100 \
+docker-compose up
+```
+
 ## Developer's Guide
 ```
 tree client/src
@@ -59,9 +82,11 @@ client/src
 
 ### Import
 
+
 1. Create index using the following command
     ```
     cd index_schemes
+    # The port should be same as environment variables $DS_ES_PORT
     curl -XPUT 'http://localhost:9200/documents' --data-binary @documents.json
     ```
 
@@ -80,11 +105,13 @@ client/src
 
 3. Import data using `curl`
     ```
+    # The port should be same as environment variables $DS_ES_PORT
     curl -XPOST "localhost:9200/documents/_bulk" --data-binary @acl_metadata
     ```
 
 ### Delete
 ```
+# The port should be same as environment variables $DS_ES_PORT
 curl -XDELETE http://localhost:9200/*
 ```
 
@@ -94,3 +121,5 @@ curl -XDELETE http://localhost:9200/*
 | ------------------ | ---------------------------------------------- |
 | Kibana             | [http://localhost:5601](http://localhost:5601) |
 | elasticsearch-head | [http://localhost:9100](http://localhost:9100) |
+
+The ports are changed using environment variables.
