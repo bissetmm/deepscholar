@@ -12,7 +12,7 @@ services:
     depends_on:
       - deepscholar.server
     ports:
-      - "3000:3000"
+      - "${DS_CLIENT_PORT}:3000"
     command: bash -c 'npm i && npm start'
   deepscholar.server:
     container_name: deepscholar.server
@@ -26,7 +26,7 @@ services:
     depends_on:
       - deepscholar.elasticsearch
     ports:
-      - "3001:3001"
+      - "${DS_SERVER_PORT}:3001"
     command: bash -c 'npm i && npm start'
   deepscholar.elasticsearch:
     container_name: deepscholar.elasticsearch
@@ -38,7 +38,7 @@ services:
     volumes:
       - esdata:/usr/share/elasticsearch/data
     ports:
-      - "9200:9200"
+      - "${DS_ES_PORT}:9200"
   deepscholar.kibana:
     container_name: deepscholar.kibana
     image: docker.elastic.co/kibana/kibana:5.4.3
@@ -47,14 +47,14 @@ services:
     depends_on:
       - deepscholar.elasticsearch
     ports:
-      - "5601:5601"
+      - "${DS_KIBANA_PORT}:5601"
   deepscholar.elasticsearch-head:
     container_name: deepscholar.elasticsearch-head
     image: mobz/elasticsearch-head:5
     depends_on:
       - deepscholar.elasticsearch
     ports:
-      - "9100:9100"
+      - "${DS_ESHEAD_PORT}:9100"
 volumes:
   esdata:
     driver: local
