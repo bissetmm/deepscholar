@@ -80,33 +80,35 @@ client/src
 * page
 * url
 
-### Import
+### Create Index (Only once)
 
+Create index using the following command
+```
+cd index_schemes
+# The port should be same as environment variables $DS_ES_PORT
+curl -XPUT 'http://localhost:9200/documents' --data-binary @documents.json
+```
 
-1. Create index using the following command
+### Import XML data
+
+1. Put xml files into directory anywhere you want  
     ```
-    cd index_schemes
+    ls -l ~/sample_xml
+    total 8432
+    -rwxr-xr-x@ 1 dataich  staff   2.0K 11  1 04:14 PMC5000010.xml
+    -rwxr-xr-x@ 1 dataich  staff   1.5K 11  1 04:14 PMC5000011.xml
+    -rwxr-xr-x@ 1 dataich  staff   2.0K 11  1 04:14 PMC5000012.xml
+    -rwxr-xr-x@ 1 dataich  staff   1.8K 11  1 04:14 PMC5000013.xml
+    -rwxr-xr-x@ 1 dataich  staff   1.9K 11  1 04:14 PMC5000014.xml
+    -rwxr-xr-x@ 1 dataich  staff   3.0K 11  1 04:14 PMC5000015.xml
+    -rwxr-xr-x@ 1 dataich  staff   2.8K 11  1 04:14 PMC5000080.xml
+    -rwxr-xr-x@ 1 dataich  staff   2.1K 11  1 04:14 PMC5000131.xml
+    ```
+    
+2. Convert xml files to ES json and import to ES  
+    ```
     # The port should be same as environment variables $DS_ES_PORT
-    curl -XPUT 'http://localhost:9200/documents' --data-binary @documents.json
-    ```
-
-2. Create data file named `acl_metadata` like the following  
-    ```
-    { "index":  { "_index": "documents", "_type": "lang" }}
-    {"booktitle":"...","author":["...","...","..."], ...}
-    { "index":  { "_index": "documents", "_type": "lang" }}
-    {"booktitle":"...","author":["...","...","..."], ...}
-    ...
-    ```
-
-    - 1st line says the next line should be imported as record.
-    - 2nd line is the data should be imported
-    - Loop those 2 lines for each records
-
-3. Import data using `curl`
-    ```
-    # The port should be same as environment variables $DS_ES_PORT
-    curl -XPOST "localhost:9200/documents/_bulk" --data-binary @acl_metadata
+    npm run convert example/sample_xml | curl -XPOST "localhost:9200/documents/_bulk" --data-binary @-
     ```
 
 ### Delete
