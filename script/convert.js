@@ -1,15 +1,14 @@
 const {parseString} = require('fast-xml2js');
 const fs = require('fs');
+const path = require('path');
 const glob = require("glob");
 
 const dirPath = process.argv[2];
 
-const header = JSON.stringify({
-  index: {
-    _index: "documents",
-    _type: "lang"
-  }
-});
+const indexMetaData = {
+  _index: "documents",
+  _type: "lang"
+};
 
 glob(`${dirPath}/*`, (error, files) => {
   if (error) {
@@ -28,7 +27,9 @@ glob(`${dirPath}/*`, (error, files) => {
           console.log(error);
           throw error;
         }
-        console.log(header);
+
+        const actionAndMetaData = {index: Object.assign(indexMetaData, {_id: path.basename(filePath, '.xml')})};
+        console.log(JSON.stringify(actionAndMetaData));
         console.log(JSON.stringify(result, (key, value) => {
           // Remove line breaks on head and tail that are generates by fast-xml2js.
           if (typeof value === 'string') {
