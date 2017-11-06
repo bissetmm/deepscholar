@@ -2,10 +2,19 @@
   "mappings": {
     "lang": {
       "properties": {
-        "article": {
+        "articleTitle": {
+          "type": "text",
+          "fields": {
+            "keyword": {
+              "type": "keyword"
+            }
+          },
+          "fielddata": true
+        },
+        "author": {
           "type": "nested",
           "properties": {
-            "article-title": {
+            "surname": {
               "type": "text",
               "fields": {
                 "keyword": {
@@ -14,38 +23,43 @@
               },
               "fielddata": true
             },
-            "author": {
-              "type": "nested",
-              "properties": {
-                "surname": {
-                  "type": "text",
-                  "fields": {
-                    "keyword": {
-                      "type": "keyword"
-                    }
-                  },
-                  "fielddata": true
-                },
-                "given-names": {
-                  "type": "text",
-                  "fields": {
-                    "keyword": {
-                      "type": "keyword"
-                    }
-                  },
-                  "fielddata": true
-                }
-              }
-            },
-            "abstract": {
+            "givenNames": {
               "type": "text",
               "fields": {
                 "keyword": {
                   "type": "keyword"
                 }
-              }
+              },
+              "fielddata": true
             }
           }
+        },
+        "abstract": {
+          "type": "text",
+          "fields": {
+            "keyword": {
+              "type": "keyword"
+            }
+          }
+        },
+        "id": {
+          "type": "text",
+          "fields": {
+            "keyword": {
+              "type": "keyword"
+            }
+          }
+        },
+        "url": {
+          "type": "text",
+          "fields": {
+            "keyword": {
+              "type": "keyword"
+            }
+          }
+        },
+        "year": {
+          "type": "short"
         }
       }
     }

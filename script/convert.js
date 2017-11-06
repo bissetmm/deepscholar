@@ -28,9 +28,37 @@ glob(`${dirPath}/*`, (error, files) => {
           throw error;
         }
 
-        const actionAndMetaData = {index: Object.assign(indexMetaData, {_id: path.basename(filePath, '.xml')})};
+        const data = result.article;
+
+        const id = path.basename(filePath, '.xml');
+        const actionAndMetaData = {index: Object.assign(indexMetaData, {_id: id})};
+        data.id = id;
+
+        // TODO: Remove after xml data is fixed.
+        data.year = 1920 + Math.floor(Math.random() * 100);
+        data.url = "http://example.com";
+
+        //Convert to camel case
+        data["articleTitle"] = data["article-title"];
+        delete data["article-title"];
+        data.author && data.author.forEach((value, index) => {
+          data.author[index]["givenNames"] = data.author[index]["given-names"];
+          delete data.author[index]["given-names"];
+        });
+
+        //Array to single string
+        data["articleTitle"] = data["articleTitle"][0];
+        data["abstract"] = data["abstract"][0];
+        if (data.author) {
+          data.author = data.author.map(value => {
+            const surname = value.surname[0];
+            const givenNames = value.givenNames[0];
+            return {surname, givenNames};
+          });
+        }
+
         console.log(JSON.stringify(actionAndMetaData));
-        console.log(JSON.stringify(result, (key, value) => {
+        console.log(JSON.stringify(data, (key, value) => {
           // Remove line breaks on head and tail that are generates by fast-xml2js.
           if (typeof value === 'string') {
             return value.trim();

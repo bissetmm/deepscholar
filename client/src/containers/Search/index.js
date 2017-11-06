@@ -161,11 +161,9 @@ class Search extends Component {
               query,
               fields: [
                 "id",
-                "title",
-                "booktitle",
+                "articleTitle",
                 "abstract",
-                "url",
-                "author"
+                "url"
               ]
             }
           }
@@ -228,33 +226,33 @@ class Search extends Component {
     }
 
     let authorComponents;
-    if (aggregations.author.buckets.length > 1) {
-      authorComponents = aggregations.author.buckets.map((author, index) => {
-        const id = `author${index}`;
-        return (
-          <li key={id}>
-            <input id={id} type="checkbox" className="filled-in"
-                   onChange={this.handleChangeAuthor.bind(this, author.key)} checked={authors.has(author.key)}/>
-            <label htmlFor={id}>{author.key} ({author.doc_count})</label>
-          </li>
-        );
-      });
-    }
+    // if (aggregations.author.buckets.length > 1) {
+    //   authorComponents = aggregations.author.buckets.map((author, index) => {
+    //     const id = `author${index}`;
+    //     return (
+    //       <li key={id}>
+    //         <input id={id} type="checkbox" className="filled-in"
+    //                onChange={this.handleChangeAuthor.bind(this, author.key)} checked={authors.has(author.key)}/>
+    //         <label htmlFor={id}>{author.key} ({author.doc_count})</label>
+    //       </li>
+    //     );
+    //   });
+    // }
 
     let booktitleComponents;
-    if (aggregations.booktitle.buckets.length > 1) {
-      booktitleComponents = aggregations.booktitle.buckets.map((booktitle, index) => {
-        const id = `booktitle${index}`;
-        return (
-          <li key={id}>
-            <input id={id} type="checkbox" className="filled-in"
-                   onChange={this.handleChangeBooktitle.bind(this, booktitle.key)}
-                   checked={booktitles.has(booktitle.key)}/>
-            <label htmlFor={id}>{booktitle.key} ({booktitle.doc_count})</label>
-          </li>
-        );
-      });
-    }
+    // if (aggregations.booktitle.buckets.length > 1) {
+    //   booktitleComponents = aggregations.booktitle.buckets.map((booktitle, index) => {
+    //     const id = `booktitle${index}`;
+    //     return (
+    //       <li key={id}>
+    //         <input id={id} type="checkbox" className="filled-in"
+    //                onChange={this.handleChangeBooktitle.bind(this, booktitle.key)}
+    //                checked={booktitles.has(booktitle.key)}/>
+    //         <label htmlFor={id}>{booktitle.key} ({booktitle.doc_count})</label>
+    //       </li>
+    //     );
+    //   });
+    // }
 
     return (
       <div className="row">
