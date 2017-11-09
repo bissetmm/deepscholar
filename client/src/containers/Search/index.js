@@ -156,17 +156,33 @@ class Search extends Component {
     const body = JSON.stringify({
       query: {
         bool: {
-          must: {
-            multi_match: {
-              query,
-              fields: [
-                "id",
-                "articleTitle",
-                "abstract",
-                "url"
-              ]
+          should: [
+            {
+              multi_match: {
+                query,
+                fields: [
+                  "id",
+                  "articleTitle",
+                  "abstract",
+                  "url"
+                ]
+              }
+            },
+            {
+              nested: {
+                path: "author",
+                query: {
+                  multi_match: {
+                    query,
+                    fields: [
+                      "author.surname",
+                      "author.givenNames"
+                    ]
+                  }
+                }
+              }
             }
-          }
+          ]
         }
       },
       post_filter: {
