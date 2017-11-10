@@ -1,4 +1,5 @@
 const {parseString} = require('fast-xml2js');
+const camelcaseKeys = require('camelcase-keys');
 const fs = require('fs');
 const path = require('path');
 const glob = require("glob");
@@ -28,19 +29,11 @@ glob(`${dirPath}/*`, (error, files) => {
           throw error;
         }
 
-        const data = result.article;
+        const data = camelcaseKeys(result.article, {deep: true});
 
         const id = path.basename(filePath, '.xml');
         const actionAndMetaData = {index: Object.assign(indexMetaData, {_id: id})};
         data.id = id;
-
-        //Convert to camel case
-        data["articleTitle"] = data["article-title"];
-        delete data["article-title"];
-        data.author && data.author.forEach((value, index) => {
-          data.author[index]["givenNames"] = data.author[index]["given-names"];
-          delete data.author[index]["given-names"];
-        });
 
         //Array to single string
         data["articleTitle"] = data["articleTitle"][0];

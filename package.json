@@ -9,6 +9,7 @@
     "convert": "node script/convert.js"
   },
   "devDependencies": {
+    "camelcase-keys": "^4.1.0",
     "concurrently": "^3.5.0",
     "eslint": "^4.1.1",
     "eslint-plugin-react": "^7.1.0",
