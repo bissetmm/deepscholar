@@ -34,10 +34,6 @@ glob(`${dirPath}/*`, (error, files) => {
         const actionAndMetaData = {index: Object.assign(indexMetaData, {_id: id})};
         data.id = id;
 
-        // TODO: Remove after xml data is fixed.
-        data.year = 1920 + Math.floor(Math.random() * 100);
-        data.url = "http://example.com";
-
         //Convert to camel case
         data["articleTitle"] = data["article-title"];
         delete data["article-title"];
