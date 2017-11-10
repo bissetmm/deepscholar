@@ -2,6 +2,38 @@
   "mappings": {
     "lang": {
       "properties": {
+        "articleTitle": {
+          "type": "text",
+          "fields": {
+            "keyword": {
+              "type": "keyword"
+            }
+          },
+          "fielddata": true
+        },
+        "author": {
+          "type": "nested",
+          "properties": {
+            "surname": {
+              "type": "text",
+              "fields": {
+                "keyword": {
+                  "type": "keyword"
+                }
+              },
+              "fielddata": true
+            },
+            "givenNames": {
+              "type": "text",
+              "fields": {
+                "keyword": {
+                  "type": "keyword"
+                }
+              },
+              "fielddata": true
+            }
+          }
+        },
         "abstract": {
           "type": "text",
           "fields": {
@@ -10,33 +42,7 @@
             }
           }
         },
-        "author": {
-          "type": "text",
-          "fields": {
-            "keyword": {
-              "type": "keyword"
-            }
-          },
-          "fielddata": true
-        },
-        "booktitle": {
-          "type": "text",
-          "fields": {
-            "keyword": {
-              "type": "keyword"
-            }
-          },
-          "fielddata": true
-        },
         "id": {
-          "type": "text",
-          "fields": {
-            "keyword": {
-              "type": "keyword"
-            }
-          }
-        },
-        "title": {
           "type": "text",
           "fields": {
             "keyword": {

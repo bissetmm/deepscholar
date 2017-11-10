@@ -32,7 +32,7 @@ const Authors = connect(mapStateToProps)(class Authors extends Component {
       data = this.props.data.slice(0, 2);
     }
     const authors = data.map(author =>
-      <li key={author}>{author}</li>
+      <li key={author.surname + author.givenNames}>{author.surname} {author.givenNames}</li>
     );
     let haveMore = this.props.data.length > 2;
 
@@ -68,8 +68,9 @@ export const Document = withRouter(connect(mapStateToProps)(class Document exten
   }
 
   render() {
-    const {id, title, booktitle, year, url, author} = this.props.data;
+    const {id, articleTitle, year, url, author} = this.props.data;
     let {abstract} = this.props.data;
+    console.log(abstract);
     const documentUrl = `/documents/${id}`;
     const pdfannoUrl = `https://paperai.github.io/pdfanno/?pdf=${url}`;
     const authors = <Authors data={author} documentId={id} asFull={this.props.asFull}/>;
@@ -82,9 +83,9 @@ export const Document = withRouter(connect(mapStateToProps)(class Document exten
       <article className="document">
         <div className="divider"></div>
         <header>
-          <h5><a href="javascript:void(0)" onClick={this.handleClick.bind(this, documentUrl)}>{title}</a></h5>
+          <h5><a href="javascript:void(0)" onClick={this.handleClick.bind(this, documentUrl)}>{articleTitle}</a></h5>
           {authors}
-          <h6>{booktitle} {year}</h6>
+          <h6>{articleTitle} {year}</h6>
         </header>
         <p>{abstract}{!this.props.asFull && <FullTextToggle documentId={id}/>}</p>
         <footer>
