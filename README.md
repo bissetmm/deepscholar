@@ -108,7 +108,7 @@ curl -XPUT 'http://localhost:9200/documents' --data-binary @documents.json
 2. Convert xml files to ES json and import to ES  
     ```
     # The port should be same as environment variables $DS_ES_PORT
-    npm run convert example/sample_xml | curl -XPOST "localhost:9200/documents/_bulk" --data-binary @-
+    npm -s run convert example/sample_xml | curl -XPOST "localhost:9200/documents/_bulk" --data-binary @-
     ```
 
 ### Delete
