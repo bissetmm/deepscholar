@@ -21,32 +21,41 @@ const NavBar = connect(mapStateToProps)(class NavBar extends Component {
   }
 
   componentDidUpdate(prevProps) {
-    const {query: oldQuery, gte: oldGte, lte: oldLte, authors: oldAuthors, booktitles: oldBooktitles, page: oldPage} = prevProps.state;
-    const {query: newQuery, gte: newGte, lte: newLte, authors: newAuthors, booktitles: newBooktitles, page: newPage} = this.props.state;
-    if (oldQuery === newQuery && oldPage === newPage && oldGte === newGte && oldLte === newLte && Array.from(oldAuthors).join("") === Array.from(newAuthors).join("") && Array.from(oldBooktitles).join("") === Array.from(newBooktitles).join("")) {
+    const {query: oldQuery, articleTitle: oldArticleTitle, author: oldAuthor, abstract: oldAbstract, gte: oldGte, lte: oldLte, booktitles: oldBooktitles, page: oldPage} = prevProps.state;
+    const {query: newQuery, articleTitle: newArticleTitle, author: newAuthor, abstract: newAbstract, gte: newGte, lte: newLte, booktitles: newBooktitles, page: newPage} = this.props.state;
+    if (oldQuery === newQuery && oldArticleTitle === newArticleTitle && oldAuthor === newAuthor && oldAbstract === newAbstract && oldPage === newPage && oldGte === newGte && oldLte === newLte && Array.from(oldBooktitles).join("") === Array.from(newBooktitles).join("")) {
       return;
     }
 
-
-    let url = "/";
+    const queries = [];
     if (newQuery !== null) {
-      url += `?q=${newQuery}`;
+      queries.push(["q", newQuery]);
+    }
+    if (newArticleTitle !== null) {
+      queries.push(["articleTitle", newArticleTitle]);
+    }
+    if (newAuthor !== null) {
+      queries.push(["author", newAuthor]);
+    }
+    if (newAbstract !== null) {
+      queries.push(["abstract", newAbstract]);
     }
     if (newPage !== null) {
-      url += `&page=${newPage + 1}`;
+      queries.push(["page", newPage + 1]);
     }
     if (newGte !== null) {
-      url += `&gte=${newGte}`;
+      queries.push(["gte", newGte]);
     }
     if (newLte !== null) {
-      url += `&lte=${newLte}`;
+      queries.push(["lte", newLte]);
     }
-    newAuthors.forEach(author => {
-      url += `&author[]=${author}`;
-    });
     newBooktitles.forEach(booktitle => {
-      url += `&booktitle[]=${booktitle}`;
+      queries.push(["booktitle[]", booktitle]);
     });
+
+    const url = "/?" + queries.map(query => {
+      return `${query[0]}=${query[1]}`
+    }).join("&");
 
     this.props.history.push(url);
   }

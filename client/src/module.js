@@ -4,9 +4,11 @@ import queryString from 'query-string';
 const parsed = queryString.parse(window.location.search);
 const initialState = {
   query: parsed.q || null,
+  articleTitle: parsed.articleTitle || null,
+  author: parsed.author || null,
+  abstract: parsed.abstract || null,
   gte: Number(parsed.gte) || null,
   lte: Number(parsed.lte) || null,
-  authors: new Set(parsed["author[]"] || []),
   booktitles: new Set(parsed["booktitle[]"] || []),
   page: (parsed.page || 1) - 1,
   documentId: null,
@@ -16,9 +18,6 @@ const initialState = {
   documentsFetchSize: 20,
   aggregations: {
     year: {
-      buckets: []
-    },
-    author: {
       buckets: []
     },
     booktitle: {
@@ -34,10 +33,12 @@ export function reducers(state = initialState, action) {
   switch (action.type) {
     case CHANGE_QUERY:
       return Object.assign({}, state, {
-        query: action.query,
+        query: action.query || null,
+        articleTitle: action.articleTitle || null,
+        author: action.author || null,
+        abstract: action.abstract || null,
         gte: null,
         lte: null,
-        authors: new Set(),
         booktitles: new Set(),
         page: 0,
         scrollYPositions: new Map()
@@ -49,20 +50,6 @@ export function reducers(state = initialState, action) {
         page: 0,
         scrollYPositions: new Map()
       });
-    case CHANGE_AUTHOR: {
-      const newAuthors = new Set(state.authors);
-      if (newAuthors.has(action.author)) {
-        newAuthors.delete(action.author);
-      } else {
-        newAuthors.add(action.author);
-      }
-      const newState = update(state, {
-        page: {$set: 0},
-        scrollYPositions: {$set: new Map()},
-        authors: {$set: newAuthors}
-      });
-      return newState;
-    }
     case CHANGE_BOOKTITLE: {
       const newBooktitles = new Set(state.booktitles);
       if (newBooktitles.has(action.booktitle)) {
@@ -139,10 +126,13 @@ export function reducers(state = initialState, action) {
 
 const CHANGE_QUERY = "CHANGE_QUERY";
 
-export function changeQuery(query) {
+export function changeQuery(query, articleTitle, author, abstract) {
   return {
     type: CHANGE_QUERY,
-    query
+    query,
+    articleTitle,
+    author,
+    abstract
   };
 }
 
@@ -153,15 +143,6 @@ export function changeYears(gte, lte) {
     type: CHANGE_YEARS,
     gte,
     lte
-  };
-}
-
-const CHANGE_AUTHOR = "CHANGE_AUTHOR";
-
-export function changeAuthor(author) {
-  return {
-    type: CHANGE_AUTHOR,
-    author
   };
 }
 
@@ -203,10 +184,13 @@ export function receiveDocument(json) {
 
 const REQUEST_DOCUMENTS = "REQUEST_DOCUMENTS";
 
-export function requestDocuments(query, page) {
+export function requestDocuments(query, articleTitle, author, abstract, page) {
   return {
     type: REQUEST_DOCUMENTS,
     query,
+    articleTitle,
+    author,
+    abstract,
     page
   };
 }

@@ -70,7 +70,6 @@ export const Document = withRouter(connect(mapStateToProps)(class Document exten
   render() {
     const {id, articleTitle, year, url, author} = this.props.data;
     let {abstract} = this.props.data;
-    console.log(abstract);
     const documentUrl = `/documents/${id}`;
     const pdfannoUrl = `https://paperai.github.io/pdfanno/?pdf=${url}`;
     const authors = <Authors data={author} documentId={id} asFull={this.props.asFull}/>;
