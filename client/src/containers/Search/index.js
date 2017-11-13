@@ -6,8 +6,8 @@ import {RangeSliderHistogram} from 'searchkit';
 import {Documents} from '../../components/index.js';
 import Api from '../../api';
 import {
-  changePage, requestDocuments, receiveDocuments, deleteScrollY, changeYears,
-  changeAuthor, changeBooktitle
+  changeQuery, changePage, requestDocuments, receiveDocuments, deleteScrollY, changeYears,
+  changeBooktitle
 } from '../../module';
 import './style.css';
 import 'searchkit/release/theme.css';
@@ -100,16 +100,25 @@ const PublicationFilter = connect(mapStateToProps)(class PublicationFilter exten
 });
 
 class Search extends Component {
+  constructor(props) {
+    super(props);
+    this.searchTimer = null;
+    this.articleTitle = null;
+    this.author = null;
+    this.abstract = null;
+  }
+
   componentDidMount() {
     this.search();
   }
 
   componentDidUpdate(prevProps) {
-    const {query: oldQuery, gte: oldGte, lte: oldLte, authors: oldAuthors, booktitles: oldBooktitles, page: oldPage} = prevProps.state;
-    const {query: newQuery, gte: newGte, lte: newLte, authors: newAuthors, booktitles: newBooktitles, page: newPage} = this.props.state;
-    if (oldQuery !== newQuery || oldPage !== newPage || oldGte !== newGte || oldLte !== newLte || Array.from(oldAuthors).join("") !== Array.from(newAuthors).join("") || Array.from(oldBooktitles).join("") !== Array.from(newBooktitles).join("")) {
+    const {query: oldQuery, articleTitle: oldArticleTitle, author: oldAuthor, abstract: oldAbstract, gte: oldGte, lte: oldLte, booktitles: oldBooktitles, page: oldPage} = prevProps.state;
+    const {query: newQuery, articleTitle: newArticleTitle, author: newAuthor, abstract: newAbstract, gte: newGte, lte: newLte, booktitles: newBooktitles, page: newPage} = this.props.state;
+    if (oldQuery !== newQuery || oldArticleTitle !== newArticleTitle || oldAuthor !== newAuthor || oldAbstract !== newAbstract || oldPage !== newPage || oldGte !== newGte || oldLte !== newLte || Array.from(oldBooktitles).join("") !== Array.from(newBooktitles).join("")) {
       this.search();
     }
+
 
     const locationKey = this.props.location.key;
     if (!this.props.state.scrollYPositions.has(locationKey)) {
@@ -122,15 +131,80 @@ class Search extends Component {
   }
 
   search() {
-    const {query, page, gte, lte, authors, booktitles} = this.props.state;
-    if (!query) {
+    const {query, articleTitle, author, abstract, page, gte, lte, booktitles} = this.props.state;
+    if (!query && !articleTitle && !author && !abstract) {
       return;
     }
-    this.props.dispatch(requestDocuments(query, page));
+    this.props.dispatch(requestDocuments(query, articleTitle, author, abstract, page));
     const from = page * this.props.state.documentsFetchSize;
 
-    const must = [];
-    must.push({
+    const queryMust = [];
+    if (query) {
+      queryMust.push(
+        {
+          bool: {
+            should: [
+              {
+                multi_match: {
+                  query,
+                  fields: [
+                    "id",
+                    "articleTitle",
+                    "abstract",
+                    "url"
+                  ]
+                }
+              },
+              {
+                nested: {
+                  path: "author",
+                  query: {
+                    multi_match: {
+                      query,
+                      fields: [
+                        "author.surname",
+                        "author.givenNames"
+                      ]
+                    }
+                  }
+                }
+              }
+            ]
+          }
+        }
+      );
+    }
+    if (articleTitle) {
+      queryMust.push({
+        match: {
+          "articleTitle.keyword": articleTitle
+        }
+      });
+    }
+    if (author) {
+      queryMust.push({
+        nested: {
+          path: "author",
+          query: {
+            multi_match: {
+              query: author,
+              fields: [
+                "author.surname",
+                "author.givenNames"
+              ]
+            }
+          }
+        }
+      });
+    }
+    if (abstract) {
+      queryMust.push({
+        match: {abstract}
+      });
+    }
+
+    const postFilterMust = [];
+    postFilterMust.push({
       range: {
         year: {
           gte,
@@ -138,15 +212,8 @@ class Search extends Component {
         }
       }
     });
-    if (authors.size > 0) {
-      must.push({
-        terms: {
-          "author.keyword": Array.from(authors)
-        }
-      });
-    }
     if (booktitles.size > 0) {
-      must.push({
+      postFilterMust.push({
         terms: {
           "booktitle.keyword": Array.from(booktitles)
         }
@@ -156,38 +223,12 @@ class Search extends Component {
     const body = JSON.stringify({
       query: {
         bool: {
-          should: [
-            {
-              multi_match: {
-                query,
-                fields: [
-                  "id",
-                  "articleTitle",
-                  "abstract",
-                  "url"
-                ]
-              }
-            },
-            {
-              nested: {
-                path: "author",
-                query: {
-                  multi_match: {
-                    query,
-                    fields: [
-                      "author.surname",
-                      "author.givenNames"
-                    ]
-                  }
-                }
-              }
-            }
-          ]
+          must: queryMust
         }
       },
       post_filter: {
         bool: {
-          must
+          must: postFilterMust
         }
       },
       from,
@@ -197,12 +238,6 @@ class Search extends Component {
           histogram: {
             field: "year",
             interval: 1
-          }
-        },
-        author: {
-          terms: {
-            field: "author.keyword",
-            size: 10
           }
         },
         booktitle: {
@@ -218,8 +253,33 @@ class Search extends Component {
     });
   }
 
-  handleChangeAuthor(key) {
-    this.props.dispatch(changeAuthor(key));
+  handleKeyPress(e) {
+    if (e.key !== "Enter") {
+      return;
+    }
+
+    if (this.searchTimer !== null) {
+      clearTimeout(this.searchTimer);
+      this.searchTimer = null;
+    }
+
+
+    this.searchTimer = setTimeout(() => {
+      this.props.dispatch(changeQuery(null, this.articleTitle, this.author, this.abstract));
+    }, 0);
+  }
+
+
+  handleChangeArticleTitle(e) {
+    this.articleTitle = e.target.value;
+  }
+
+  handleChangeAuthor(e) {
+    this.author = e.target.value;
+  }
+
+  handleChangeAbstract(e) {
+    this.abstract = e.target.value;
   }
 
   handleChangeBooktitle(key) {
@@ -227,7 +287,7 @@ class Search extends Component {
   }
 
   render() {
-    const {documents, documentsTotal, aggregations, authors, booktitles} = this.props.state;
+    const {documents, documentsTotal, aggregations, booktitles} = this.props.state;
 
     let year;
     if (aggregations.year.buckets.length > 1) {
@@ -240,20 +300,6 @@ class Search extends Component {
                                 minValue={gte || min}
                                 maxValue={lte || max}/>
     }
-
-    let authorComponents;
-    // if (aggregations.author.buckets.length > 1) {
-    //   authorComponents = aggregations.author.buckets.map((author, index) => {
-    //     const id = `author${index}`;
-    //     return (
-    //       <li key={id}>
-    //         <input id={id} type="checkbox" className="filled-in"
-    //                onChange={this.handleChangeAuthor.bind(this, author.key)} checked={authors.has(author.key)}/>
-    //         <label htmlFor={id}>{author.key} ({author.doc_count})</label>
-    //       </li>
-    //     );
-    //   });
-    // }
 
     let booktitleComponents;
     // if (aggregations.booktitle.buckets.length > 1) {
@@ -273,26 +319,28 @@ class Search extends Component {
     return (
       <div className="row">
         <div className="col s4 l3">
-          <p>Publication Year</p>
+          <h6>Article Title</h6>
+          <input type="search" onKeyPress={this.handleKeyPress.bind(this)} onChange={this.handleChangeArticleTitle.bind(this)}
+                 defaultValue={this.props.state.articleTitle}/>
+          <h6>Author</h6>
+          <input type="search" onKeyPress={this.handleKeyPress.bind(this)} onChange={this.handleChangeAuthor.bind(this)}
+                 defaultValue={this.props.state.author}/>
+          <h6>Abstract</h6>
+          <input type="search" onKeyPress={this.handleKeyPress.bind(this)} onChange={this.handleChangeAbstract.bind(this)}
+                 defaultValue={this.props.state.abstract}/>
+
+          <h6>Publication Year</h6>
           <div className="publication-year">
             {year}
           </div>
 
-          <p>Author</p>
-          <ul>
-            {authorComponents}
-
-          </ul>
-
-          <p>Booktitle</p>
+          <h6>Booktitle</h6>
           <ul>
             {booktitleComponents}
           </ul>
         </div>
         <div className="col s8 l9">
-          {documentsTotal > 0 &&
-          <p>{documentsTotal} results</p>
-          }
+          <p>{documentsTotal || 0} results</p>
           <Documents data={documents}/>
           <Paginator/>
         </div>
