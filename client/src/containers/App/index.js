@@ -67,15 +67,10 @@ const NavBar = connect(mapStateToProps)(class NavBar extends Component {
       clearTimeout(this.searchTimer);
       this.searchTimer = null;
     }
-    const query = this.query;
-
-    if (!query) {
-      return;
-    }
 
     this.searchTimer = setTimeout(() => {
       this.props.dispatch(deleteAllScrollY());
-      this.props.dispatch(changeQuery(query));
+      this.props.dispatch(changeQuery(this.query));
     }, 0);
   }
 
