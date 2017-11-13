@@ -176,7 +176,9 @@ class Search extends Component {
     }
     if (articleTitle) {
       queryMust.push({
-        match: {articleTitle}
+        match: {
+          "articleTitle.keyword": articleTitle
+        }
       });
     }
     if (author) {
@@ -338,9 +340,7 @@ class Search extends Component {
           </ul>
         </div>
         <div className="col s8 l9">
-          {documentsTotal > 0 &&
-          <p>{documentsTotal} results</p>
-          }
+          <p>{documentsTotal || 0} results</p>
           <Documents data={documents}/>
           <Paginator/>
         </div>
