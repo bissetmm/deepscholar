@@ -132,12 +132,10 @@ class Search extends Component {
 
   search() {
     const {query, articleTitle, author, abstract, page, gte, lte, booktitles} = this.props.state;
-    if (!query && !articleTitle && !author && !abstract) {
-      return;
-    }
     this.props.dispatch(requestDocuments(query, articleTitle, author, abstract, page));
     const from = page * this.props.state.documentsFetchSize;
 
+    console.log('search');
     const queryMust = [];
     if (query) {
       queryMust.push(
@@ -176,9 +174,7 @@ class Search extends Component {
     }
     if (articleTitle) {
       queryMust.push({
-        match: {
-          "articleTitle.keyword": articleTitle
-        }
+        match: {articleTitle}
       });
     }
     if (author) {
