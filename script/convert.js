@@ -14,7 +14,8 @@ const indexMetaData = {
 const shouldBeArray = [
   "author",
   "p",
-  "fig"
+  "fig",
+  "figGroup"
 ];
 
 glob(`${dirPath}/*`, (error, files) => {
@@ -43,8 +44,12 @@ glob(`${dirPath}/*`, (error, files) => {
 
         const actionAndMetaData = {index: Object.assign(indexMetaData, {_id: id})};
 
-        convertObject(data);
         data.front.id = id;
+        try {
+          convertObject(data);
+        } catch(e) {
+          console.error(`${fileName} may be invalid format.`);
+        }
 
         console.log(JSON.stringify(actionAndMetaData));
         console.log(JSON.stringify(data));
