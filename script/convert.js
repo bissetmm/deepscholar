@@ -43,8 +43,8 @@ glob(`${dirPath}/*`, (error, files) => {
 
         const actionAndMetaData = {index: Object.assign(indexMetaData, {_id: id})};
 
-        data.front.id = id.replace("journal.pone.", "");
         convertObject(data);
+        data.front.id = id;
 
         console.log(JSON.stringify(actionAndMetaData));
         console.log(JSON.stringify(data));

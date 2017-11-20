@@ -31,6 +31,15 @@
                 }
               },
               "fielddata": true
+            },
+            "collab": {
+              "type": "text",
+              "fields": {
+                "keyword": {
+                  "type": "keyword"
+                }
+              },
+              "fielddata": true
             }
           }
         },
