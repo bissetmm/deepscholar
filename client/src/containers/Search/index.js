@@ -134,8 +134,7 @@ class Search extends Component {
     const {query, articleTitle, author, abstract, page, gte, lte, booktitles} = this.props.state;
     this.props.dispatch(requestDocuments(query, articleTitle, author, abstract, page));
     const from = page * this.props.state.documentsFetchSize;
-
-    console.log('search');
+    
     const queryMust = [];
     if (query) {
       queryMust.push(

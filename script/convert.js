@@ -44,9 +44,13 @@ glob(`${dirPath}/*`, (error, files) => {
 
         const actionAndMetaData = {index: Object.assign(indexMetaData, {_id: id})};
 
-        data.front.id = id;
+        data.id = id;
         try {
           convertObject(data);
+          Object.keys(data.front).forEach(key => {
+            data[key] = data.front[key];
+          });
+          delete data["front"];
         } catch(e) {
           console.error(`${fileName} may be invalid format.`);
         }

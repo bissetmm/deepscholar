@@ -74,6 +74,9 @@ export const Document = withRouter(connect(mapStateToProps)(class Document exten
     const pdfannoUrl = `https://paperai.github.io/pdfanno/?pdf=${url}`;
     const authors = <Authors data={author} documentId={id} asFull={this.props.asFull}/>;
 
+    abstract = abstract && abstract.p && abstract.p.map(p => {
+      return p;
+    }).join() || "";
     if (!this.props.asFull) {
       abstract = this.props.state.enabledFullTextDocumentIds.has(id) ? abstract : abstract.substr(0, 400);
     }

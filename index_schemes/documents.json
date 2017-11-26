@@ -43,14 +43,6 @@
             }
           }
         },
-        "abstract": {
-          "type": "text",
-          "fields": {
-            "keyword": {
-              "type": "keyword"
-            }
-          }
-        },
         "id": {
           "type": "text",
           "fields": {
