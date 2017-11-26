@@ -6,7 +6,8 @@
     "start": "concurrently \"npm run server\" \"npm run client\"",
     "server": "node start-server.js",
     "client": "node start-client.js",
-    "convert": "node script/convert.js"
+    "convert": "node script/convert.js",
+    "copyFigs": "node script/copyFigs.js"
   },
   "devDependencies": {
     "camelcase": "^4.1.0",

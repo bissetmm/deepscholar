@@ -117,6 +117,23 @@ curl -XPUT 'http://localhost:9200/documents' --data-binary @documents.json
     
     **If a XML file is invalid, it is skipped to import.** 
 
+### Import fig data
+
+Run copyFigs command.
+```
+npm -s run copyFigs example/sample_xml
+```
+
+Then figs will be copied into `server/public/figs`. 
+```
+ls -l server/public/figs/**/*.png
+-rw-r--r--  1 dataich  staff  105284 11 26 22:01 server/public/figs/PMC5000010/PMC5000010_1.png
+-rw-r--r--  1 dataich  staff  239564 11 26 22:01 server/public/figs/PMC5000010/PMC5000010_2.png
+-rw-r--r--  1 dataich  staff  108743 11 26 22:01 server/public/figs/PMC5000010/PMC5000010_3.png
+-rw-r--r--  1 dataich  staff  722954 11 26 22:01 server/public/figs/PMC5000010/PMC5000010_4.png
+-rw-r--r--  1 dataich  staff  451885 11 26 22:01 server/public/figs/PMC5000010/PMC5000010_5.png
+
+```
 ### Delete
 ```
 # The port should be same as environment variables $DS_ES_PORT
