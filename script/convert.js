@@ -8,7 +8,7 @@ const util = require("util");
 const dirPath = process.argv[2];
 
 const indexMetaData = {
-  _index: "documents",
+  _index: "papers",
   _type: "lang"
 };
 const shouldBeArray = [
@@ -44,19 +44,14 @@ glob(`${dirPath}/*`, (error, files) => {
 
         const actionAndMetaData = {index: Object.assign(indexMetaData, {_id: id})};
 
-        data.id = id;
         try {
           convertObject(data);
-          Object.keys(data.front).forEach(key => {
-            data[key] = data.front[key];
-          });
-          delete data["front"];
+          data.front.id = id;
+          console.log(JSON.stringify(actionAndMetaData));
+          console.log(JSON.stringify(data.front));
         } catch(e) {
           console.error(`${fileName} may be invalid format.`);
         }
-
-        console.log(JSON.stringify(actionAndMetaData));
-        console.log(JSON.stringify(data));
       });
     });
   });

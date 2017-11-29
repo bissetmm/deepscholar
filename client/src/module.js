@@ -11,11 +11,11 @@ const initialState = {
   lte: Number(parsed.lte) || null,
   booktitles: new Set(parsed["booktitle[]"] || []),
   page: (parsed.page || 1) - 1,
-  documentId: null,
-  document: null,
-  documents: [],
-  documentTotal: 0,
-  documentsFetchSize: 20,
+  paperId: null,
+  paper: null,
+  papers: [],
+  paperTotal: 0,
+  papersFetchSize: 20,
   aggregations: {
     year: {
       buckets: []
@@ -24,8 +24,8 @@ const initialState = {
       buckets: []
     }
   },
-  enabledFullTextDocumentIds: new Set(),
-  enabledAllAuthorsDocumentIds: new Set(),
+  enabledFullTextPaperIds: new Set(),
+  enabledAllAuthorsPaperIds: new Set(),
   scrollYPositions: new Map()
 };
 
@@ -70,11 +70,11 @@ export function reducers(state = initialState, action) {
       });
     case REQUEST_DOCUMENT:
       return Object.assign({}, state, {
-        documentId: action.documentId
+        paperId: action.paperId
       });
     case RECEIVE_DOCUMENT:
       return Object.assign({}, state, {
-        document: action.document
+        paper: action.paper
       });
     case REQUEST_DOCUMENTS:
       return Object.assign({}, state, {
@@ -83,27 +83,27 @@ export function reducers(state = initialState, action) {
       });
     case RECEIVE_DOCUMENTS:
       return Object.assign({}, state, {
-        documents: action.documents,
-        documentsTotal: action.documentsTotal,
+        papers: action.papers,
+        papersTotal: action.papersTotal,
         aggregations: action.aggregations
       });
     case TOGGLE_FULL_TEXT:
-      if (state.enabledFullTextDocumentIds.has(action.id)) {
-        state.enabledFullTextDocumentIds.delete(action.id);
+      if (state.enabledFullTextPaperIds.has(action.id)) {
+        state.enabledFullTextPaperIds.delete(action.id);
       } else {
-        state.enabledFullTextDocumentIds.add(action.id);
+        state.enabledFullTextPaperIds.add(action.id);
       }
       return Object.assign({}, state, {
-        enabledFullTextDocumentIds: state.enabledFullTextDocumentIds
+        enabledFullTextPaperIds: state.enabledFullTextPaperIds
       });
     case TOGGLE_ALL_AUTHORS:
-      if (state.enabledAllAuthorsDocumentIds.has(action.id)) {
-        state.enabledAllAuthorsDocumentIds.delete(action.id);
+      if (state.enabledAllAuthorsPaperIds.has(action.id)) {
+        state.enabledAllAuthorsPaperIds.delete(action.id);
       } else {
-        state.enabledAllAuthorsDocumentIds.add(action.id);
+        state.enabledAllAuthorsPaperIds.add(action.id);
       }
       return Object.assign({}, state, {
-        enabledAllAuthorsDocumentIds: state.enabledAllAuthorsDocumentIds
+        enabledAllAuthorsPaperIds: state.enabledAllAuthorsPaperIds
       });
     case SAVE_SCROLL_Y:
       state.scrollYPositions.set(action.locationKey, action.y);
@@ -166,25 +166,25 @@ export function changePage(page) {
 
 const REQUEST_DOCUMENT = "REQUEST_DOCUMENT";
 
-export function requestDocument(documentId) {
+export function requestPaper(paperId) {
   return {
     type: REQUEST_DOCUMENT,
-    documentId
+    paperId
   };
 }
 
 const RECEIVE_DOCUMENT = "RECEIVE_DOCUMENT";
 
-export function receiveDocument(json) {
+export function receivePaper(json) {
   return {
     type: RECEIVE_DOCUMENT,
-    document: json.hits.hits.map((item) => item._source)[0]
+    paper: json.hits.hits.map((item) => item._source)[0]
   };
 }
 
 const REQUEST_DOCUMENTS = "REQUEST_DOCUMENTS";
 
-export function requestDocuments(query, articleTitle, author, abstract, page) {
+export function requestPapers(query, articleTitle, author, abstract, page) {
   return {
     type: REQUEST_DOCUMENTS,
     query,
@@ -197,11 +197,11 @@ export function requestDocuments(query, articleTitle, author, abstract, page) {
 
 const RECEIVE_DOCUMENTS = "RECEIVE_DOCUMENTS";
 
-export function receiveDocuments(json) {
+export function receivePapers(json) {
   return {
     type: RECEIVE_DOCUMENTS,
-    documents: json.hits.hits.map((item) => item._source),
-    documentsTotal: json.hits.total,
+    papers: json.hits.hits.map((item) => item._source),
+    papersTotal: json.hits.total,
     aggregations: json.aggregations
   };
 }

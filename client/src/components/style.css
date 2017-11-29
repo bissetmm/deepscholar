@@ -1,18 +1,18 @@
-.document h5 {
+.paper h5 {
 	font-size: 1.3em;
 	margin: 20px 0 10px;
 }
 
-.document a:hover {
+.paper a:hover {
     text-decoration: underline;
 }
 
-.document p {
+.paper p {
     margin: 10px 0;
     display: -webkit-box;
 }
 
-.document p.truncate {
+.paper p.truncate {
     overflow: hidden;;
     text-overflow: clip;
     white-space: inherit;
@@ -22,22 +22,22 @@
     /* autoprefixer: on */
 }
 
-.document footer {
+.paper footer {
     margin: 6px 0 20px;
 }
 
-.document ul.meta {
+.paper ul.meta {
     margin: 6px 0;
 }
 
-.document ul.meta li {
+.paper ul.meta li {
     display: inline-block;
 }
 
-.document ul.authors li {
+.paper ul.authors li {
     margin: 0 4px 0 0;
 }
 
-.document ul.links li {
+.paper ul.links li {
     margin: 0 16px 0 0;
 }

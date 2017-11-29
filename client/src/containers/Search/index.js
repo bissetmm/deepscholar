@@ -3,10 +3,10 @@ import _ from 'lodash';
 import {connect} from 'react-redux';
 import {withRouter} from 'react-router-dom';
 import {RangeSliderHistogram} from 'searchkit';
-import {Documents} from '../../components/index.js';
+import {Papers} from '../../components/index.js';
 import Api from '../../api';
 import {
-  changeQuery, changePage, requestDocuments, receiveDocuments, deleteScrollY, changeYears,
+  changeQuery, changePage, requestPapers, receivePapers, deleteScrollY, changeYears,
   changeBooktitle
 } from '../../module';
 import './style.css';
@@ -37,7 +37,7 @@ const Paginator = withRouter(connect(mapStateToProps)(class Paginator extends Co
   }
 
   render() {
-    const maxPage = Math.floor(this.props.state.documentsTotal / this.props.state.documentsFetchSize) || 0;
+    const maxPage = Math.floor(this.props.state.papersTotal / this.props.state.papersFetchSize) || 0;
     if (maxPage === 0) {
       return null;
     }
@@ -132,8 +132,8 @@ class Search extends Component {
 
   search() {
     const {query, articleTitle, author, abstract, page, gte, lte, booktitles} = this.props.state;
-    this.props.dispatch(requestDocuments(query, articleTitle, author, abstract, page));
-    const from = page * this.props.state.documentsFetchSize;
+    this.props.dispatch(requestPapers(query, articleTitle, author, abstract, page));
+    const from = page * this.props.state.papersFetchSize;
     
     const queryMust = [];
     if (query) {
@@ -227,7 +227,7 @@ class Search extends Component {
         }
       },
       from,
-      size: this.props.state.documentsFetchSize,
+      size: this.props.state.papersFetchSize,
       aggs: {
         year: {
           histogram: {
@@ -244,7 +244,7 @@ class Search extends Component {
       }
     });
     Api.search({body}).then((json) => {
-      this.props.dispatch(receiveDocuments(json));
+      this.props.dispatch(receivePapers(json));
     });
   }
 
@@ -282,7 +282,7 @@ class Search extends Component {
   }
 
   render() {
-    const {documents, documentsTotal, aggregations, booktitles} = this.props.state;
+    const {papers, papersTotal, aggregations, booktitles} = this.props.state;
 
     let year;
     if (aggregations.year.buckets.length > 1) {
@@ -335,9 +335,24 @@ class Search extends Component {
           </ul>
         </div>
         <div className="col s8 l9">
-          <p>{documentsTotal || 0} results</p>
-          <Documents data={documents}/>
-          <Paginator/>
+          <div className="row">
+            <div className="col s12">
+              <ul className="tabs">
+                <li className="tab col s3"><a href="#tab-texts" className="active">Texts</a></li>
+                <li className="tab col s3"><a href="#tab-figures">Figures</a></li>
+              </ul>
+            </div>
+            <div id="tab-texts" className="col s12">
+              <p>{papersTotal || 0} results</p>
+              <Papers data={papers}/>
+              <Paginator/>
+            </div>
+            <div id="tab-figures" className="col s12">
+              <p>{papersTotal || 0} results</p>
+              <Papers data={papers}/>
+              <Paginator/>
+            </div>
+          </div>
         </div>
       </div>
     );

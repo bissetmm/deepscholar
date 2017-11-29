@@ -86,7 +86,7 @@ Create index using the following command
 ```
 cd index_schemes
 # The port should be same as environment variables $DS_ES_PORT
-curl -XPUT 'http://localhost:9200/documents' --data-binary @documents.json
+curl -XPUT 'http://localhost:9200/papers' --data-binary @papers.json
 ```
 
 ### Import XML data
@@ -108,11 +108,11 @@ curl -XPUT 'http://localhost:9200/documents' --data-binary @documents.json
 2. Convert xml files to ES json and import to ES  
     ```
     # The port should be same as environment variables $DS_ES_PORT
-    npm -s run convert example/sample_xml | curl -XPOST "localhost:9200/documents/_bulk" --data-binary @- | echo
+    npm -s run convert example/sample_xml | curl -XPOST "localhost:9200/papers/_bulk" --data-binary @- | echo
     PMC5000294.xml may be invalid format.
     PMC5000402.xml may be invalid format.
     PMC5000407.xml may be invalid format.
-    {"took":117,"errors":true,"items":[{"index":{"_index":"documents","_type":"lang","_id":"PMC5000011","_version":2,"result":"updated","_shards":{"total":2,"successful":1,"failed":0},"created":false,"status":200}},{"index":{"_index":"documents","_type":"lang","_id":"PMC5000015","_version":2,"result":"updated","_shards":{"total":2,"successful":1,"failed":0},"created":false,"status":200}},...
+    {"took":290,"errors":false,"items":[{"index":{"_index":"papers","_type":"lang","_id":"PMC5000011","_version":1,"result":"created","_shards":{"total":2,"successful":1,"failed":0},"created":true,"status":200}},{"index":{"_index":"papers","_type":"lang","_id":"PMC5000013","_version":1,"result":"created","_shards":{"total":2,"successful":1,"failed":0},"created":true,"status":200}},...
     ```
     
     **If a XML file is invalid, it is skipped to import.** 
