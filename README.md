@@ -108,7 +108,7 @@ curl -XPUT 'http://localhost:9200/papers' --data-binary @papers.json
 2. Convert xml files to ES json and import to ES  
     ```
     # The port should be same as environment variables $DS_ES_PORT
-    npm -s run convert example/sample_xml | curl -XPOST "localhost:9200/papers/_bulk" --data-binary @- | echo
+    npm -s run convert example/sample_xml | curl -XPOST "localhost:9200/_bulk" --data-binary @- | echo
     PMC5000294.xml may be invalid format.
     PMC5000402.xml may be invalid format.
     PMC5000407.xml may be invalid format.

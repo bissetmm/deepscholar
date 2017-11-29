@@ -7,8 +7,12 @@ const util = require("util");
 
 const dirPath = process.argv[2];
 
-const indexMetaData = {
+const defaultPaperMeta = {
   _index: "papers",
+  _type: "lang"
+};
+const defaultFigMeta = {
+  _index: "figs",
   _type: "lang"
 };
 const shouldBeArray = [
@@ -23,9 +27,10 @@ glob(`${dirPath}/*`, (error, files) => {
     console.log(error);
     return;
   }
+
   files.forEach((dirPath) => {
-    const id = path.basename(dirPath);
-    const fileName = `${id}.xml`;
+    const paperId = path.basename(dirPath);
+    const fileName = `${paperId}.xml`;
     const filePath = path.join(dirPath, fileName);
 
     fs.readFile(filePath, 'utf8', (error, xml) => {
@@ -42,13 +47,27 @@ glob(`${dirPath}/*`, (error, files) => {
 
         const data = result.article;
 
-        const actionAndMetaData = {index: Object.assign(indexMetaData, {_id: id})};
+        const paperMeta = {index: Object.assign(defaultPaperMeta, {_id: paperId})};
 
         try {
           convertObject(data);
-          data.front.id = id;
-          console.log(JSON.stringify(actionAndMetaData));
+
+          //index for paper
+          data.front.id = paperId;
+          console.log(JSON.stringify(paperMeta));
           console.log(JSON.stringify(data.front));
+
+          //index for figs
+          const figs = (data.floatsGroup.fig && data.floatsGroup.fig) || [];
+          const figsInfloatsGroup = (data.floatsGroup.figGroup && data.floatsGroup.figGroup.forEach((figGroup) => {
+            return figGroup.fig;
+          })) || [];
+          figs.concat(Array.prototype.concat.apply([], figsInfloatsGroup));
+          figs.forEach((fig) => {
+            const figMeta = {index: defaultFigMeta};
+            console.log(JSON.stringify(figMeta));
+            console.log(JSON.stringify(Object.assign(fig, {paperId})));
+          });
         } catch(e) {
           console.error(`${fileName} may be invalid format.`);
         }
