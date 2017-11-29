@@ -1,6 +1,6 @@
 class Api {
-  static fetchApi(options) {
-    return fetch("/_search", options)
+  static fetchApi(indexName, options) {
+    return fetch(`/${indexName}/_search`, options)
       .then((response) => {
         if (response.status >= 200 && response.status < 300) {
           return response;
@@ -11,7 +11,7 @@ class Api {
       .catch(console.log);
   }
 
-  static search(options) {
+  static search(indexName, options) {
     const headers = new Headers();
     headers.append("Content-Type", "application/json");
 
@@ -21,7 +21,15 @@ class Api {
       method: "post",
       body: null
     }, options);
-    return Api.fetchApi(o);
+    return Api.fetchApi(indexName, o);
+  }
+
+  static searchPapers(options) {
+    return Api.search("papers", options);
+  }
+
+  static searchFigs(options) {
+    return Api.search("papers", options);
   }
 }
 

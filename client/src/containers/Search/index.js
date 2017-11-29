@@ -109,14 +109,14 @@ class Search extends Component {
   }
 
   componentDidMount() {
-    this.search();
+    this.searchPapers();
   }
 
   componentDidUpdate(prevProps) {
     const {query: oldQuery, articleTitle: oldArticleTitle, author: oldAuthor, abstract: oldAbstract, gte: oldGte, lte: oldLte, booktitles: oldBooktitles, page: oldPage} = prevProps.state;
     const {query: newQuery, articleTitle: newArticleTitle, author: newAuthor, abstract: newAbstract, gte: newGte, lte: newLte, booktitles: newBooktitles, page: newPage} = this.props.state;
     if (oldQuery !== newQuery || oldArticleTitle !== newArticleTitle || oldAuthor !== newAuthor || oldAbstract !== newAbstract || oldPage !== newPage || oldGte !== newGte || oldLte !== newLte || Array.from(oldBooktitles).join("") !== Array.from(newBooktitles).join("")) {
-      this.search();
+      this.searchPapers();
     }
 
 
@@ -130,11 +130,11 @@ class Search extends Component {
     window.scrollTo(0, scrollY);
   }
 
-  search() {
+  searchPapers() {
     const {query, articleTitle, author, abstract, page, gte, lte, booktitles} = this.props.state;
     this.props.dispatch(requestPapers(query, articleTitle, author, abstract, page));
     const from = page * this.props.state.papersFetchSize;
-    
+
     const queryMust = [];
     if (query) {
       queryMust.push(
@@ -243,7 +243,7 @@ class Search extends Component {
         }
       }
     });
-    Api.search({body}).then((json) => {
+    Api.searchPapers({body}).then((json) => {
       this.props.dispatch(receivePapers(json));
     });
   }

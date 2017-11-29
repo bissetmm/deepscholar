@@ -19,7 +19,7 @@ class Detail extends Component {
         }
       }
     });
-    Api.search({body}).then((json) => {
+    Api.searchPapers({body}).then((json) => {
       this.props.dispatch(receivePaper(json));
     });
   }
