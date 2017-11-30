@@ -1,0 +1,29 @@
+{
+  "mappings": {
+    "lang": {
+      "properties": {
+        "caption": {
+          "type": "nested",
+          "properties": {
+            "p": {
+              "type": "text",
+              "fields": {
+                "keyword": {
+                  "type": "keyword"
+                }
+              }
+            },
+            "title": {
+              "type": "text",
+              "fields": {
+                "keyword": {
+                  "type": "keyword"
+                }
+              }
+            }
+          }
+        }
+      }
+    }
+  }
+}

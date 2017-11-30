@@ -87,6 +87,7 @@ Create index using the following command
 cd index_schemes
 # The port should be same as environment variables $DS_ES_PORT
 curl -XPUT 'http://localhost:9200/papers' --data-binary @papers.json
+curl -XPUT 'http://localhost:9200/figs' --data-binary @figs.json
 ```
 
 ### Import XML data
