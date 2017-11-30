@@ -68,20 +68,20 @@ export function reducers(state = initialState, action) {
       return Object.assign({}, state, {
         page: action.page
       });
-    case REQUEST_DOCUMENT:
+    case REQUEST_PAPER:
       return Object.assign({}, state, {
         paperId: action.paperId
       });
-    case RECEIVE_DOCUMENT:
+    case RECEIVE_PAPER:
       return Object.assign({}, state, {
         paper: action.paper
       });
-    case REQUEST_DOCUMENTS:
+    case REQUEST_PAPERS:
       return Object.assign({}, state, {
         query: action.query,
         page: action.page
       });
-    case RECEIVE_DOCUMENTS:
+    case RECEIVE_PAPERS:
       return Object.assign({}, state, {
         papers: action.papers,
         papersTotal: action.papersTotal,
@@ -164,29 +164,29 @@ export function changePage(page) {
   };
 }
 
-const REQUEST_DOCUMENT = "REQUEST_DOCUMENT";
+const REQUEST_PAPER = "REQUEST_PAPER";
 
 export function requestPaper(paperId) {
   return {
-    type: REQUEST_DOCUMENT,
+    type: REQUEST_PAPER,
     paperId
   };
 }
 
-const RECEIVE_DOCUMENT = "RECEIVE_DOCUMENT";
+const RECEIVE_PAPER = "RECEIVE_PAPER";
 
 export function receivePaper(json) {
   return {
-    type: RECEIVE_DOCUMENT,
+    type: RECEIVE_PAPER,
     paper: json.hits.hits.map((item) => item._source)[0]
   };
 }
 
-const REQUEST_DOCUMENTS = "REQUEST_DOCUMENTS";
+const REQUEST_PAPERS = "REQUEST_PAPERS";
 
 export function requestPapers(query, articleTitle, author, abstract, page) {
   return {
-    type: REQUEST_DOCUMENTS,
+    type: REQUEST_PAPERS,
     query,
     articleTitle,
     author,
@@ -195,11 +195,11 @@ export function requestPapers(query, articleTitle, author, abstract, page) {
   };
 }
 
-const RECEIVE_DOCUMENTS = "RECEIVE_DOCUMENTS";
+const RECEIVE_PAPERS = "RECEIVE_PAPERS";
 
 export function receivePapers(json) {
   return {
-    type: RECEIVE_DOCUMENTS,
+    type: RECEIVE_PAPERS,
     papers: json.hits.hits.map((item) => item._source),
     papersTotal: json.hits.total,
     aggregations: json.aggregations
