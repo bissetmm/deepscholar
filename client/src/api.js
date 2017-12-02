@@ -29,7 +29,7 @@ class Api {
   }
 
   static searchFigs(options) {
-    return Api.search("papers", options);
+    return Api.search("figs", options);
   }
 }
 

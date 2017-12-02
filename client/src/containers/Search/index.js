@@ -3,10 +3,10 @@ import _ from 'lodash';
 import {connect} from 'react-redux';
 import {withRouter} from 'react-router-dom';
 import {RangeSliderHistogram} from 'searchkit';
-import {Papers} from '../../components/index.js';
+import {Papers, Figures} from '../../components/index.js';
 import Api from '../../api';
 import {
-  changeQuery, changePage, requestPapers, receivePapers, deleteScrollY, changeYears,
+  changeQuery, changePage, requestPapers, receivePapers, requestFigures, receiveFigures, deleteScrollY, changeYears,
   changeBooktitle
 } from '../../module';
 import './style.css';
@@ -110,6 +110,7 @@ class Search extends Component {
 
   componentDidMount() {
     this.searchPapers();
+    this.searchFigures();
   }
 
   componentDidUpdate(prevProps) {
@@ -117,6 +118,7 @@ class Search extends Component {
     const {query: newQuery, articleTitle: newArticleTitle, author: newAuthor, abstract: newAbstract, gte: newGte, lte: newLte, booktitles: newBooktitles, page: newPage} = this.props.state;
     if (oldQuery !== newQuery || oldArticleTitle !== newArticleTitle || oldAuthor !== newAuthor || oldAbstract !== newAbstract || oldPage !== newPage || oldGte !== newGte || oldLte !== newLte || Array.from(oldBooktitles).join("") !== Array.from(newBooktitles).join("")) {
       this.searchPapers();
+      this.searchFigures();
     }
 
 
@@ -248,6 +250,43 @@ class Search extends Component {
     });
   }
 
+  searchFigures() {
+    const {query, page} = this.props.state;
+    this.props.dispatch(requestFigures(query, page));
+    const from = page * this.props.state.figuresFetchSize;
+
+    const bodyParams = {
+      from,
+      size: this.props.state.figuresFetchSize
+    };
+
+    if (query) {
+      bodyParams.query = {
+        bool: {
+          must: {
+            nested: {
+              path: "caption",
+              query: {
+                multi_match: {
+                  query,
+                  fields: [
+                    "caption.p",
+                    "caption.title"
+                  ]
+                }
+              }
+            }
+          }
+        }
+      };
+    }
+
+    const body = JSON.stringify(bodyParams);
+    Api.searchFigs({body}).then((json) => {
+      this.props.dispatch(receiveFigures(json));
+    });
+  }
+
   handleKeyPress(e) {
     if (e.key !== "Enter") {
       return;
@@ -282,7 +321,7 @@ class Search extends Component {
   }
 
   render() {
-    const {papers, papersTotal, aggregations, booktitles} = this.props.state;
+    const {papers, papersTotal, aggregations, booktitles, figures} = this.props.state;
 
     let year;
     if (aggregations.year.buckets.length > 1) {
@@ -348,9 +387,7 @@ class Search extends Component {
               <Paginator/>
             </div>
             <div id="tab-figures" className="col s12">
-              <p>{papersTotal || 0} results</p>
-              <Papers data={papers}/>
-              <Paginator/>
+              <Figures data={figures}/>
             </div>
           </div>
         </div>

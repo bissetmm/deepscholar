@@ -136,6 +136,30 @@ export class Papers extends Component {
   }
 }
 
+export class Figures extends Component {
+  componentDidUpdate () {
+    window.lightGallery(document.getElementById('figures'), {thumbnail: true});
+  }
+
+  render() {
+    const figures = this.props.data.map((figure) => {
+      const origin = window.location.origin.replace(window.location.port, 3001);
+      const url = `${origin}/static/figs/${figure.paperId}/${figure.img}`;
+      return (
+        <a key={figure.img} href={url} className="col s2">
+          <img className="responsive-img" src={url} />
+        </a>
+      );
+    });
+
+    return (
+      <div id="figures" className="row">
+        {figures}
+      </div>
+    );
+  }
+}
+
 export class ScrollToTop extends Component {
   componentDidUpdate(prevProps) {
     if (this.props.location !== prevProps.location) {

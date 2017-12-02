@@ -16,6 +16,9 @@ const initialState = {
   papers: [],
   paperTotal: 0,
   papersFetchSize: 20,
+  figures: [],
+  figuresTotal: 0,
+  figuresFetchSize: 20,
   aggregations: {
     year: {
       buckets: []
@@ -86,6 +89,16 @@ export function reducers(state = initialState, action) {
         papers: action.papers,
         papersTotal: action.papersTotal,
         aggregations: action.aggregations
+      });
+    case REQUEST_FIGURES:
+      return Object.assign({}, state, {
+        query: action.query,
+        page: action.page
+      });
+    case RECEIVE_FIGURES:
+      return Object.assign({}, state, {
+        figures: action.figures,
+        figuresTotal: action.figuresTotal,
       });
     case TOGGLE_FULL_TEXT:
       if (state.enabledFullTextPaperIds.has(action.id)) {
@@ -203,6 +216,26 @@ export function receivePapers(json) {
     papers: json.hits.hits.map((item) => item._source),
     papersTotal: json.hits.total,
     aggregations: json.aggregations
+  };
+}
+
+const REQUEST_FIGURES = "REQUEST_FIGURES";
+
+export function requestFigures(query, page) {
+  return {
+    type: REQUEST_FIGURES,
+    query,
+    page
+  };
+}
+
+const RECEIVE_FIGURES = "RECEIVE_FIGURES";
+
+export function receiveFigures(json) {
+  return {
+    type: RECEIVE_FIGURES,
+    figures: json.hits.hits.map((item) => item._source),
+    figuresTotal: json.hits.total
   };
 }
 
