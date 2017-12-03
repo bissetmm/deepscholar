@@ -18,7 +18,7 @@ const initialState = {
   papersFetchSize: 20,
   figures: [],
   figuresTotal: 0,
-  figuresFetchSize: 20,
+  figuresFetchSize: 10000,
   aggregations: {
     year: {
       buckets: []

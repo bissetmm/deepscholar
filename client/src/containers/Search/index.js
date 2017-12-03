@@ -253,10 +253,8 @@ class Search extends Component {
   searchFigures() {
     const {query, page} = this.props.state;
     this.props.dispatch(requestFigures(query, page));
-    const from = page * this.props.state.figuresFetchSize;
 
     const bodyParams = {
-      from,
       size: this.props.state.figuresFetchSize
     };
 
@@ -321,7 +319,7 @@ class Search extends Component {
   }
 
   render() {
-    const {papers, papersTotal, aggregations, booktitles, figures} = this.props.state;
+    const {papers, papersTotal, aggregations, booktitles, figures, figuresTotal} = this.props.state;
 
     let year;
     if (aggregations.year.buckets.length > 1) {
@@ -387,6 +385,7 @@ class Search extends Component {
               <Paginator/>
             </div>
             <div id="tab-figures" className="col s12">
+              <p>{figuresTotal || 0} results</p>
               <Figures data={figures}/>
             </div>
           </div>

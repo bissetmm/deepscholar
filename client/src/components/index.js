@@ -145,9 +145,11 @@ export class Figures extends Component {
     const figures = this.props.data.map((figure) => {
       const origin = window.location.origin.replace(window.location.port, 3001);
       const url = `${origin}/static/figs/${figure.paperId}/${figure.img}`;
+      const style = {backgroundImage: `url('${url}')`};
       return (
         <a key={figure.img} href={url} className="col s2">
-          <img className="responsive-img" src={url} />
+          <img src={url} style={{display: 'none'}}/>
+          <span className="figure" style={style}></span>
         </a>
       );
     });
