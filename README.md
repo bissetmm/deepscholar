@@ -80,14 +80,13 @@ client/src
 * page
 * url
 
-### Create Index (Only once)
+### Initialize Indexes (Only once)
 
-Create index using the following command
+Create indexes using the following command
 ```
-cd index_schemes
-# The port should be same as environment variables $DS_ES_PORT
-curl -XPUT 'http://localhost:9200/papers' --data-binary @papers.json
-curl -XPUT 'http://localhost:9200/figs' --data-binary @figs.json
+$ npm -s run es:initializeIndexes
+Index(papers) created.
+Index(figs) created.
 ```
 
 ### Import XML data
@@ -106,39 +105,35 @@ curl -XPUT 'http://localhost:9200/figs' --data-binary @figs.json
     -rwxr-xr-x@ 1 dataich  staff   2.1K 11  1 04:14 PMC5000131.xml
     ```
     
-2. Convert xml files to ES json and import to ES  
+2. Import xml files to ES and create symlink to figs
     ```
-    # The port should be same as environment variables $DS_ES_PORT
-    npm -s run convert example/sample_xml | curl -XPOST "localhost:9200/_bulk" --data-binary @- | echo
-    PMC5000294.xml may be invalid format.
-    PMC5000402.xml may be invalid format.
-    PMC5000407.xml may be invalid format.
-    {"took":290,"errors":false,"items":[{"index":{"_index":"papers","_type":"lang","_id":"PMC5000011","_version":1,"result":"created","_shards":{"total":2,"successful":1,"failed":0},"created":true,"status":200}},{"index":{"_index":"papers","_type":"lang","_id":"PMC5000013","_version":1,"result":"created","_shards":{"total":2,"successful":1,"failed":0},"created":true,"status":200}},...
-    ```
+    $ npm -s run es:insertIndexes ~/sample_xml
+    PMC5000011.xml may be invalid format.
+    PMC5000131.xml may be invalid format.
+    StatusCode: 200
+    {"took":118,"errors":false,"items":[{"index":{"_index":"papers","_type":"lang","_id":"PMC5000013","_version":2,"result":"updated","_shards":{"total":2,"successful":1,"failed":0},"created":false,"status":200}},{"index":{"_index":"figs","_type":"lang","_id":"AWAsKiszG0FqIxQhXoQP","_version":1,"result":"created","_shards":{"total":2,"successful":1,"failed":0},"created":true,"status":201}},
+    ...
     
-    **If a XML file is invalid, it is skipped to import.** 
+    created symlink:
+	    target :/Users/dataich/sample_xml
+	    path   :/Users/dataich/deepscholar/server/public/figs
+    ```
 
-### Import fig data
+    Then figs can be referenced in `server/public/figs`. 
+    ```
+    ls -l server/public/figs/**/*.png
+    -rw-r--r--  1 dataich  staff  105284 11 26 22:01 server/public/figs/PMC5000010/PMC5000010_1.png
+    -rw-r--r--  1 dataich  staff  239564 11 26 22:01 server/public/figs/PMC5000010/PMC5000010_2.png
+    -rw-r--r--  1 dataich  staff  108743 11 26 22:01 server/public/figs/PMC5000010/PMC5000010_3.png
+    -rw-r--r--  1 dataich  staff  722954 11 26 22:01 server/public/figs/PMC5000010/PMC5000010_4.png
+    -rw-r--r--  1 dataich  staff  451885 11 26 22:01 server/public/figs/PMC5000010/PMC5000010_5.png
+    ```
 
-Run copyFigs command.
-```
-npm -s run copyFigs example/sample_xml
-```
-
-Then figs will be copied into `server/public/figs`. 
-```
-ls -l server/public/figs/**/*.png
--rw-r--r--  1 dataich  staff  105284 11 26 22:01 server/public/figs/PMC5000010/PMC5000010_1.png
--rw-r--r--  1 dataich  staff  239564 11 26 22:01 server/public/figs/PMC5000010/PMC5000010_2.png
--rw-r--r--  1 dataich  staff  108743 11 26 22:01 server/public/figs/PMC5000010/PMC5000010_3.png
--rw-r--r--  1 dataich  staff  722954 11 26 22:01 server/public/figs/PMC5000010/PMC5000010_4.png
--rw-r--r--  1 dataich  staff  451885 11 26 22:01 server/public/figs/PMC5000010/PMC5000010_5.png
-
-```
 ### Delete
 ```
-# The port should be same as environment variables $DS_ES_PORT
-curl -XDELETE http://localhost:9200/*
+$ npm -s run es:deleteIndexes
+All Indexes have been deleted.
+
 ```
 
 ### Development Tools

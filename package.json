@@ -6,14 +6,18 @@
     "start": "concurrently \"npm run server\" \"npm run client\"",
     "server": "node start-server.js",
     "client": "node start-client.js",
-    "convert": "node script/convert.js",
-    "copyFigs": "node script/copyFigs.js"
+    "es:initializeIndexes": "node script/initializeIndexes.js",
+    "es:insertIndexes": "node script/insertIndexes.js",
+    "es:deleteIndexes": "node script/deleteIndexes.js"
   },
   "devDependencies": {
     "camelcase": "^4.1.0",
     "concurrently": "^3.5.0",
     "eslint": "^4.1.1",
     "eslint-plugin-react": "^7.1.0",
-    "fast-xml2js": "^1.0.7"
+    "fast-xml2js": "^1.0.7",
+    "memory-streams": "^0.1.2",
+    "properties": "^1.2.1",
+    "request": "^2.83.0"
   }
 }
