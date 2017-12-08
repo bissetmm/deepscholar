@@ -16,6 +16,13 @@ $ cd deepscholar
 $ npm install
 ```
 
+## Copy .env to set environment variables to Docker
+
+```
+$ cd deepscholar
+$ cp .env.example .env
+```
+
 ## Run application
 
 ```
@@ -26,7 +33,8 @@ $ docker-compose up
 You can see your application at [http://localhost:3000](http://localhost:3000)
 
 ## Run application with custom port settings
-Default ports settings are defined in `.env` file as environment variables
+Default ports settings are defined in `.env` file as environment variables.
+You can change environment variables with editing .env file.
 
 ```
 $ cat .env
@@ -35,17 +43,6 @@ DS_SERVER_PORT=3001
 DS_ES_PORT=9200
 DS_KIBANA_PORT=5601
 DS_ESHEAD_PORT=9100
-```
-
-If you want to run applications using different ports, pass ports as environment variables.
-```
-env \
-DS_CLIENT_PORT=13000 \
-DS_SERVER_PORT=13001 \
-DS_ES_PORT=19200 \
-DS_KIBANA_PORT=15601 \
-DS_ESHEAD_PORT=19100 \
-docker-compose up
 ```
 
 ## Developer's Guide
