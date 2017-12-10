@@ -136,6 +136,25 @@ export class Papers extends Component {
   }
 }
 
+class Figure extends Component {
+  loadAlternativeImage(e) {
+    this.props.data.url = "/images/logo.png";
+    this.forceUpdate();
+  }
+
+  render() {
+    const {img, url} = this.props.data;
+    const style = {backgroundImage: `url('${url}')`};
+    console.log(url);
+    return (
+      <a key={img} href={url} className="col s2">
+        <img src={url} style={{display: 'none'}} onError={this.loadAlternativeImage.bind(this)}/>
+        <span className="figure" style={style}></span>
+      </a>
+    );
+  }
+}
+
 export class Figures extends Component {
   componentDidUpdate () {
     window.lightGallery(document.getElementById('figures'), {thumbnail: true});
@@ -143,14 +162,11 @@ export class Figures extends Component {
 
   render() {
     const figures = this.props.data.map((figure) => {
-      const url = `/static/figs/${figure.paperId}/${figure.img}`;
-      const style = {backgroundImage: `url('${url}')`};
-      return (
-        <a key={figure.img} href={url} className="col s2">
-          <img src={url} style={{display: 'none'}}/>
-          <span className="figure" style={style}></span>
-        </a>
-      );
+      const {paperId, img} = figure;
+      const url = `/static/figs/${paperId}/${img}`;
+      const data = {img, url};
+
+      return <Figure key={figure.img} data={data} />;
     });
 
     return (
