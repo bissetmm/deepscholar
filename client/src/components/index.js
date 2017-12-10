@@ -143,11 +143,13 @@ class Figure extends Component {
   }
 
   render() {
-    const {img, url} = this.props.data;
+    const {img, url, caption, label} = this.props.data;
     const style = {backgroundImage: `url('${url}')`};
-    console.log(url);
+    const title = caption.title || label;
+    const p = caption.p || "";
+    const subHtml = `<h4>${title}</h4><p>${p}</p>`;
     return (
-      <a key={img} href={url} className="col s2">
+      <a key={img} href={url} data-sub-html={subHtml} className="col s2">
         <img src={url} style={{display: 'none'}} onError={this.loadAlternativeImage.bind(this)}/>
         <span className="figure" style={style}></span>
       </a>
@@ -162,9 +164,9 @@ export class Figures extends Component {
 
   render() {
     const figures = this.props.data.map((figure) => {
-      const {paperId, img} = figure;
+      const {paperId, img, caption, label} = figure;
       const url = `/static/figs/${paperId}/${img}`;
-      const data = {img, url};
+      const data = {img, url, caption, label};
 
       return <Figure key={figure.img} data={data} />;
     });
