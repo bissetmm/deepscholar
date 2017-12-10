@@ -16,12 +16,26 @@ $ cd deepscholar
 $ npm install
 ```
 
-## Copy .env to set environment variables to Docker
+## Create .env to set environment variables to Docker
 
-```
-$ cd deepscholar
-$ cp .env.example .env
-```
+1. Copy from .env.example
+    ```
+    $ cd deepscholar
+    $ cp .env.example .env
+    ```
+
+2. Edit .env  
+You must edit `DS_FIGS_DIR` to define figs dir.
+You can also change port settings.
+    ```
+    DS_FRONT_PORT=8080
+    DS_CLIENT_PORT=3000
+    DS_SERVER_PORT=3001
+    DS_ES_PORT=9200
+    DS_KIBANA_PORT=5601
+    DS_ESHEAD_PORT=9100
+    DS_FIGS_DIR=/path/to/figs/dir
+    ```
 
 ## Run application
 
@@ -30,20 +44,8 @@ $ cd deepscholar
 $ docker-compose up
 ```
 
-You can see your application at [http://localhost:3000](http://localhost:3000)
-
-## Run application with custom port settings
-Default ports settings are defined in `.env` file as environment variables.
-You can change environment variables with editing .env file.
-
-```
-$ cat .env
-DS_CLIENT_PORT=3000
-DS_SERVER_PORT=3001
-DS_ES_PORT=9200
-DS_KIBANA_PORT=5601
-DS_ESHEAD_PORT=9100
-```
+You can see your application at [http://localhost:8080](http://localhost:8080)  
+**The port 8080 depends on DS_FRONT_PORT setting.**
 
 ## Developer's Guide
 ```
@@ -109,11 +111,6 @@ Index(figs) created.
     PMC5000131.xml may be invalid format.
     StatusCode: 200
     {"took":118,"errors":false,"items":[{"index":{"_index":"papers","_type":"lang","_id":"PMC5000013","_version":2,"result":"updated","_shards":{"total":2,"successful":1,"failed":0},"created":false,"status":200}},{"index":{"_index":"figs","_type":"lang","_id":"AWAsKiszG0FqIxQhXoQP","_version":1,"result":"created","_shards":{"total":2,"successful":1,"failed":0},"created":true,"status":201}},
-    ...
-    
-    created symlink:
-	    target :/Users/dataich/sample_xml
-	    path   :/Users/dataich/deepscholar/server/public/figs
     ```
 
     Then figs can be referenced in `server/public/figs`. 

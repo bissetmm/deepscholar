@@ -44,8 +44,6 @@ const shouldBeArray = [
       console.log(body);
 
       console.log("");
-
-      createFigsSymlink();
     }));
 
     Promise.all(
@@ -161,24 +159,5 @@ function processPaper(s, dirPath) {
         resolve();
       });
     });
-  });
-}
-
-function createFigsSymlink() {
-  const figDir = path.join(__dirname, "../server/public/figs");
-
-  if (fs.existsSync(figDir)) {
-    fs.unlinkSync(figDir);
-  }
-
-  fs.symlink(dirPath, figDir, (error) => {
-    if (error) {
-      console.log(error);
-      return;
-    }
-
-    console.log("created symlink:");
-    console.log(`\ttarget :${dirPath}`);
-    console.log(`\tpath   :${figDir}`);
   });
 }

@@ -143,8 +143,7 @@ export class Figures extends Component {
 
   render() {
     const figures = this.props.data.map((figure) => {
-      const origin = window.location.origin.replace(window.location.port, 3001);
-      const url = `${origin}/static/figs/${figure.paperId}/${figure.img}`;
+      const url = `/static/figs/${figure.paperId}/${figure.img}`;
       const style = {backgroundImage: `url('${url}')`};
       return (
         <a key={figure.img} href={url} className="col s2">
