@@ -35,7 +35,7 @@ const Authors = connect(mapStateToProps)(class Authors extends Component {
     const authors = data.map(author =>
       <li key={author.surname + author.givenNames}>{author.surname} {author.givenNames}</li>
     );
-    let haveMore = this.props.data.length > 2;
+    const haveMore = this.props.data.length > 2;
 
     return (
       <ul className="meta authors">
@@ -163,7 +163,7 @@ export class Figures extends Component {
   render() {
     const figures = this.props.data.map((figure) => {
       const {paperId, img, caption, label} = figure;
-      const url = `/static/figs/${paperId}/${img}`;
+      const url = (/^https?:\/\//).test(img) ? img : `/static/figs/${paperId}/${img}`;
       const data = {img, url, caption, label};
 
       return <Figure key={figure.img} data={data} />;
