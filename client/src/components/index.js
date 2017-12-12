@@ -157,6 +157,16 @@ class Figure extends Component {
 
 export class Figures extends Component {
   componentDidUpdate () {
+    const element = document.getElementById('figures');
+    const lgUid = element.getAttribute('lg-uid');
+    if (lgUid) {
+      try {
+        window.lgData[lgUid].destroy(true);
+      } catch (error) {
+        console.error(error);
+      }
+    }
+
     window.lightGallery(document.getElementById('figures'), {thumbnail: true});
   }
 
