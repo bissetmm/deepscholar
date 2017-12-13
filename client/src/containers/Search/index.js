@@ -130,6 +130,7 @@ class Search extends Component {
     this.props.dispatch(deleteScrollY(locationKey));
 
     window.scrollTo(0, scrollY);
+    window.jQuery('ul.tabs').tabs();
   }
 
   searchPapers() {
@@ -375,16 +376,16 @@ class Search extends Component {
           <div className="row">
             <div className="col s12">
               <ul className="tabs">
-                <li className="tab col s3"><a href="#tab-texts" className="active">Texts</a></li>
+                <li className="tab col s3"><a href="#tab-texts">Texts</a></li>
                 <li className="tab col s3"><a href="#tab-figures">Figures</a></li>
               </ul>
             </div>
-            <div id="tab-texts" className="col s12">
+            <div id="tab-texts" className="col s12 active">
               <p>{papersTotal || 0} results</p>
               <Papers data={papers}/>
               <Paginator/>
             </div>
-            <div id="tab-figures" className="col s12">
+            <div id="tab-figures" className="col s12" style={{display: "none"}}>
               <p>{figuresTotal || 0} results</p>
               <Figures data={figures}/>
             </div>
