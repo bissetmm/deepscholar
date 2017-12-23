@@ -1,31 +1,31 @@
 import React, {Component} from 'react';
-import {Document} from '../../components/index.js';
+import {Paper} from '../../components/index.js';
 import {connect} from 'react-redux';
 import Api from '../../api';
-import {requestDocument, receiveDocument} from '../../module';
+import {requestPaper, receivePaper} from '../../module';
 import './style.css';
 
 class Detail extends Component {
   componentDidMount() {
-    this.search(this.props.match.params.documentId);
+    this.search(this.props.match.params.paperId);
   }
 
-  search(documentId) {
-    this.props.dispatch(requestDocument(documentId));
+  search(paperId) {
+    this.props.dispatch(requestPaper(paperId));
     const body = JSON.stringify({
       query: {
         match: {
-          id: documentId
+          id: paperId
         }
       }
     });
-    Api.search({body}).then((json) => {
-      this.props.dispatch(receiveDocument(json));
+    Api.searchPapers({body}).then((json) => {
+      this.props.dispatch(receivePaper(json));
     });
   }
 
   render() {
-    const {document} = this.props.state;
+    const {paper} = this.props.state;
 
     return (
       <div className="row">
@@ -34,8 +34,8 @@ class Detail extends Component {
           <a className="back-to-results" href="javascript:void(0)" onClick={this.props.history.goBack}>Back to
             results</a>
           }
-          {document !== null &&
-          <Document data={document} asFull={true}/>
+          {paper !== null &&
+          <Paper data={paper} asFull={true}/>
           }
         </div>
       </div>

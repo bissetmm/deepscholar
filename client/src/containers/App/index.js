@@ -132,7 +132,7 @@ class App extends Component {
                     <Search {...props}/>
                   </ScrollToTop>
                 )}/>
-                <Route exact path="/documents/:documentId" component={Detail}/>
+                <Route exact path="/papers/:paperId" component={Detail}/>
               </Switch>
             </div>
           </div>

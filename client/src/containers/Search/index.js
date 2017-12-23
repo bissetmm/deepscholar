@@ -3,10 +3,10 @@ import _ from 'lodash';
 import {connect} from 'react-redux';
 import {withRouter} from 'react-router-dom';
 import {RangeSliderHistogram} from 'searchkit';
-import {Documents} from '../../components/index.js';
+import {Papers, Figures} from '../../components/index.js';
 import Api from '../../api';
 import {
-  changeQuery, changePage, requestDocuments, receiveDocuments, deleteScrollY, changeYears,
+  changeQuery, changePage, requestPapers, receivePapers, requestFigures, receiveFigures, deleteScrollY, changeYears,
   changeBooktitle
 } from '../../module';
 import './style.css';
@@ -37,7 +37,7 @@ const Paginator = withRouter(connect(mapStateToProps)(class Paginator extends Co
   }
 
   render() {
-    const maxPage = Math.floor(this.props.state.documentsTotal / this.props.state.documentsFetchSize) || 0;
+    const maxPage = Math.floor(this.props.state.papersTotal / this.props.state.papersFetchSize) || 0;
     if (maxPage === 0) {
       return null;
     }
@@ -109,14 +109,16 @@ class Search extends Component {
   }
 
   componentDidMount() {
-    this.search();
+    this.searchPapers();
+    this.searchFigures();
   }
 
   componentDidUpdate(prevProps) {
     const {query: oldQuery, articleTitle: oldArticleTitle, author: oldAuthor, abstract: oldAbstract, gte: oldGte, lte: oldLte, booktitles: oldBooktitles, page: oldPage} = prevProps.state;
     const {query: newQuery, articleTitle: newArticleTitle, author: newAuthor, abstract: newAbstract, gte: newGte, lte: newLte, booktitles: newBooktitles, page: newPage} = this.props.state;
     if (oldQuery !== newQuery || oldArticleTitle !== newArticleTitle || oldAuthor !== newAuthor || oldAbstract !== newAbstract || oldPage !== newPage || oldGte !== newGte || oldLte !== newLte || Array.from(oldBooktitles).join("") !== Array.from(newBooktitles).join("")) {
-      this.search();
+      this.searchPapers();
+      this.searchFigures();
     }
 
 
@@ -128,14 +130,14 @@ class Search extends Component {
     this.props.dispatch(deleteScrollY(locationKey));
 
     window.scrollTo(0, scrollY);
+    window.jQuery('ul.tabs').tabs();
   }
 
-  search() {
+  searchPapers() {
     const {query, articleTitle, author, abstract, page, gte, lte, booktitles} = this.props.state;
-    this.props.dispatch(requestDocuments(query, articleTitle, author, abstract, page));
-    const from = page * this.props.state.documentsFetchSize;
+    this.props.dispatch(requestPapers(query, articleTitle, author, abstract, page));
+    const from = page * this.props.state.papersFetchSize;
 
-    console.log('search');
     const queryMust = [];
     if (query) {
       queryMust.push(
@@ -228,7 +230,7 @@ class Search extends Component {
         }
       },
       from,
-      size: this.props.state.documentsFetchSize,
+      size: this.props.state.papersFetchSize,
       aggs: {
         year: {
           histogram: {
@@ -244,8 +246,43 @@ class Search extends Component {
         }
       }
     });
-    Api.search({body}).then((json) => {
-      this.props.dispatch(receiveDocuments(json));
+    Api.searchPapers({body}).then((json) => {
+      this.props.dispatch(receivePapers(json));
+    });
+  }
+
+  searchFigures() {
+    const {query, page} = this.props.state;
+    this.props.dispatch(requestFigures(query, page));
+
+    const bodyParams = {
+      size: this.props.state.figuresFetchSize
+    };
+
+    if (query) {
+      bodyParams.query = {
+        bool: {
+          must: {
+            nested: {
+              path: "caption",
+              query: {
+                multi_match: {
+                  query,
+                  fields: [
+                    "caption.p",
+                    "caption.title"
+                  ]
+                }
+              }
+            }
+          }
+        }
+      };
+    }
+
+    const body = JSON.stringify(bodyParams);
+    Api.searchFigs({body}).then((json) => {
+      this.props.dispatch(receiveFigures(json));
     });
   }
 
@@ -283,7 +320,7 @@ class Search extends Component {
   }
 
   render() {
-    const {documents, documentsTotal, aggregations, booktitles} = this.props.state;
+    const {papers, papersTotal, aggregations, booktitles, figures, figuresTotal} = this.props.state;
 
     let year;
     if (aggregations.year.buckets.length > 1) {
@@ -336,9 +373,23 @@ class Search extends Component {
           </ul>
         </div>
         <div className="col s8 l9">
-          <p>{documentsTotal || 0} results</p>
-          <Documents data={documents}/>
-          <Paginator/>
+          <div className="row">
+            <div className="col s12">
+              <ul className="tabs">
+                <li className="tab col s3"><a href="#tab-texts">Texts</a></li>
+                <li className="tab col s3"><a href="#tab-figures">Figures</a></li>
+              </ul>
+            </div>
+            <div id="tab-texts" className="col s12 active">
+              <p>{papersTotal || 0} results</p>
+              <Papers data={papers}/>
+              <Paginator/>
+            </div>
+            <div id="tab-figures" className="col s12" style={{display: "none"}}>
+              <p>{figuresTotal || 0} results</p>
+              <Figures data={figures}/>
+            </div>
+          </div>
         </div>
       </div>
     );

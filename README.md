@@ -16,6 +16,27 @@ $ cd deepscholar
 $ npm install
 ```
 
+## Create .env to set environment variables to Docker
+
+1. Copy from .env.example
+    ```
+    $ cd deepscholar
+    $ cp .env.example .env
+    ```
+
+2. Edit .env  
+You must edit `DS_FIGS_DIR` to define figs dir.
+You can also change port settings.
+    ```
+    DS_FRONT_PORT=8080
+    DS_CLIENT_PORT=3000
+    DS_SERVER_PORT=3001
+    DS_ES_PORT=9200
+    DS_KIBANA_PORT=5601
+    DS_ESHEAD_PORT=9100
+    DS_FIGS_DIR=/path/to/figs/dir
+    ```
+
 ## Run application
 
 ```
@@ -23,30 +44,8 @@ $ cd deepscholar
 $ docker-compose up
 ```
 
-You can see your application at [http://localhost:3000](http://localhost:3000)
-
-## Run application with custom port settings
-Default ports settings are defined in `.env` file as environment variables
-
-```
-$ cat .env
-DS_CLIENT_PORT=3000
-DS_SERVER_PORT=3001
-DS_ES_PORT=9200
-DS_KIBANA_PORT=5601
-DS_ESHEAD_PORT=9100
-```
-
-If you want to run applications using different ports, pass ports as environment variables.
-```
-env \
-DS_CLIENT_PORT=13000 \
-DS_SERVER_PORT=13001 \
-DS_ES_PORT=19200 \
-DS_KIBANA_PORT=15601 \
-DS_ESHEAD_PORT=19100 \
-docker-compose up
-```
+You can see your application at [http://localhost:8080](http://localhost:8080)  
+**The port 8080 depends on DS_FRONT_PORT setting.**
 
 ## Developer's Guide
 ```
@@ -80,13 +79,13 @@ client/src
 * page
 * url
 
-### Create Index (Only once)
+### Initialize Indexes (Only once)
 
-Create index using the following command
+Create indexes using the following command
 ```
-cd index_schemes
-# The port should be same as environment variables $DS_ES_PORT
-curl -XPUT 'http://localhost:9200/documents' --data-binary @documents.json
+$ npm -s run es:initializeIndexes
+Index(papers) created.
+Index(figs) created.
 ```
 
 ### Import XML data
@@ -105,16 +104,30 @@ curl -XPUT 'http://localhost:9200/documents' --data-binary @documents.json
     -rwxr-xr-x@ 1 dataich  staff   2.1K 11  1 04:14 PMC5000131.xml
     ```
     
-2. Convert xml files to ES json and import to ES  
+2. Import xml files to ES and create symlink to figs
     ```
-    # The port should be same as environment variables $DS_ES_PORT
-    npm -s run convert example/sample_xml | curl -XPOST "localhost:9200/documents/_bulk" --data-binary @-
+    $ npm -s run es:insertIndexes ~/sample_xml
+    PMC5000011.xml may be invalid format.
+    PMC5000131.xml may be invalid format.
+    StatusCode: 200
+    {"took":118,"errors":false,"items":[{"index":{"_index":"papers","_type":"lang","_id":"PMC5000013","_version":2,"result":"updated","_shards":{"total":2,"successful":1,"failed":0},"created":false,"status":200}},{"index":{"_index":"figs","_type":"lang","_id":"AWAsKiszG0FqIxQhXoQP","_version":1,"result":"created","_shards":{"total":2,"successful":1,"failed":0},"created":true,"status":201}},
+    ```
+
+    Then figs can be referenced in `server/public/figs`. 
+    ```
+    ls -l server/public/figs/**/*.png
+    -rw-r--r--  1 dataich  staff  105284 11 26 22:01 server/public/figs/PMC5000010/PMC5000010_1.png
+    -rw-r--r--  1 dataich  staff  239564 11 26 22:01 server/public/figs/PMC5000010/PMC5000010_2.png
+    -rw-r--r--  1 dataich  staff  108743 11 26 22:01 server/public/figs/PMC5000010/PMC5000010_3.png
+    -rw-r--r--  1 dataich  staff  722954 11 26 22:01 server/public/figs/PMC5000010/PMC5000010_4.png
+    -rw-r--r--  1 dataich  staff  451885 11 26 22:01 server/public/figs/PMC5000010/PMC5000010_5.png
     ```
 
 ### Delete
 ```
-# The port should be same as environment variables $DS_ES_PORT
-curl -XDELETE http://localhost:9200/*
+$ npm -s run es:deleteIndexes
+All Indexes have been deleted.
+
 ```
 
 ### Development Tools

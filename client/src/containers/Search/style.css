@@ -1,3 +1,17 @@
 div.publication-year {
     padding: 0 20px;
 }
+
+.tabs .tab a,
+.tabs .tab a:hover,
+.tabs .tab a:active {
+    color: #039be5 !important;
+}
+
+.tabs .tab a:hover {
+    text-decoration: underline;
+}
+
+.tabs .indicator {
+    background-color: #039be5;
+}
