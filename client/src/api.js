@@ -31,6 +31,10 @@ class Api {
   static searchFigs(options) {
     return Api.search("figs", options);
   }
+
+  static searchTables(options) {
+    return Api.search("tables", options);
+  }
 }
 
 export default Api;

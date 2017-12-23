@@ -187,6 +187,34 @@ export class Figures extends Component {
   }
 }
 
+class Table extends Component {
+  render() {
+    const {table, label} = this.props.data;
+    const html = {__html: `<table class="striped responsive-table">${table}<table>`};
+
+    return (
+      <div dangerouslySetInnerHTML={html}></div>
+    );
+  }
+}
+
+export class Tables extends Component {
+  render() {
+    const figures = this.props.data.map((figure, i) => {
+      const {paperId, table, label} = figure;
+      const data = {table, label};
+
+      return <Table key={i} data={data} />;
+    });
+
+    return (
+      <div id="tables">
+        {figures}
+      </div>
+    );
+  }
+}
+
 export class ScrollToTop extends Component {
   componentDidUpdate(prevProps) {
     if (this.props.location !== prevProps.location) {

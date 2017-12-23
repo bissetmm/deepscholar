@@ -19,6 +19,9 @@ const initialState = {
   figures: [],
   figuresTotal: 0,
   figuresFetchSize: 10000,
+  tables: [],
+  tablesTotal: 0,
+  tablesFetchSize: 10000,
   aggregations: {
     year: {
       buckets: []
@@ -99,6 +102,16 @@ export function reducers(state = initialState, action) {
       return Object.assign({}, state, {
         figures: action.figures,
         figuresTotal: action.figuresTotal,
+      });
+    case REQUEST_TABLES:
+      return Object.assign({}, state, {
+        query: action.query,
+        page: action.page
+      });
+    case RECEIVE_TABLES:
+      return Object.assign({}, state, {
+        tables: action.tables,
+        tablesTotal: action.tablesTotal,
       });
     case TOGGLE_FULL_TEXT:
       if (state.enabledFullTextPaperIds.has(action.id)) {
@@ -236,6 +249,26 @@ export function receiveFigures(json) {
     type: RECEIVE_FIGURES,
     figures: json.hits.hits.map((item) => item._source),
     figuresTotal: json.hits.total
+  };
+}
+
+const REQUEST_TABLES = "REQUEST_TABLES";
+
+export function requestTables(query, page) {
+  return {
+    type: REQUEST_TABLES,
+    query,
+    page
+  };
+}
+
+const RECEIVE_TABLES = "RECEIVE_TABLES";
+
+export function receiveTables(json) {
+  return {
+    type: RECEIVE_TABLES,
+    tables: json.hits.hits.map((item) => item._source),
+    tablesTotal: json.hits.total
   };
 }
 

@@ -19,6 +19,7 @@ const defineSearchkitRouter = (index) => {
 };
 defineSearchkitRouter("papers");
 defineSearchkitRouter("figs");
+defineSearchkitRouter("tables");
 
 app.listen(app.get("port"), () => {
   console.log(`Find the server at: http://localhost:${app.get("port")}/`);
