@@ -3,10 +3,10 @@ import _ from 'lodash';
 import {connect} from 'react-redux';
 import {withRouter} from 'react-router-dom';
 import {RangeSliderHistogram} from 'searchkit';
-import {Papers, Figures} from '../../components/index.js';
+import {Papers, Figures, Tables} from '../../components/index.js';
 import Api from '../../api';
 import {
-  changeQuery, changePage, requestPapers, receivePapers, requestFigures, receiveFigures, deleteScrollY, changeYears,
+  changeQuery, changePage, requestPapers, receivePapers, requestFigures, receiveFigures, requestTables, receiveTables, deleteScrollY, changeYears,
   changeBooktitle
 } from '../../module';
 import './style.css';
@@ -111,6 +111,7 @@ class Search extends Component {
   componentDidMount() {
     this.searchPapers();
     this.searchFigures();
+    this.searchTables();
   }
 
   componentDidUpdate(prevProps) {
@@ -119,6 +120,7 @@ class Search extends Component {
     if (oldQuery !== newQuery || oldArticleTitle !== newArticleTitle || oldAuthor !== newAuthor || oldAbstract !== newAbstract || oldPage !== newPage || oldGte !== newGte || oldLte !== newLte || Array.from(oldBooktitles).join("") !== Array.from(newBooktitles).join("")) {
       this.searchPapers();
       this.searchFigures();
+      this.searchTables();
     }
 
 
@@ -286,6 +288,41 @@ class Search extends Component {
     });
   }
 
+  searchTables() {
+    const {query, page} = this.props.state;
+    this.props.dispatch(requestTables(query, page));
+
+    const bodyParams = {
+      size: this.props.state.tablesFetchSize
+    };
+
+    if (query) {
+      bodyParams.query = {
+        bool: {
+          must: {
+            nested: {
+              path: "caption",
+              query: {
+                multi_match: {
+                  query,
+                  fields: [
+                    "caption.p",
+                    "caption.title"
+                  ]
+                }
+              }
+            }
+          }
+        }
+      };
+    }
+
+    const body = JSON.stringify(bodyParams);
+    Api.searchTables({body}).then((json) => {
+      this.props.dispatch(receiveTables(json));
+    });
+  }
+
   handleKeyPress(e) {
     if (e.key !== "Enter") {
       return;
@@ -320,7 +357,7 @@ class Search extends Component {
   }
 
   render() {
-    const {papers, papersTotal, aggregations, booktitles, figures, figuresTotal} = this.props.state;
+    const {papers, papersTotal, aggregations, booktitles, figures, figuresTotal, tables, tablesTotal} = this.props.state;
 
     let year;
     if (aggregations.year.buckets.length > 1) {
@@ -378,6 +415,7 @@ class Search extends Component {
               <ul className="tabs">
                 <li className="tab col s3"><a href="#tab-texts">Texts</a></li>
                 <li className="tab col s3"><a href="#tab-figures">Figures</a></li>
+                <li className="tab col s3"><a href="#tab-tables">Tables</a></li>
               </ul>
             </div>
             <div id="tab-texts" className="col s12 active">
@@ -388,6 +426,10 @@ class Search extends Component {
             <div id="tab-figures" className="col s12" style={{display: "none"}}>
               <p>{figuresTotal || 0} results</p>
               <Figures data={figures}/>
+            </div>
+            <div id="tab-tables" className="col s12" style={{display: "none"}}>
+              <p>{tablesTotal || 0} results</p>
+              <Tables data={tables}/>
             </div>
           </div>
         </div>

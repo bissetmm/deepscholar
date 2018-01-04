@@ -53,3 +53,8 @@
     margin: 5px;
     border: 1px solid lightgray;
 }
+
+#tables {
+    display: flex;
+    flex-wrap: wrap;
+}

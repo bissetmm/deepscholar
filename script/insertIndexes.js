@@ -18,11 +18,18 @@ const defaultFigMeta = {
   _index: "figs",
   _type: "lang"
 };
+const defaultTableMeta = {
+  _index: "tables",
+  _type: "lang"
+};
 const shouldBeArray = [
   "author",
   "p",
   "fig",
-  "figGroup"
+  "figGroup",
+  "table",
+  "tableWrap",
+  "tableWrapGroup"
 ];
 
 (async () => {
@@ -126,6 +133,9 @@ function processPaper(s, dirPath) {
         throw error;
       }
 
+      // Add CDATA to <table>
+      xml = xml.replace(/<table>/g, '<table><![CDATA[').replace(/<\/table>/g, ']]></table>');
+
       parseString(xml, (error, result) => {
         if (error) {
           console.log(error);
@@ -144,7 +154,7 @@ function processPaper(s, dirPath) {
           s.append(`\n${JSON.stringify(paperMeta)}\n${JSON.stringify(data.front)}`);
 
           //index for figs
-          const figs = (data.floatsGroup.fig && data.floatsGroup.fig) || [];
+          const figs = data.floatsGroup.fig || [];
           const figsInfloatsGroup = (data.floatsGroup.figGroup && data.floatsGroup.figGroup.forEach((figGroup) => {
             return figGroup.fig;
           })) || [];
@@ -152,6 +162,17 @@ function processPaper(s, dirPath) {
           figs.forEach((fig) => {
             const figMeta = {index: defaultFigMeta};
             s.append(`\n${JSON.stringify(figMeta)}\n${JSON.stringify(Object.assign(fig, {paperId}))}`);
+          });
+
+          //index for tableWraps
+          const tableWraps = data.floatsGroup.tableWrap || [];
+          const tableWrapsInTableWrapGroup = (data.floatsGroup.tableWrapGroup && data.floatsGroup.tableWrapGroup.forEach((tableWrapGroup) => {
+            return tableWrapGroup.tableWrap;
+          })) || [];
+          tableWraps.concat(Array.prototype.concat.apply([], tableWrapsInTableWrapGroup));
+          tableWraps.forEach((tableWrap) => {
+            const tableMeta = {index: defaultTableMeta};
+            s.append(`\n${JSON.stringify(tableMeta)}\n${JSON.stringify(Object.assign(tableWrap, {paperId}))}`);
           });
         } catch (e) {
           console.error(`${fileName} may be invalid format.`);

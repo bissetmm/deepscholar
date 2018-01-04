@@ -86,6 +86,7 @@ Create indexes using the following command
 $ npm -s run es:initializeIndexes
 Index(papers) created.
 Index(figs) created.
+Index(tables) created.
 ```
 
 ### Import XML data
