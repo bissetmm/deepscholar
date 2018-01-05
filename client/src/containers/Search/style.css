@@ -104,7 +104,8 @@
 	**  Paper
 	****************/
 
-	.paper {
+	.paper,
+	#tables {
 		font-family: Arial;
 	}
 
