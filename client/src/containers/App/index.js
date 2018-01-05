@@ -83,7 +83,7 @@ const NavBar = connect(mapStateToProps)(class NavBar extends Component {
       <div className="nav-wrapper">
         <div className="row">
           <div className="col s4 l3 hide-on-med-and-down">
-            <Link to="/" className="brand-logo"><i className="material-icons">cloud</i>DeepScholar</Link>
+            <Link to="/" className="brand-logo"><img src="/images/deepscholar_logo.svg"/></Link>
           </div>
           <div className="col s9 l7">
             <div className="input-field">
@@ -118,7 +118,7 @@ class App extends Component {
       <BrowserRouter>
         <div>
           <div className="navbar-fixed">
-            <nav className="navy">
+            <nav className="header-navi z-depth-0">
               <Route component={(props) => (
                 <NavBar {...props}/>
               )}/>

@@ -1,21 +1,123 @@
+/****************
+**
+**  Global style
+**
+**  	COLOR
+**			Main #1e50a2
+**			Sub  #0a1933
+**
+**  	FONT
+**			Main Basic
+**  	    Sub  Arial
+**
+****************/
+
+@import url('https://fonts.googleapis.com/css?family=Basic');
+
 body {
     margin: 0;
     padding: 0;
-    font-family: sans-serif;
+
+    font-family: 'Basic', sans-serif;
+    color: #0a1933;
 }
 
-.navy {
-    background-color: #3f51b5;
-}
-
-.input-field input[type=search] {
-    height: 100%;
-}
-
-div.nav-wrapper .row, div.nav-wrapper .col {
-    height: 100%;
+a {
+	color: #1e50a2;
 }
 
 div.container {
-    width: 90%;
+    width: 94%;
 }
+
+
+/****************
+**
+**  Header Navi 
+**
+****************/
+
+.navbar-fixed {
+    margin-bottom: 36px;
+}
+
+.navbar-fixed .nav-wrapper .row, 
+.navbar-fixed .nav-wrapper .col {
+    height: 100%;
+}
+
+.header-navi {
+    background-color: #fff;
+    border-bottom: 1px solid #e0e0e0;
+}
+
+	/****************
+	**  Logo
+	****************/
+
+	.header-navi .brand-logo {
+		height: 100%;
+		margin-left: 18px;
+		font-size: 0;
+	}
+	.header-navi .brand-logo img {
+		position: relative;
+		top: 50%;
+		transform: translateY(-50%);
+		width: 140px;
+	}
+
+	/****************
+	**  Search
+	****************/
+
+	.header-navi .input-field input[type=search] {
+		box-sizing: border-box;
+		/*padding: 3px 6px 1px 38px;*/
+		padding: 0 0 0 36px;
+
+		position: relative;
+		top: 50%;
+		transform: translateY(-50%);
+
+		width: 100%;
+		height: 32px;
+
+		line-height: 34px;
+		font-size: 16px;
+
+	    background-color: #fff;
+	    border: 1px solid rgba(137, 144, 156, 0.90) !important;
+	    border-radius: 2px;
+	    outline: none;
+	    -webkit-appearance: none;
+	    -moz-appearance: none;
+	}
+
+	.header-navi .input-field input[type=search]:focus {
+	    border-bottom: none !important;
+	    box-shadow: none !important;
+	    border: 1px solid rgba(137, 144, 156, 1) !important;
+	}
+
+	.header-navi .input-field .label-icon {
+		position: absolute;
+	    top: 50%;
+		transform: translateY(-50%);
+
+		width: 40px;
+	    height: 38px;
+	}
+
+	.header-navi .input-field .label-icon .material-icons {
+	    text-align: center;
+	    line-height: 41px;
+
+	    color: #0a1933;
+	}
+
+	.header-navi :placeholder-shown,
+	.header-navi ::-webkit-input-placeholder {
+	    color: rgba(10, 25, 51, 0.32);
+	    /*font-size: 90%;*/
+	}
