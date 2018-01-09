@@ -1,17 +1,131 @@
-div.publication-year {
-    padding: 0 20px;
+/****************
+**
+**  Global style
+**
+****************/
+
+
+
+/****************
+**
+**  Side bar
+**
+****************/
+
+.sidebar {
+	padding-right: 32px !important;
+	padding-left: 4px;
 }
 
-.tabs .tab a,
-.tabs .tab a:hover,
-.tabs .tab a:active {
-    color: #039be5 !important;
+.sidebar > div {
+	margin-left: 16px;
+	margin-right: 16px;
 }
 
-.tabs .tab a:hover {
-    text-decoration: underline;
-}
+	/****************
+	**  Lead
+	****************/
 
-.tabs .indicator {
-    background-color: #039be5;
-}
+	.sidebar h5 {
+	    letter-spacing: -0.03em !important;
+	    font-size: 1.3rem !important;
+	    margin-top: 16px !important;
+	    margin-bottom: 30px !important;
+	}
+
+	.sidebar h6 {
+		
+	}
+
+	/****************
+	**  Input Field
+	****************/
+
+	.sidebar input[type=search]:not(.browser-default){
+		height: 1.5rem !important;
+		border-bottom: 1px solid #e0e0e0;
+	}
+
+	.sidebar input[type=search]:not(.browser-default):focus {
+		border-bottom: 1px solid rgba(10, 25, 51, 0.75);
+	    -webkit-box-shadow: none;
+	    box-shadow: none;
+	}
+
+	/****************
+	**  Publication Year
+	****************/
+	.sidebar .publication-year {
+		padding: 0 11px;
+	    margin-top: 1rem;
+	    margin-bottom: 1.5rem;
+	}
+
+	.sidebar .publication-year {
+	    padding: 0 20px;
+	}
+
+
+
+/****************
+**
+**  Main Contents
+**
+****************/
+
+	/****************
+	**  Tabs
+	****************/
+	.tabs .tab a,
+	.tabs .tab a:hover,
+	.tabs .tab a:active {
+	    color: #1e50a2 !important;
+	    letter-spacing: 0.1em;
+	}
+
+	.tabs .tab a:hover {
+	    text-decoration: underline;
+	}
+
+	.tabs .indicator {
+	    background-color: #1e50a2;
+	    border-radius: 5px;
+	}
+
+	/****************
+	**  Results
+	****************/
+
+	#tab-texts > p {
+	    margin: 1.3em 0 1em;
+	}
+
+	/****************
+	**  Paper
+	****************/
+
+	.paper,
+	#tables {
+		font-family: Arial;
+	}
+
+	.paper .authors {
+		font-weight: bold;	
+	}
+
+	.paper span > a {
+		font-size: 95%;
+		margin-left: 4px;
+		font-weight: normal;	
+	}
+
+	.paper .meta.links {
+		font-size: 95%
+	}
+
+	.paper .meta.links .material-icons {
+		font-size: 22px;
+	    margin-right: 3px;
+	    color: #1e50a2;
+	}
+
