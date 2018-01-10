@@ -3,6 +3,7 @@ import {
   BrowserRouter, Switch, Route, Link
 } from 'react-router-dom';
 import {connect} from 'react-redux';
+import Index from '../Index/index.js';
 import Search from '../Search/index.js';
 import Detail from '../Detail/index.js';
 import {ScrollToTop} from '../../components/index.js';
@@ -127,7 +128,8 @@ class App extends Component {
           <div className="container">
             <div>
               <Switch>
-                <Route exact path="/" component={(props) => (
+                <Route exact path="/" component={Index}/>
+                <Route exact path="/search" component={(props) => (
                   <ScrollToTop {...props}>
                     <Search {...props}/>
                   </ScrollToTop>
