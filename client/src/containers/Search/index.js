@@ -388,26 +388,29 @@ class Search extends Component {
 
     return (
       <div className="row">
-        <div className="col s4 l3">
-          <h6>Article Title</h6>
-          <input type="search" onKeyPress={this.handleKeyPress.bind(this)} onChange={this.handleChangeArticleTitle.bind(this)}
-                 defaultValue={this.props.state.articleTitle}/>
-          <h6>Author</h6>
-          <input type="search" onKeyPress={this.handleKeyPress.bind(this)} onChange={this.handleChangeAuthor.bind(this)}
-                 defaultValue={this.props.state.author}/>
-          <h6>Abstract</h6>
-          <input type="search" onKeyPress={this.handleKeyPress.bind(this)} onChange={this.handleChangeAbstract.bind(this)}
-                 defaultValue={this.props.state.abstract}/>
+        <div className="col s4 l3 sidebar">
+          <h5>Filter & Refine</h5>
+          <div>
+            <h6>Article Title</h6>
+            <input type="search" onKeyPress={this.handleKeyPress.bind(this)} onChange={this.handleChangeArticleTitle.bind(this)}
+                   defaultValue={this.props.state.articleTitle}/>
+            <h6>Author</h6>
+            <input type="search" onKeyPress={this.handleKeyPress.bind(this)} onChange={this.handleChangeAuthor.bind(this)}
+                   defaultValue={this.props.state.author}/>
+            <h6>Abstract</h6>
+            <input type="search" onKeyPress={this.handleKeyPress.bind(this)} onChange={this.handleChangeAbstract.bind(this)}
+                   defaultValue={this.props.state.abstract}/>
 
-          <h6>Publication Year</h6>
-          <div className="publication-year">
-            {year}
+            <h6>Publication Year</h6>
+            <div className="publication-year">
+              {year}
+            </div>
+
+            <h6>Booktitle</h6>
+            <ul>
+              {booktitleComponents}
+            </ul>
           </div>
-
-          <h6>Booktitle</h6>
-          <ul>
-            {booktitleComponents}
-          </ul>
         </div>
         <div className="col s8 l9">
           <div className="row">

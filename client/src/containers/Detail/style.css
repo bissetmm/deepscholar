@@ -1,4 +1,44 @@
-.back-to-results {
-    display: block;
-    padding: 10px 0;
-}
+/****************
+**
+**  Global style
+**
+****************/
+
+
+/****************
+**
+**  Main Contents
+**
+****************/
+
+	/****************
+	**  Back to Results
+	****************/
+
+	.back-to-results {
+	    display: block;
+	    padding: 5px 7px 3px 0;
+    	margin-bottom: 9px;
+    	border: 1px solid #1e50a2;
+    	width: 132px;
+    	text-align: center; 
+    	border-radius: 2px;
+	}
+
+	.back-to-results i {
+		font-size: 22px;
+		vertical-align: middle;
+	}
+
+
+	/****************
+	**  Paper
+	****************/
+
+	.paper > header,
+	.paper > p,
+	.paper > footer {
+		max-width: 1000px;
+		margin-left: auto;
+		margin-right: auto;
+	} 
