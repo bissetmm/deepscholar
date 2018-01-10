@@ -54,7 +54,7 @@ const NavBar = connect(mapStateToProps)(class NavBar extends Component {
       queries.push(["booktitle[]", booktitle]);
     });
 
-    const url = "/?" + queries.map(query => {
+    const url = "/search?" + queries.map(query => {
       return `${query[0]}=${query[1]}`
     }).join("&");
 
