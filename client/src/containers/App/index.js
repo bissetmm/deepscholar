@@ -96,13 +96,6 @@ const NavBar = connect(mapStateToProps)(class NavBar extends Component {
               </label>
             </div>
           </div>
-          <div className="col s3 l2 right">
-            <ul className="right">
-              <li><a href="#"><i className="material-icons">view_module</i></a></li>
-              <li><a href="#"><i className="material-icons">refresh</i></a></li>
-              <li><a href="#"><i className="material-icons">more_vert</i></a></li>
-            </ul>
-          </div>
         </div>
       </div>
     );
@@ -128,7 +121,9 @@ class App extends Component {
           <div className="container">
             <div>
               <Switch>
-                <Route exact path="/" component={Index}/>
+                <Route exact path="/" component={(props) => (
+                  <Index {...props}/>
+                )}/>
                 <Route exact path="/search" component={(props) => (
                   <ScrollToTop {...props}>
                     <Search {...props}/>
