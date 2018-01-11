@@ -8,16 +8,19 @@
 
 
 
-#root.index .navbar-fixed {
+.index .navbar-fixed {
     margin-bottom: 0 !important; 
     position: fixed !important; 
 }
+.index .navbar-fixed .input-field {
+  display: none;
+}
 
-#root.index div.container {
+.index div.container {
     width: 100% !important;
 }
 
-#root.index .mainVisual {
+.index .mainVisual {
 	overflow: hidden;
 	position: relative;
 	height: 100vh;
@@ -25,7 +28,7 @@
 	z-index: 1;
 }
 
-#root.index .mainVisual.grad {
+.index .mainVisual.grad {
   background: linear-gradient(180deg, #ffffff, #1e50a2);
   background-size: 100% 100%;
 }
@@ -35,54 +38,54 @@
 
 
 
-#root.index .mainVisual .box {
+.index .mainVisual .box {
 	position: absolute;
     width: 100%;
     top: calc(50% + 2vh);
     transform: translateY(-50%);
     z-index: 3;
 }
-#root.index .mainVisual .headline {
+.index .mainVisual .headline {
   	margin: 0;
     font-family: 'Lato'; font-weight: 100;
     color: #030303;
 }
 
-#root.index .mainVisual .input-field {
+.index .mainVisual .input-field {
 	margin-top: 2rem;
 }
-    #root.index .mainVisual .input-field input{
+    .index .mainVisual .input-field input{
     	opacity: 0.85;
     	border: 1px solid #ffffff !important;
     }
-    #root.index .mainVisual .input-field input:focus {
+    .index .mainVisual .input-field input:focus {
     	opacity: 1;
     }
 
-    #root.index .mainVisual .input-field .label-icon {
+    .index .mainVisual .input-field .label-icon {
     	text-align: center;
     	top: 0%;
     }
 
 
-#root.index .mainVisual .try {
+.index .mainVisual .try {
   font-family: 'Lato'; font-weight: 300;
   font-size: 16px;
 }
-  #root.index .mainVisual .try .colon {
+  .index .mainVisual .try .colon {
     padding: 0 5px;
   }
-  #root.index .mainVisual .try a {
+  .index .mainVisual .try a {
     color: #91bbf3;
     letter-spacing: 0.075em;
     font-family: Arial, sans-serif;
   }
-  #root.index .mainVisual .try a:hover {
+  .index .mainVisual .try a:hover {
     text-decoration: underline;
   }
 
 
-#root.index .mainVisual .note {
+.index .mainVisual .note {
   position: absolute;
   bottom: 0;
   width: 100%;
@@ -99,7 +102,7 @@
 
 
 /* Waves */
-#root.index .waves {
+.index .waves {
 	overflow:hidden;
 	display: block;
 	position:fixed;
@@ -112,7 +115,7 @@
 	z-index: 2;
 }
 
-#root.index .waves .wave {
+.index .waves .wave {
   width:calc( 100% + 4em );
   height:100%;
   position:absolute;
@@ -124,7 +127,7 @@
 
 /* Individual wave layers */
 
-#root.index .waves .wave_1 {
+.index .waves .wave_1 {
   animation-name:wave_1;
   animation-duration:3400ms;
   animation-delay:-1200ms;
@@ -135,7 +138,7 @@
   background-position:bottom left;
 }
 
-#root.index .waves .wave_2 {
+.index .waves .wave_2 {
   animation-name:wave_2;
   animation-duration:3200ms;
   animation-delay:-600ms;
@@ -146,7 +149,7 @@
   background-position:bottom right;
 }
 
-#root.index .waves .wave_3 {
+.index .waves .wave_3 {
   animation-name:wave_3;
   animation-duration:2800ms;
   animation-delay:-2400ms;
@@ -157,7 +160,7 @@
   background-position:bottom center;
 }
 
-#root.index .waves .wave_4 {
+.index .waves .wave_4 {
   animation-name:wave_4;
   animation-duration:2600ms;
   animation-delay:-1800ms;
@@ -168,7 +171,7 @@
   background-position:bottom left;
 }
 
-#root.index .waves .wave_5 {
+.index .waves .wave_5 {
   animation-name:wave_5;
   animation-duration:3000ms;
   animation-delay:-3000ms;

@@ -59,6 +59,7 @@ const NavBar = connect(mapStateToProps)(class NavBar extends Component {
     }).join("&");
 
     this.props.history.push(url);
+    this.refs.search.value = decodeURIComponent(this.props.state.query);
   }
 
   handleSubmit(e) {
@@ -89,7 +90,7 @@ const NavBar = connect(mapStateToProps)(class NavBar extends Component {
           <div className="col s9 l7">
             <div className="input-field">
               <form onSubmit={this.handleSubmit.bind(this)}>
-                <input type="search" placeholder="Search" onChange={this.handleChange.bind(this)}
+                <input type="search" placeholder="Search" ref="search" onChange={this.handleChange.bind(this)}
                        defaultValue={this.props.state.query}/>
               </form>
               <label className="label-icon" htmlFor="search"><i className="material-icons">search</i>

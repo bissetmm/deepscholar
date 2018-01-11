@@ -1,13 +1,6 @@
 import React, {Component} from 'react';
-import {
-  BrowserRouter, Switch, Route, Link
-} from 'react-router-dom';
 import {connect} from 'react-redux';
-import {withRouter} from 'react-router-dom';
-import Api from '../../api';
-import {NavBar} from '../../components/index.js';
-import {ScrollToTop} from '../../components/index.js';
-import {changeQuery, deleteAllScrollY} from '../../module';
+import { changeQuery } from '../../module';
 import './style.css';
 
 function mapStateToProps(state) {
@@ -21,11 +14,42 @@ class Index extends Component {
   }
 
   componentWillMount(){
-    document.getElementById("root").classList.add("index");
+    document.body.classList.add("index");
   }
 
   componentWillUnmount(){
-    document.getElementById("root").classList.remove("index");
+    document.body.classList.remove("index");
+  }
+
+  handleSubmit(e) {
+    e.preventDefault();
+
+    if (this.searchTimer !== null) {
+      clearTimeout(this.searchTimer);
+      this.searchTimer = null;
+    }
+
+    this.searchTimer = setTimeout(() => {
+      this.props.dispatch(changeQuery(this.query));
+    }, 0);
+  }
+
+  handleChange(e) {
+    this.query = e.target.value;
+  }
+
+  handleClick(e) {
+    e.preventDefault();
+    this.query = encodeURIComponent(e.target.innerText);
+
+    if (this.searchTimer !== null) {
+      clearTimeout(this.searchTimer);
+      this.searchTimer = null;
+    }
+
+    this.searchTimer = setTimeout(() => {
+      this.props.dispatch(changeQuery(this.query));
+    }, 0);
   }
 
   render() {
@@ -52,13 +76,13 @@ class Index extends Component {
             <div className="col s6 l6">
 
               <div className="input-field">
-                <form>
-                  <input type="search" placeholder="Search" />
+                <form onSubmit={this.handleSubmit.bind(this)}>
+                  <input type="search" placeholder="Search" onChange={this.handleChange.bind(this)} />
                 </form>
                 <label className="label-icon" htmlFor="search"><i className="material-icons">search</i></label>
               </div>
 
-              <div className="try">Try<span className="colon">:</span><Link to="/search">Deep Learning</Link></div>
+              <div className="try">Try<span className="colon">:</span><a href="/search?q=Deep%20Learning&page=1" onClick={this.handleClick.bind(this)}>Deep Learning</a></div>
             </div>
 
           </div>
