@@ -11,6 +11,8 @@ class Index extends Component {
 
   constructor(props) {
     super(props);
+    this.searchTimer = null;
+    this.query = null;
   }
 
   componentWillMount(){
@@ -23,6 +25,11 @@ class Index extends Component {
 
   handleSubmit(e) {
     e.preventDefault();
+
+    if( this.query == this.props.state.query && this.props.state.page == 0) { // 検索ページから戻り、同じ文字列を検索する場合、遷移がトリガーしない為、ここで強制遷移（検索はしないで前回の画面をそのまま表示）
+      this.props.history.push("/search?q=" + this.query + "&page=1");
+      return false;
+    }
 
     if (this.searchTimer !== null) {
       clearTimeout(this.searchTimer);
@@ -39,17 +46,8 @@ class Index extends Component {
   }
 
   handleClick(e) {
-    e.preventDefault();
     this.query = encodeURIComponent(e.target.innerText);
-
-    if (this.searchTimer !== null) {
-      clearTimeout(this.searchTimer);
-      this.searchTimer = null;
-    }
-
-    this.searchTimer = setTimeout(() => {
-      this.props.dispatch(changeQuery(this.query));
-    }, 0);
+    this.handleSubmit(e)
   }
 
   render() {
