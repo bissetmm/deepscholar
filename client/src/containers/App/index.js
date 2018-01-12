@@ -59,7 +59,9 @@ const NavBar = connect(mapStateToProps)(class NavBar extends Component {
     }).join("&");
 
     this.props.history.push(url);
-    this.refs.search.value = decodeURIComponent(this.props.state.query);
+    if( this.props.state.query != null ){
+      this.refs.search.value = decodeURIComponent(this.props.state.query);
+    }
   }
 
   handleSubmit(e) {
