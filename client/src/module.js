@@ -2,7 +2,9 @@ import update from 'immutability-helper';
 import queryString from 'query-string';
 
 const parsed = queryString.parse(window.location.search);
+const category = window.location.hash.match(/#\/([a-zA-Z]+)/)[1];
 const initialState = {
+  category: category || null,
   query: parsed.q || null,
   articleTitle: parsed.articleTitle || null,
   author: parsed.author || null,
@@ -39,6 +41,7 @@ export function reducers(state = initialState, action) {
   switch (action.type) {
     case CHANGE_QUERY:
       return Object.assign({}, state, {
+        category: action.category || "papers",
         query: action.query || null,
         articleTitle: action.articleTitle || null,
         author: action.author || null,
@@ -152,9 +155,10 @@ export function reducers(state = initialState, action) {
 
 const CHANGE_QUERY = "CHANGE_QUERY";
 
-export function changeQuery(query, articleTitle, author, abstract) {
+export function changeQuery(category, query, articleTitle, author, abstract) {
   return {
     type: CHANGE_QUERY,
+    category,
     query,
     articleTitle,
     author,

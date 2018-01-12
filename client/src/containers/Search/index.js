@@ -1,7 +1,7 @@
 import React, {Component} from 'react';
 import _ from 'lodash';
 import {connect} from 'react-redux';
-import {withRouter} from 'react-router-dom';
+import {withRouter, HashRouter, BrowserRouter, Switch, Route, Link} from 'react-router-dom';
 import {RangeSliderHistogram} from 'searchkit';
 import {Papers, Figures, Tables} from '../../components/index.js';
 import Api from '../../api';
@@ -11,6 +11,7 @@ import {
 } from '../../module';
 import './style.css';
 import 'searchkit/release/theme.css';
+import Detail from "../Detail";
 
 function mapStateToProps(state) {
   return {state};
@@ -109,18 +110,15 @@ class Search extends Component {
   }
 
   componentDidMount() {
-    this.searchPapers();
-    this.searchFigures();
-    this.searchTables();
+    this.search(this.props.state.category);
   }
 
   componentDidUpdate(prevProps) {
-    const {query: oldQuery, articleTitle: oldArticleTitle, author: oldAuthor, abstract: oldAbstract, gte: oldGte, lte: oldLte, booktitles: oldBooktitles, page: oldPage} = prevProps.state;
-    const {query: newQuery, articleTitle: newArticleTitle, author: newAuthor, abstract: newAbstract, gte: newGte, lte: newLte, booktitles: newBooktitles, page: newPage} = this.props.state;
-    if (oldQuery !== newQuery || oldArticleTitle !== newArticleTitle || oldAuthor !== newAuthor || oldAbstract !== newAbstract || oldPage !== newPage || oldGte !== newGte || oldLte !== newLte || Array.from(oldBooktitles).join("") !== Array.from(newBooktitles).join("")) {
-      this.searchPapers();
-      this.searchFigures();
-      this.searchTables();
+    const {category: oldCategory, query: oldQuery, articleTitle: oldArticleTitle, author: oldAuthor, abstract: oldAbstract, gte: oldGte, lte: oldLte, booktitles: oldBooktitles, page: oldPage} = prevProps.state;
+    const {category: newCategory, query: newQuery, articleTitle: newArticleTitle, author: newAuthor, abstract: newAbstract, gte: newGte, lte: newLte, booktitles: newBooktitles, page: newPage} = this.props.state;
+    if (oldCategory !== newCategory || oldQuery !== newQuery || oldArticleTitle !== newArticleTitle || oldAuthor !== newAuthor || oldAbstract !== newAbstract || oldPage !== newPage || oldGte !== newGte || oldLte !== newLte || Array.from(oldBooktitles).join("") !== Array.from(newBooktitles).join("")) {
+
+      this.search(newCategory);
     }
 
 
@@ -133,6 +131,20 @@ class Search extends Component {
 
     window.scrollTo(0, scrollY);
     window.jQuery('ul.tabs').tabs();
+  }
+
+  search(category) {
+    switch (category) {
+      case "figures":
+        this.searchFigures();
+        break;
+      case "tables":
+        this.searchTables();
+        break;
+      default:
+        this.searchPapers();
+        break;
+    }
   }
 
   searchPapers() {
@@ -323,11 +335,7 @@ class Search extends Component {
     });
   }
 
-  handleKeyPress(e) {
-    if (e.key !== "Enter") {
-      return;
-    }
-
+  changeQuery(category, query) {
     if (this.searchTimer !== null) {
       clearTimeout(this.searchTimer);
       this.searchTimer = null;
@@ -335,8 +343,16 @@ class Search extends Component {
 
 
     this.searchTimer = setTimeout(() => {
-      this.props.dispatch(changeQuery(null, this.articleTitle, this.author, this.abstract));
+      this.props.dispatch(changeQuery(category, query, this.articleTitle, this.author, this.abstract));
     }, 0);
+  }
+
+  handleKeyPress(e) {
+    if (e.key !== "Enter") {
+      return;
+    }
+
+    this.changeQuery(this.props.state.category, null);
   }
 
 
@@ -354,6 +370,10 @@ class Search extends Component {
 
   handleChangeBooktitle(key) {
     this.props.dispatch(changeBooktitle(key));
+  }
+
+  handleClickTab(category) {
+    this.changeQuery(category, this.props.state.query);
   }
 
   render() {
@@ -386,57 +406,75 @@ class Search extends Component {
     //   });
     // }
 
+    const categories = [
+      "texts",
+      "figures",
+      "tables"];
+
     return (
-      <div className="row">
-        <div className="col s4 l3 sidebar">
-          <h5>Filter & Refine</h5>
-          <div>
-            <h6>Article Title</h6>
-            <input type="search" onKeyPress={this.handleKeyPress.bind(this)} onChange={this.handleChangeArticleTitle.bind(this)}
-                   defaultValue={this.props.state.articleTitle}/>
-            <h6>Author</h6>
-            <input type="search" onKeyPress={this.handleKeyPress.bind(this)} onChange={this.handleChangeAuthor.bind(this)}
-                   defaultValue={this.props.state.author}/>
-            <h6>Abstract</h6>
-            <input type="search" onKeyPress={this.handleKeyPress.bind(this)} onChange={this.handleChangeAbstract.bind(this)}
-                   defaultValue={this.props.state.abstract}/>
+      <HashRouter>
+        <div className="row">
+          <div className="col s4 l3 sidebar">
+            <h5>Filter & Refine</h5>
+            <div>
+              <h6>Article Title</h6>
+              <input type="search" onKeyPress={this.handleKeyPress.bind(this)} onChange={this.handleChangeArticleTitle.bind(this)}
+                     defaultValue={this.props.state.articleTitle}/>
+              <h6>Author</h6>
+              <input type="search" onKeyPress={this.handleKeyPress.bind(this)} onChange={this.handleChangeAuthor.bind(this)}
+                     defaultValue={this.props.state.author}/>
+              <h6>Abstract</h6>
+              <input type="search" onKeyPress={this.handleKeyPress.bind(this)} onChange={this.handleChangeAbstract.bind(this)}
+                     defaultValue={this.props.state.abstract}/>
 
-            <h6>Publication Year</h6>
-            <div className="publication-year">
-              {year}
-            </div>
+              <h6>Publication Year</h6>
+              <div className="publication-year">
+                {year}
+              </div>
 
-            <h6>Booktitle</h6>
-            <ul>
-              {booktitleComponents}
-            </ul>
-          </div>
-        </div>
-        <div className="col s8 l9">
-          <div className="row">
-            <div className="col s12">
-              <ul className="tabs">
-                <li className="tab col s3"><a href="#tab-texts">Texts</a></li>
-                <li className="tab col s3"><a href="#tab-figures">Figures</a></li>
-                <li className="tab col s3"><a href="#tab-tables">Tables</a></li>
+              <h6>Booktitle</h6>
+              <ul>
+                {booktitleComponents}
               </ul>
             </div>
-            <div id="tab-texts" className="col s12 active">
-              <p>{papersTotal || 0} results</p>
-              <Papers data={papers}/>
-              <Paginator/>
-            </div>
-            <div id="tab-figures" className="col s12" style={{display: "none"}}>
-              <p>{figuresTotal || 0} results</p>
-              <Figures data={figures}/>
-            </div>
-            <div id="tab-tables" className="col s12" style={{display: "none"}}>
-              <p>{tablesTotal || 0} results</p>
-              <Tables data={tables}/>
+          </div>
+          <div className="col s8 l9">
+            <div className="row">
+              <div className="col s12">
+                <ul className="tabs">
+                  {categories.map((category) => {
+                    return <li className="tab col s3" onClick={this.handleClickTab.bind(this, category)}>
+                      <a className={this.props.state.category === category ? 'active' : ''}>{category}</a>
+                    </li>;
+                  })
+                  }
+                </ul>
+              </div>
+                <Switch>
+                  <Route path="/figures" component={(props) => (
+                    <div className="col s12">
+                      <p>{figuresTotal || 0} results</p>
+                      <Figures data={figures}/>
+                    </div>
+                  )}/>
+                  <Route path="/tables" component={(props) => (
+                    <div className="col s12">
+                      <p>{tablesTotal || 0} results</p>
+                      <Tables data={tables}/>
+                    </div>
+                  )}/>
+                  <Route component={(props) => (
+                    <div className="col s12">
+                      <p>{papersTotal || 0} results</p>
+                      <Papers data={papers}/>
+                      <Paginator/>
+                    </div>
+                  )}/>
+                </Switch>
             </div>
           </div>
         </div>
-      </div>
+      </HashRouter>
     );
   }
 }
