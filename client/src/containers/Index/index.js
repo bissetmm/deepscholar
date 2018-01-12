@@ -69,9 +69,9 @@ class Index extends Component {
 
           <div className="row">
 
-            <div className="col s3 l3"></div>
+            <div className="col s2 l3"></div>
 
-            <div className="col s6 l6">
+            <div className="col s8 l6">
 
               <div className="input-field">
                 <form onSubmit={this.handleSubmit.bind(this)}>
