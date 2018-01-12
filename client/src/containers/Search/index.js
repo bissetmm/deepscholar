@@ -112,6 +112,7 @@ class Search extends Component {
     this.searchPapers();
     this.searchFigures();
     this.searchTables();
+    window.jQuery('ul.tabs').tabs();
   }
 
   componentDidUpdate(prevProps) {
@@ -132,7 +133,6 @@ class Search extends Component {
     this.props.dispatch(deleteScrollY(locationKey));
 
     window.scrollTo(0, scrollY);
-    window.jQuery('ul.tabs').tabs();
   }
 
   searchPapers() {

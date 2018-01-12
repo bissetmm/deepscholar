@@ -3,6 +3,7 @@ import {
   BrowserRouter, Switch, Route, Link
 } from 'react-router-dom';
 import {connect} from 'react-redux';
+import Index from '../Index/index.js';
 import Search from '../Search/index.js';
 import Detail from '../Detail/index.js';
 import {ScrollToTop} from '../../components/index.js';
@@ -53,11 +54,14 @@ const NavBar = connect(mapStateToProps)(class NavBar extends Component {
       queries.push(["booktitle[]", booktitle]);
     });
 
-    const url = "/?" + queries.map(query => {
+    const url = "/search?" + queries.map(query => {
       return `${query[0]}=${query[1]}`
     }).join("&");
 
     this.props.history.push(url);
+    if( this.props.state.query != null ){
+      this.refs.search.value = decodeURIComponent(this.props.state.query);
+    }
   }
 
   handleSubmit(e) {
@@ -88,19 +92,12 @@ const NavBar = connect(mapStateToProps)(class NavBar extends Component {
           <div className="col s9 l7">
             <div className="input-field">
               <form onSubmit={this.handleSubmit.bind(this)}>
-                <input type="search" placeholder="Search" onChange={this.handleChange.bind(this)}
+                <input type="search" placeholder="Search" ref="search" onChange={this.handleChange.bind(this)}
                        defaultValue={this.props.state.query}/>
               </form>
               <label className="label-icon" htmlFor="search"><i className="material-icons">search</i>
               </label>
             </div>
-          </div>
-          <div className="col s3 l2 right">
-            <ul className="right">
-              <li><a href="#"><i className="material-icons">view_module</i></a></li>
-              <li><a href="#"><i className="material-icons">refresh</i></a></li>
-              <li><a href="#"><i className="material-icons">more_vert</i></a></li>
-            </ul>
           </div>
         </div>
       </div>
@@ -128,6 +125,9 @@ class App extends Component {
             <div>
               <Switch>
                 <Route exact path="/" component={(props) => (
+                  <Index {...props}/>
+                )}/>
+                <Route exact path="/search" component={(props) => (
                   <ScrollToTop {...props}>
                     <Search {...props}/>
                   </ScrollToTop>
