@@ -86,10 +86,10 @@ const NavBar = connect(mapStateToProps)(class NavBar extends Component {
     return (
       <div className="nav-wrapper">
         <div className="row">
-          <div className="col s4 l3 hide-on-med-and-down">
+          <div className="col s4 l3">
             <Link to="/" className="brand-logo"><img src="/images/deepscholar_logo.svg"/></Link>
           </div>
-          <div className="col s9 l7">
+          <div className="col s8 l7">
             <div className="input-field">
               <form onSubmit={this.handleSubmit.bind(this)}>
                 <input type="search" placeholder="Search" ref="search" onChange={this.handleChange.bind(this)}

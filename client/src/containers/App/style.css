@@ -49,6 +49,7 @@ div.container {
 .header-navi {
     background-color: #fff;
     border-bottom: 1px solid #e0e0e0;
+    min-height: 64px;
 }
 
 	/****************
@@ -56,6 +57,8 @@ div.container {
 	****************/
 
 	.header-navi .brand-logo {
+		position: relative;
+		display: block;
 		height: 100%;
 		margin-left: 18px;
 		font-size: 0;
@@ -64,7 +67,16 @@ div.container {
 		position: relative;
 		top: 50%;
 		transform: translateY(-50%);
-		width: 140px;
+		width: 100%;
+		max-width: 140px;
+	}
+	@media only screen and (max-width: 992px) {
+		.header-navi .brand-logo {
+			margin-left: 0;
+		    left: 0;
+		    -webkit-transform: translateX(0); 
+		    transform: translateX(0); 
+		}
 	}
 
 	/****************
