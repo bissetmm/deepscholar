@@ -1,8 +1,12 @@
 import update from 'immutability-helper';
 import queryString from 'query-string';
 
-const parsed = queryString.parse(window.location.search);
+const matches = window.location.hash.match(/#\/([a-zA-Z]+).*\?(.+)/);
+const queries = matches ? matches[2] : "";
+const parsed = queryString.parse(queries);
+const category = matches ? matches[1] : null;
 const initialState = {
+  category: category || null,
   query: parsed.q || null,
   articleTitle: parsed.articleTitle || null,
   author: parsed.author || null,
@@ -21,7 +25,7 @@ const initialState = {
   figuresFetchSize: 10000,
   tables: [],
   tablesTotal: 0,
-  tablesFetchSize: 10000,
+  tablesFetchSize: 20,
   aggregations: {
     year: {
       buckets: []
@@ -39,6 +43,7 @@ export function reducers(state = initialState, action) {
   switch (action.type) {
     case CHANGE_QUERY:
       return Object.assign({}, state, {
+        category: action.category || null,
         query: action.query || null,
         articleTitle: action.articleTitle || null,
         author: action.author || null,
@@ -152,9 +157,10 @@ export function reducers(state = initialState, action) {
 
 const CHANGE_QUERY = "CHANGE_QUERY";
 
-export function changeQuery(query, articleTitle, author, abstract) {
+export function changeQuery(category, query, articleTitle, author, abstract) {
   return {
     type: CHANGE_QUERY,
+    category,
     query,
     articleTitle,
     author,
