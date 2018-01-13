@@ -111,6 +111,7 @@ class Search extends Component {
 
   componentDidMount() {
     this.search(this.props.state.category);
+    window.jQuery('ul.tabs').tabs();
   }
 
   componentDidUpdate(prevProps) {
@@ -130,7 +131,6 @@ class Search extends Component {
     this.props.dispatch(deleteScrollY(locationKey));
 
     window.scrollTo(0, scrollY);
-    window.jQuery('ul.tabs').tabs();
   }
 
   search(category) {
@@ -415,7 +415,7 @@ class Search extends Component {
       "tables"];
 
     return (
-      <HashRouter>
+      <HashRouter basename="search">
         <div className="row">
           <div className="col s4 l3 sidebar">
             <h5>Filter & Refine</h5>

@@ -49,6 +49,7 @@ div.container {
 .header-navi {
     background-color: #fff;
     border-bottom: 1px solid #e0e0e0;
+    min-height: 64px;
 }
 
 	/****************
@@ -56,6 +57,8 @@ div.container {
 	****************/
 
 	.header-navi .brand-logo {
+		position: relative;
+		display: block;
 		height: 100%;
 		margin-left: 18px;
 		font-size: 0;
@@ -64,60 +67,67 @@ div.container {
 		position: relative;
 		top: 50%;
 		transform: translateY(-50%);
-		width: 140px;
+		width: 100%;
+		max-width: 140px;
+	}
+	@media only screen and (max-width: 992px) {
+		.header-navi .brand-logo {
+			margin-left: 0;
+		    left: 0;
+		    -webkit-transform: translateX(0); 
+		    transform: translateX(0); 
+		}
 	}
 
 	/****************
 	**  Search
 	****************/
 
-	.header-navi .input-field input[type=search] {
+	.header-navi .input-field {
+		margin-top: 10px;
+	}
+
+	.input-field input[type=search] {
+		display: block;
 		box-sizing: border-box;
-		/*padding: 3px 6px 1px 38px;*/
+		position: relative;
+		width: 100%;
+		height: 44px;
+	
 		padding: 0 0 0 36px;
 
-		position: relative;
-		top: 50%;
-		transform: translateY(-50%);
+		color: #0a1933 !important;
 
-		width: 100%;
-		height: 32px;
-
-		line-height: 34px;
+		line-height: 44px;
 		font-size: 16px;
 
-	    background-color: #fff;
-	    border: 1px solid #4a3763 !important;
-	    border-radius: 2px;
-	    outline: none;
-	    -webkit-appearance: none;
-	    -moz-appearance: none;
+		background-color: #fff;
+		border: 1px solid rgba(137, 144, 156, 1);
+		border-radius: 2px;
+		outline: none !important;
+		-webkit-appearance: none !important;
+		-moz-appearance: none !important;
 	}
 
-	.header-navi .input-field input[type=search]:focus {
-	    border-bottom: none !important;
-	    box-shadow: none !important;
-	    border: 1px solid rgba(137, 144, 156, 1) !important;
+	.input-field input[type=search]:focus {
+		box-shadow: none !important;
+		border: 1px solid rgba(137, 144, 156, 1) !important;
 	}
 
-	.header-navi .input-field .label-icon {
+	.input-field .label-icon {
 		position: absolute;
-	    top: 50%;
-		transform: translateY(-50%);
-
+		top: 0;
 		width: 40px;
-	    height: 38px;
+		height: 44px;
 	}
 
-	.header-navi .input-field .label-icon .material-icons {
-	    text-align: center;
-	    line-height: 41px;
-
-	    color: #0a1933;
+	.input-field .label-icon .material-icons {
+		text-align: center;
+		line-height: 44px;
+		color: #0a1933;
 	}
 
-	.header-navi :placeholder-shown,
-	.header-navi ::-webkit-input-placeholder {
-	    color: rgba(10, 25, 51, 0.32);
-	    /*font-size: 90%;*/
+	:placeholder-shown,
+	::-webkit-input-placeholder {
+		color: rgba(10, 25, 51, 0.32);
 	}
