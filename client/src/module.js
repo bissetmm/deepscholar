@@ -43,7 +43,7 @@ export function reducers(state = initialState, action) {
   switch (action.type) {
     case CHANGE_QUERY:
       return Object.assign({}, state, {
-        category: action.category || "papers",
+        category: action.category || null,
         query: action.query || null,
         articleTitle: action.articleTitle || null,
         author: action.author || null,

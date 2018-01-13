@@ -27,7 +27,7 @@ class Index extends Component {
     e.preventDefault();
 
     if( this.query == this.props.state.query && this.props.state.page == 0) { // 検索ページから戻り、同じ文字列を検索する場合、遷移がトリガーしない為、ここで強制遷移（検索はしないで前回の画面をそのまま表示）
-      this.props.history.push("/search?q=" + this.query + "&page=1");
+      this.props.history.push("/search/texts?q=" + this.query + "&page=1");
       return false;
     }
 
@@ -37,7 +37,7 @@ class Index extends Component {
     }
 
     this.searchTimer = setTimeout(() => {
-      this.props.dispatch(changeQuery(this.query));
+      this.props.dispatch(changeQuery("texts", this.query));
     }, 0);
   }
 
@@ -80,7 +80,7 @@ class Index extends Component {
                 <label className="label-icon" htmlFor="search"><i className="material-icons">search</i></label>
               </div>
 
-              <div className="try">Try<span className="colon">:</span><a href="/search?q=Deep%20Learning&page=1" onClick={this.handleClick.bind(this)}>Deep Learning</a></div>
+              <div className="try">Try<span className="colon">:</span><a href="#" onClick={this.handleClick.bind(this)}>Deep Learning</a></div>
             </div>
 
           </div>
