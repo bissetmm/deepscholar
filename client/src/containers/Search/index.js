@@ -1,7 +1,7 @@
 import React, {Component} from 'react';
 import _ from 'lodash';
 import {connect} from 'react-redux';
-import {withRouter, HashRouter, BrowserRouter, Switch, Route, Link} from 'react-router-dom';
+import {withRouter, HashRouter, Switch, Route} from 'react-router-dom';
 import {RangeSliderHistogram} from 'searchkit';
 import {Papers, Figures, Tables} from '../../components/index.js';
 import Api from '../../api';
@@ -25,12 +25,12 @@ const Paginator = withRouter(connect(mapStateToProps)(class Paginator extends Co
 
   handlePrevClick(e) {
     e.preventDefault();
-    this.changePage(this.props.state.page - 1);
+    this.changePage(this.props.page - 1);
   }
 
   handleNextClick(e) {
     e.preventDefault();
-    this.changePage(this.props.state.page + 1);
+    this.changePage(this.props.page + 1);
   }
 
   changePage(page) {
@@ -38,12 +38,12 @@ const Paginator = withRouter(connect(mapStateToProps)(class Paginator extends Co
   }
 
   render() {
-    const maxPage = Math.floor(this.props.state.papersTotal / this.props.state.papersFetchSize) || 0;
+    const maxPage = Math.floor(this.props.total / this.props.size) || 0;
     if (maxPage === 0) {
       return null;
     }
 
-    const currentPage = this.props.state.page;
+    const currentPage = this.props.page;
     let start, end;
     if (maxPage - currentPage > 5) {
       start = Math.max(currentPage - 4, 0);
@@ -304,8 +304,11 @@ class Search extends Component {
     const {query, page} = this.props.state;
     this.props.dispatch(requestTables(query, page));
 
+    const from = page * this.props.state.papersFetchSize;
+
     const bodyParams = {
-      size: this.props.state.tablesFetchSize
+      from,
+      size: this.props.state.tablesFetchSize,
     };
 
     if (query) {
@@ -377,7 +380,7 @@ class Search extends Component {
   }
 
   render() {
-    const {papers, papersTotal, aggregations, booktitles, figures, figuresTotal, tables, tablesTotal} = this.props.state;
+    const {page, papers, papersTotal, papersFetchSize, aggregations, booktitles, figures, figuresTotal, tables, tablesTotal, tablesFetchSize} = this.props.state;
 
     let year;
     if (aggregations.year.buckets.length > 1) {
@@ -443,7 +446,7 @@ class Search extends Component {
               <div className="col s12">
                 <ul className="tabs">
                   {categories.map((category) => {
-                    return <li className="tab col s3" onClick={this.handleClickTab.bind(this, category)}>
+                    return <li key={category} className="tab col s3" onClick={this.handleClickTab.bind(this, category)}>
                       <a className={this.props.state.category === category ? 'active' : ''}>{category}</a>
                     </li>;
                   })
@@ -461,13 +464,14 @@ class Search extends Component {
                     <div className="col s12">
                       <p>{tablesTotal || 0} results</p>
                       <Tables data={tables}/>
+                      <Paginator total={tablesTotal} size={tablesFetchSize} page={page}/>
                     </div>
                   )}/>
                   <Route component={(props) => (
                     <div className="col s12">
                       <p>{papersTotal || 0} results</p>
                       <Papers data={papers}/>
-                      <Paginator/>
+                      <Paginator total={papersTotal} size={papersFetchSize} page={page}/>
                     </div>
                   )}/>
                 </Switch>

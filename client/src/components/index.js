@@ -189,27 +189,34 @@ export class Figures extends Component {
 
 class Table extends Component {
   render() {
-    const {table, label} = this.props.data;
+    const {table, label, caption} = this.props.data;
+    const title = caption ? (caption.title || (caption.p ? caption.p[0] : null)) : label;
     const html = {__html: `<table class="striped responsive-table">${table}<table>`};
 
     return (
-      <div dangerouslySetInnerHTML={html}></div>
+      <article className="table">
+        <div className="divider"></div>
+        <header>
+          <h5>{title}</h5>
+        </header>
+        <div dangerouslySetInnerHTML={html}></div>
+      </article>
     );
   }
 }
 
 export class Tables extends Component {
   render() {
-    const figures = this.props.data.map((figure, i) => {
-      const {paperId, table, label} = figure;
-      const data = {table, label};
+    const tables = this.props.data.map((value, i) => {
+      const {paperId, table, label, caption} = value;
+      const data = {table, label, caption};
 
       return <Table key={i} data={data} />;
     });
 
     return (
       <div id="tables">
-        {figures}
+        {tables}
       </div>
     );
   }
