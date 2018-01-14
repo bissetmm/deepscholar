@@ -57,7 +57,7 @@ const NavBar = connect(mapStateToProps)(class NavBar extends Component {
     const queryString = queries.map(query => {
       return `${query[0]}=${query[1]}`;
     }).join("&");
-    const url = `/search/${newCategory}?${queryString}`;
+    const url = `/${newCategory}?${queryString}`;
 
     this.props.history.push(url);
     if( this.props.state.query != null ){

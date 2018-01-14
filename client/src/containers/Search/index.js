@@ -415,7 +415,6 @@ class Search extends Component {
       "tables"];
 
     return (
-      <HashRouter basename="search">
         <div className="row">
           <div className="col s4 l3 sidebar">
             <h5>Filter & Refine</h5>
@@ -478,7 +477,6 @@ class Search extends Component {
             </div>
           </div>
         </div>
-      </HashRouter>
     );
   }
 }
