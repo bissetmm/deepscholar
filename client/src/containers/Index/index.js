@@ -87,7 +87,8 @@ class Index extends Component {
 
         </div>
 
-        <p className="note">DeepScholar is a free , nonprofit search engine.</p>
+        <p className="note">DeepScholar is a free search engine for scientific papers.</p>
+
 
       </div> 
     );
