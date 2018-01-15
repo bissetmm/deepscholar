@@ -109,6 +109,14 @@ class Search extends Component {
     this.abstract = null;
   }
 
+  componentWillMount(){
+    document.body.classList.add("search");
+  }
+
+  componentWillUnmount(){
+    document.body.classList.remove("search");
+  }
+
   componentDidMount() {
     this.search(this.props.state.category);
     window.jQuery('ul.tabs').tabs();
@@ -415,65 +423,101 @@ class Search extends Component {
       "tables"];
 
     return (
-        <div className="row">
-          <div className="col s4 l3 sidebar">
-            <h5>Filter & Refine</h5>
-            <div>
-              <h6>Article Title</h6>
-              <input type="search" onKeyPress={this.handleKeyPress.bind(this)} onChange={this.handleChangeArticleTitle.bind(this)}
-                     defaultValue={this.props.state.articleTitle}/>
-              <h6>Author</h6>
-              <input type="search" onKeyPress={this.handleKeyPress.bind(this)} onChange={this.handleChangeAuthor.bind(this)}
-                     defaultValue={this.props.state.author}/>
-              <h6>Abstract</h6>
-              <input type="search" onKeyPress={this.handleKeyPress.bind(this)} onChange={this.handleChangeAbstract.bind(this)}
-                     defaultValue={this.props.state.abstract}/>
-
-              <h6>Publication Year</h6>
-              <div className="publication-year">
-                {year}
+        <div>
+          <div className="subNavi z-depth-1">
+            <div className="container">
+              <div className="row">
+                <div className="results col s4 l3">
+                  <Switch>
+                    <Route path="/figures" component={(props) => (
+                        <p>{figuresTotal || 0} results</p>
+                    )}/>
+                    <Route path="/tables" component={(props) => (
+                        <p>{tablesTotal || 0} results</p>
+                    )}/>
+                    <Route component={(props) => (
+                        <p>{papersTotal || 0} results</p>
+                    )}/>
+                  </Switch>
+                </div>
+                <div className="col s8 l9">
+                  <ul className="tabs">
+                    {categories.map((category) => {
+                      return <li key={category} className="tab col s4" onClick={this.handleClickTab.bind(this, category)}>
+                        <a className={this.props.state.category === category ? 'active' : ''}>{category}</a>
+                      </li>;
+                    })
+                    }
+                  </ul>
+                </div>
               </div>
-
-              <h6>Booktitle</h6>
-              <ul>
-                {booktitleComponents}
-              </ul>
             </div>
           </div>
-          <div className="col s8 l9">
-            <div className="row">
-              <div className="col s12">
-                <ul className="tabs">
-                  {categories.map((category) => {
-                    return <li key={category} className="tab col s3" onClick={this.handleClickTab.bind(this, category)}>
-                      <a className={this.props.state.category === category ? 'active' : ''}>{category}</a>
-                    </li>;
-                  })
-                  }
-                </ul>
-              </div>
+
+          <div className="row">
+            <div className="col s4 l3 sidebar">
+              <div className="col s4 l3">
+                <h5>Filter & Refine</h5>
+                <div>
+
                 <Switch>
                   <Route path="/figures" component={(props) => (
-                    <div className="col s12">
-                      <p>{figuresTotal || 0} results</p>
-                      <Figures data={figures}/>
-                    </div>
+                      <div></div>
                   )}/>
                   <Route path="/tables" component={(props) => (
-                    <div className="col s12">
-                      <p>{tablesTotal || 0} results</p>
-                      <Tables data={tables}/>
-                      <Paginator total={tablesTotal} size={tablesFetchSize} page={page}/>
-                    </div>
+                      <div></div>
                   )}/>
                   <Route component={(props) => (
-                    <div className="col s12">
-                      <p>{papersTotal || 0} results</p>
-                      <Papers data={papers}/>
-                      <Paginator total={papersTotal} size={papersFetchSize} page={page}/>
+                    <div>
+                      <h6>Article Title</h6>
+                      <input type="search" onKeyPress={this.handleKeyPress.bind(this)} onChange={this.handleChangeArticleTitle.bind(this)}
+                             defaultValue={this.props.state.articleTitle}/>
+                      <h6>Author</h6>
+                      <input type="search" onKeyPress={this.handleKeyPress.bind(this)} onChange={this.handleChangeAuthor.bind(this)}
+                             defaultValue={this.props.state.author}/>
+                      <h6>Abstract</h6>
+                      <input type="search" onKeyPress={this.handleKeyPress.bind(this)} onChange={this.handleChangeAbstract.bind(this)}
+                             defaultValue={this.props.state.abstract}/>
                     </div>
                   )}/>
                 </Switch>
+
+                  <h6>Publication Year</h6>
+                  <div className="publication-year">
+                    {year}
+                  </div>
+
+                  <h6>Booktitle</h6>
+                  <ul>
+                    {booktitleComponents}
+                  </ul>
+
+                </div>
+              </div>
+            </div>
+            <div className="contents col s8 l9">
+              <div className="row">
+                
+                  <Switch>
+                    <Route path="/figures" component={(props) => (
+                      <div className="col s12">
+                        <Figures data={figures}/>
+                      </div>
+                    )}/>
+                    <Route path="/tables" component={(props) => (
+                      <div className="col s12">
+                        <Tables data={tables}/>
+                        <Paginator total={tablesTotal} size={tablesFetchSize} page={page}/>
+                      </div>
+                    )}/>
+                    <Route component={(props) => (
+                      <div className="col s12">
+                        <Papers data={papers}/>
+                        <Paginator total={papersTotal} size={papersFetchSize} page={page}/>
+                      </div>
+                    )}/>
+                  </Switch>
+              </div>
             </div>
           </div>
         </div>
