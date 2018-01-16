@@ -428,15 +428,16 @@ class Search extends Component {
             <div className="container">
               <div className="row">
                 <div className="results col s4 l3">
+
                   <Switch>
                     <Route path="/figures" component={(props) => (
-                        <p>{figuresTotal || 0} results</p>
+                        <p><span className="num">{figuresTotal || 0}</span> results</p>
                     )}/>
                     <Route path="/tables" component={(props) => (
-                        <p>{tablesTotal || 0} results</p>
+                        <p><span className="num">{tablesTotal || 0}</span> results</p>
                     )}/>
                     <Route component={(props) => (
-                        <p>{papersTotal || 0} results</p>
+                        <p><span className="num">{papersTotal || 0}</span> results</p>
                     )}/>
                   </Switch>
                 </div>
@@ -470,13 +471,12 @@ class Search extends Component {
                 </div>
               </div>
             </div>
-            <div className="border"></div>
           </div>
 
           <div className="row">
             <div className="col s4 l3 sidebar">            
               <div className="col s4 l3">
-                <h5><i className="material-icons">find_in_page</i>Filter & Refine</h5>
+                <h5><i className="material-icons">find_in_page</i>Filter</h5>
                 <div>
 
                 <Switch>

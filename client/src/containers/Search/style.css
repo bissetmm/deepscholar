@@ -21,9 +21,6 @@
 	height: 56px;
 	border-bottom: 1px solid #b7b7b7;
 	background-color: white;
-
-	font-family: "Lato", Arial, sans-serif;
-	font-weight: 300;
 }
 
 .subNavi .tabs {
@@ -122,16 +119,12 @@
     position: relative; }
     .subNavi .results p {
       margin: 0;
-      line-height: 56px; }
-    .subNavi .results :after {
-      content: "";
-      position: absolute;
-      left: auto;
-      right: 0;
-      top: 8px;
-      width: 1px;
-      height: 40px;
-      background-color: #b7b7b7; }
+      line-height: 56px;
+      padding-right: 2.75rem;
+      text-align: center; }
+     	.subNavi .results p .num {
+     		font-weight: 500;
+     	}
 
 /****************
 **
@@ -149,9 +142,8 @@
 	width: 100%;
 	height: calc(100vh - 64px - 60px);
 	overflow-y: scroll;
-	margin-left: 16px;
-	margin-right: 16px;
 
+	padding-right: 2em;
 	padding-top: 20px !important;
 }
 
@@ -164,20 +156,27 @@
 	****************/
 
 	.sidebar h5 {
-	    font-weight: 300;
-	    font-size: 1.5rem !important;
+		position: relative;
+    	left: -3px;
+	    font-weight: 900;
+	    font-size: 20px !important;
+	    letter-spacing: 0.1em;
 	    margin-top: 16px !important;
-	    margin-bottom: 30px !important;
+	    margin-bottom: 24px !important;
 	}
 
 	.sidebar h5 .material-icons {
-		vertical-align: bottom;
+	    position: relative;
+	    top: 2px;
+	    font-size: 19px;
+		vertical-align: top;
     	margin-right: 4px;
     }
 
 	.sidebar h6 {
 		font-weight: 900;
 	    font-size: 0.85rem !important;
+	    letter-spacing: 0.075em;
 	}
 
 	/****************
@@ -186,11 +185,11 @@
 
 	.sidebar input[type=search]:not(.browser-default){
 		height: 1.5rem !important;
-		border-bottom: 1px solid #e0e0e0;
+		border-bottom: 1px solid #475265;
 	}
 
 	.sidebar input[type=search]:not(.browser-default):focus {
-		border-bottom: 1px solid rgba(10, 25, 51, 0.75);
+		border-bottom: 1px solid #fb5e60;
 	    -webkit-box-shadow: none;
 	    box-shadow: none;
 	}
@@ -217,7 +216,7 @@
 ****************/
 
 	.contents .row{
-		padding-top: 2.5em;
+		padding-top: 1.2em;
 	}
 
 	/****************
@@ -226,7 +225,11 @@
 
 	.paper,
 	#tables {
-		font-family: Arial;
+		/*font-family: Arial;*/
+	}
+
+	.paper h5 a {
+		line-height: 1.4;
 	}
 
 	.paper .authors {
@@ -250,10 +253,24 @@
 	}
 
 	/****************
-	**  Paper
+	**  Table
 	****************/
 
 	.table {
 		width: 100%;
 	}
+
+	/****************
+	**  Pagenation
+	****************/
+
+	.pagination {
+		font-weight: 500;
+	}
+
+	.pagination li.active {
+		background-color: #1e50a2;
+    	border-radius: 1px;
+    	margin: 0 4px;
+    }
 
