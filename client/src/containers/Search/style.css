@@ -5,7 +5,7 @@
 ****************/
 
 .search .navbar-fixed {
-    margin-bottom: 80px;
+    margin-bottom: 58px;
 }
 
 /****************
@@ -18,60 +18,120 @@
 	left: 0;
 	top: 64px;
 	width: 100%;
-	height: 60px;
-    background-color: white;
-    /*border-bottom: 1px solid #ccc;*/
+	height: 56px;
+	border-bottom: 1px solid #b7b7b7;
+	background-color: white;
+
+	font-family: "Lato", Arial, sans-serif;
+	font-weight: 300;
 }
+
+.subNavi .tabs {
+    margin-top: 16px; }
+
+  .subNavi .container > .row {
+  	margin-bottom: 0;
+  }
+  .subNavi > .border {
+  	box-sizing: border-box;
+    width: 100%;
+    height: 2px;
+    background-color: #ffffff;
+    border-bottom: 1px solid #b7b7b7; }
 
 	/****************
 	**  Tabs
 	****************/
-	.tabs .tab a,
-	.tabs .tab a:hover,
-	.tabs .tab a:active {
-	    color: #1e50a2 !important;
-	    letter-spacing: 0.1em;
-	    cursor: pointer;
-	}
+  .tabs {
+    overflow: visible;
+    background: transparent;
+    height: 40px; }
+    .tabs .tab {
+      padding: 0 1%;
+      height: 40px; }
+      .tabs .tab a,
+      .tabs .tab a:hover,
+      .tabs .tab a:active {
+        position: relative;
+        overflow: visible;
+        height: 40px;
+        font-size: 1.1rem;
+        color: #1e50a2 !important;
+        letter-spacing: 0.1em;
+        line-height: 40px;
+        cursor: pointer;
+        text-decoration: none;
+        border: 1px solid #b7b7b7;
+        border-bottom: 1px solid #b7b7b7;
+        border-radius: 2px 2px 0 0;
+        -webkit-transition: border-bottom .5s ease;
+        transition: border-bottom .5s ease; }
+        .tabs .tab a.active,
+        .tabs .tab a:hover.active,
+        .tabs .tab a:active.active {
+          font-weight: 900;
+          border: 1px solid #b7b7b7;
+          border-bottom: 1px solid #ffffff; }
+        .tabs .tab a:before,
+        .tabs .tab a:hover:before,
+        .tabs .tab a:active:before {
+          position: absolute;
+          left: -1px;
+          top: -1px;
+          content: "";
+          width: calc(100% + 2px);
+          height: 3px;
+          background: #1e50a2;
+          opacity: 0.5;
+          border-radius: 9px;
+          -webkit-transition: background-color 0.5s;
+          transition: background-color 0.5s; }
+        .tabs .tab a.active:before,
+        .tabs .tab a:hover.active:before,
+        .tabs .tab a:active.active:before {
+          background: #1e50a2;
+          opacity: 1; }
+        .tabs .tab a .txt,
+        .tabs .tab a:hover .txt,
+        .tabs .tab a:active .txt {
+          display: inline-block;
+          position: absolute;
+          left: calc(50% + 8px);
+          -webkit-transform: translateX(-50%);
+          transform: translateX(-50%); }
+          .tabs .tab a .txt .material-icons,
+          .tabs .tab a:hover .txt .material-icons,
+          .tabs .tab a:active .txt .material-icons {
+            display: block;
+            position: absolute;
+            line-height: 1;
+            top: 50%;
+            left: -30px;
+            font-size: 18px;
+            -webkit-transform: translate(0, -50%);
+            transform: translate(0, -50%); }
+    .tabs .indicator {
+      display: none; }
 
-	.tabs .tab a:hover {
-	    text-decoration: underline;
-	}
-
-	.tabs .indicator {
-	    background-color: #1e50a2;
-	    border-radius: 5px;
-	}
-
-	.subNavi .tabs {
-		margin-top: 6px;	
-	}
-
-	.subNavi .tabs .tab a{
-	    background: aliceblue;
-	    border-radius: 3px;
-	}	
 
 	/****************
 	**  Results
 	****************/
 
-	.subNavi .results {
-		position: relative;
-	}
-	.subNavi .results p{
-		margin: 0;
-	    line-height: 60px;
-	}
-	.subNavi .results :after {
-		content: "";
-		position: absolute;
-		right: 0;
-		top: 10px;
-		width: 1px;
-		height: 40px;
-		background-color: #e0e0e0;
-	}
+  .subNavi .results {
+    position: relative; }
+    .subNavi .results p {
+      margin: 0;
+      line-height: 56px; }
+    .subNavi .results :after {
+      content: "";
+      position: absolute;
+      left: auto;
+      right: 0;
+      top: 8px;
+      width: 1px;
+      height: 40px;
+      background-color: #b7b7b7; }
 
 /****************
 **
@@ -87,10 +147,12 @@
 .sidebar > div {
 	position: fixed;
 	width: 100%;
-	height: calc(100vh - 64px - 80px);
+	height: calc(100vh - 64px - 60px);
 	overflow-y: scroll;
 	margin-left: 16px;
 	margin-right: 16px;
+
+	padding-top: 20px !important;
 }
 
 .sidebar .col.l3 {
@@ -102,14 +164,20 @@
 	****************/
 
 	.sidebar h5 {
-	    letter-spacing: -0.03em !important;
-	    font-size: 1.3rem !important;
+	    font-weight: 300;
+	    font-size: 1.5rem !important;
 	    margin-top: 16px !important;
 	    margin-bottom: 30px !important;
 	}
 
+	.sidebar h5 .material-icons {
+		vertical-align: bottom;
+    	margin-right: 4px;
+    }
+
 	.sidebar h6 {
-		
+		font-weight: 900;
+	    font-size: 0.85rem !important;
 	}
 
 	/****************

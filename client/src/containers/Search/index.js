@@ -424,7 +424,7 @@ class Search extends Component {
 
     return (
         <div>
-          <div className="subNavi z-depth-1">
+          <div className="subNavi z-depth-0">
             <div className="container">
               <div className="row">
                 <div className="results col s4 l3">
@@ -442,9 +442,27 @@ class Search extends Component {
                 </div>
                 <div className="col s8 l9">
                   <ul className="tabs">
+                    <div className="col s0 l1"></div>
                     {categories.map((category) => {
-                      return <li key={category} className="tab col s4" onClick={this.handleClickTab.bind(this, category)}>
-                        <a className={this.props.state.category === category ? 'active' : ''}>{category}</a>
+                      let icon;
+                      switch (category) {
+                        case 'texts' : 
+                          icon = 'font_download'; break;
+                        case 'figures' : 
+                          icon = 'image'; break;
+                        case 'tables' : 
+                          icon = 'grid_on'; break;
+                        default:
+                          icon = '';
+                      }
+
+                      return <li key={category} className="tab col s3" onClick={this.handleClickTab.bind(this, category)}>
+                        <a className={this.props.state.category === category ? 'active' : ''}>
+                          <span className="txt">
+                            <i className="material-icons hide-on-small-only">{icon}</i>
+                            {category}
+                          </span>
+                        </a>
                       </li>;
                     })
                     }
@@ -452,12 +470,13 @@ class Search extends Component {
                 </div>
               </div>
             </div>
+            <div className="border"></div>
           </div>
 
           <div className="row">
-            <div className="col s4 l3 sidebar">
+            <div className="col s4 l3 sidebar">            
               <div className="col s4 l3">
-                <h5>Filter & Refine</h5>
+                <h5><i className="material-icons">find_in_page</i>Filter & Refine</h5>
                 <div>
 
                 <Switch>
@@ -470,13 +489,13 @@ class Search extends Component {
                   <Route component={(props) => (
                     <div>
                       <h6>Article Title</h6>
-                      <input type="search" onKeyPress={this.handleKeyPress.bind(this)} onChange={this.handleChangeArticleTitle.bind(this)}
+                      <input type="search" placeholder="placeholder Article Title" onKeyPress={this.handleKeyPress.bind(this)} onChange={this.handleChangeArticleTitle.bind(this)}
                              defaultValue={this.props.state.articleTitle}/>
                       <h6>Author</h6>
-                      <input type="search" onKeyPress={this.handleKeyPress.bind(this)} onChange={this.handleChangeAuthor.bind(this)}
+                      <input type="search" placeholder="placeholder Author" onKeyPress={this.handleKeyPress.bind(this)} onChange={this.handleChangeAuthor.bind(this)}
                              defaultValue={this.props.state.author}/>
                       <h6>Abstract</h6>
-                      <input type="search" onKeyPress={this.handleKeyPress.bind(this)} onChange={this.handleChangeAbstract.bind(this)}
+                      <input type="search" placeholder="placeholder Abstract" onKeyPress={this.handleKeyPress.bind(this)} onChange={this.handleChangeAbstract.bind(this)}
                              defaultValue={this.props.state.abstract}/>
                     </div>
                   )}/>
