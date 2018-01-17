@@ -63,7 +63,7 @@ const Paginator = withRouter(connect(mapStateToProps)(class Paginator extends Co
     const prevClassName = currentPage === 0 ? 'disabled' : 'waves-effect';
     const nextClassName = currentPage === maxPage ? 'disabled' : 'waves-effect';
     return (
-      <ul className="pagination center-align">
+      <ul className="pagination pagination--alpha center-align">
         <li className={prevClassName}><a href="#" onClick={this.handlePrevClick.bind(this)}><i
           className="material-icons">chevron_left</i></a></li>
         {pages}
@@ -489,13 +489,13 @@ class Search extends Component {
                   <Route component={(props) => (
                     <div>
                       <h6>Article Title</h6>
-                      <input className="alpha" type="search" placeholder="placeholder Article Title" onKeyPress={this.handleKeyPress.bind(this)} onChange={this.handleChangeArticleTitle.bind(this)}
+                      <input className="alpha" type="search" placeholder="enter article title" onKeyPress={this.handleKeyPress.bind(this)} onChange={this.handleChangeArticleTitle.bind(this)}
                              defaultValue={this.props.state.articleTitle}/>
                       <h6>Author</h6>
-                      <input className="alpha" type="search" placeholder="placeholder Author" onKeyPress={this.handleKeyPress.bind(this)} onChange={this.handleChangeAuthor.bind(this)}
+                      <input className="alpha" type="search" placeholder="enter author" onKeyPress={this.handleKeyPress.bind(this)} onChange={this.handleChangeAuthor.bind(this)}
                              defaultValue={this.props.state.author}/>
                       <h6>Abstract</h6>
-                      <input className="alpha" type="search" placeholder="placeholder Abstract" onKeyPress={this.handleKeyPress.bind(this)} onChange={this.handleChangeAbstract.bind(this)}
+                      <input className="alpha" type="search" placeholder="enter abstract" onKeyPress={this.handleKeyPress.bind(this)} onChange={this.handleChangeAbstract.bind(this)}
                              defaultValue={this.props.state.abstract}/>
                     </div>
                   )}/>

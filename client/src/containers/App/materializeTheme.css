@@ -100,6 +100,7 @@ div.container {
 }
 
 
+
 /****************
 **  Input Field
 ****************/
@@ -115,6 +116,13 @@ input.alpha[type=search]:not(.browser-default):focus {
     box-shadow: none;
 }
 
+@media only screen and (max-width: 600px) { 
+	input.alpha[type=search]:placeholder-shown,
+	input.alpha[type=search]::-webkit-input-placeholder {
+		color: transparent;
+	}
+}
+
 
 /*********************
 **  Tabs
@@ -128,70 +136,66 @@ input.alpha[type=search]:not(.browser-default):focus {
 	padding: 0 1%;
 	height: 40px; 
 }
-.tabs.tabs--alpha .tab a,
-.tabs.tabs--alpha .tab a:hover,
-.tabs.tabs--alpha .tab a:active {
+.tabs.tabs--alpha .tab a{
 	position: relative;
 	overflow: visible;
+
 	height: 40px;
+
 	font-size: 1.1rem;
 	color: #1e50a2 !important;
+	text-decoration: none;
 	letter-spacing: 0.1em;
 	line-height: 40px;
+
 	cursor: pointer;
-	text-decoration: none;
+	
 	border: 1px solid #b7b7b7;
 	border-bottom: 1px solid #b7b7b7;
 	border-radius: 2px 2px 0 0;
+
 	-webkit-transition: border-bottom .5s ease;
 	transition: border-bottom .5s ease; 
 }
-.tabs.tabs--alpha .tab a.active,
-.tabs.tabs--alpha .tab a:hover.active,
-.tabs.tabs--alpha .tab a:active.active {
-	font-weight: 900;
-	border: 1px solid #b7b7b7;
+.tabs.tabs--alpha .tab a.active{
 	border-bottom: 1px solid #ffffff; 
 }
-.tabs.tabs--alpha .tab a:before,
-.tabs.tabs--alpha .tab a:hover:before,
-.tabs.tabs--alpha .tab a:active:before {
+.tabs.tabs--alpha .tab a:before{
+	content: "";
+
 	position: absolute;
 	left: -1px;
 	top: -1px;
-	content: "";
 	width: calc(100% + 2px);
 	height: 3px;
-	background: #1e50a2;
-	opacity: 0.5;
+
+	background: #90a8d2;
+	
+
 	border-radius: 9px;
 	-webkit-transition: background-color 0.5s;
 	transition: background-color 0.5s; 
 }
-.tabs.tabs--alpha .tab a.active:before,
-.tabs.tabs--alpha .tab a:hover.active:before,
-.tabs.tabs--alpha .tab a:active.active:before {
+.tabs.tabs--alpha .tab a.active:before{
 	background: #1e50a2;
-	opacity: 1; 
 }
-.tabs.tabs--alpha .tab a .txt,
-.tabs.tabs--alpha .tab a:hover .txt,
-.tabs.tabs--alpha .tab a:active .txt {
+.tabs.tabs--alpha .tab a .txt{
 	display: inline-block;
 	position: absolute;
 	left: calc(50% + 8px);
+
 	-webkit-transform: translateX(-50%);
 	transform: translateX(-50%); 
 }
-.tabs.tabs--alpha .tab a .txt .material-icons,
-.tabs.tabs--alpha .tab a:hover .txt .material-icons,
-.tabs.tabs--alpha .tab a:active .txt .material-icons {
+.tabs.tabs--alpha .tab a .txt .material-icons{
 	display: block;
 	position: absolute;
-	line-height: 1;
-	top: 50%;
 	left: -30px;
+	top: 50%;
+
 	font-size: 18px;
+	line-height: 1;
+	
 	-webkit-transform: translate(0, -50%);
 	transform: translate(0, -50%); 
 }
@@ -199,15 +203,45 @@ input.alpha[type=search]:not(.browser-default):focus {
 	display: none; 
 }
 
+@media only screen and (max-width: 993px) {
+	.tabs.tabs--alpha .tab a .txt{
+		position: relative;
+    	left: 50%;
+    	width: 100%;
+	}
+	.tabs.tabs--alpha .tab a .txt .material-icons {
+		display: inline;
+	    position: relative;
+	   	left: auto; 
+	    vertical-align: text-bottom;
+	    margin-right: 4px;
+	    
+	}
+}
+@media only screen and (max-width: 600px) { 
+	.tabs.tabs--alpha,
+	.tabs.tabs--alpha .tab,
+	.tabs.tabs--alpha .tab a {
+		height: 34px;
+		line-height: 34px;
+	}
+	.tabs.tabs--alpha .tab a {
+		padding: 0;
+	}
+	.tabs.tabs--alpha .tab a .txt{
+		font-size: 1vw;
+	}
+}
+
 
 /*********************
 **  Pagination
 **********************/
-.pagination {
+.pagination.pagination--alpha {
 	font-weight: 500;
 }
 
-.pagination li.active {
+.pagination.pagination--alpha li.active {
 	background-color: #1e50a2;
 	border-radius: 1px;
 	margin: 0 4px;

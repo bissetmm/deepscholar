@@ -31,6 +31,12 @@
   	margin-bottom: 0;
 }
 
+@media only screen and (max-width: 600px) { 
+	.subNavi {
+		height: 50px;
+	}
+}
+
 
 
 /****************
@@ -48,6 +54,12 @@
 }
 .subNavi .results p .num {
 	font-weight: 500;
+}
+
+@media only screen and (max-width: 600px) { 
+	.subNavi .results p {
+		height: 50px;
+	}
 }
 
 /****************
@@ -69,8 +81,10 @@
 	padding-top: 20px !important;
 }
 
-.sidebar .col.l3 {
-	width: 23%;
+@media only screen and (min-width: 993px) {
+	.sidebar .col.l3 {
+		width: 23%;
+	}
 }
 
 /****************
@@ -80,7 +94,7 @@
 .sidebar h5 {
 	position: relative;
 	left: -3px;
-    font-weight: 900;
+    font-weight: 500;
     font-size: 20px !important;
     letter-spacing: 0.1em;
     margin-top: 16px !important;
@@ -96,7 +110,7 @@
 }
 
 .sidebar h6 {
-	font-weight: 900;
+	font-weight: 500;
     font-size: 0.85rem !important;
     letter-spacing: 0.075em;
 }
