@@ -59,6 +59,7 @@
 @media only screen and (max-width: 600px) { 
 	.subNavi .results p {
 		height: 50px;
+		padding-right: 0;
 	}
 }
 
@@ -79,6 +80,9 @@
 
 	padding-right: 2em !important;
 	padding-top: 20px !important;
+}
+.sidebar > div::-webkit-scrollbar {
+  display: none;
 }
 
 @media only screen and (min-width: 993px) {
