@@ -88,6 +88,7 @@
 @media only screen and (min-width: 993px) {
 	.sidebar .col.l3 {
 		width: 23%;
+		max-width: 310px;
 	}
 }
 
