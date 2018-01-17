@@ -442,8 +442,8 @@ class Search extends Component {
                   </Switch>
                 </div>
                 <div className="col s8 l9">
-                  <ul className="tabs">
-                    <div className="col s0 l1"></div>
+                  <ul className="tabs tabs--alpha">
+                    <li className="col l1 hide-on-small-only"></li>
                     {categories.map((category) => {
                       let icon;
                       switch (category) {
@@ -489,13 +489,13 @@ class Search extends Component {
                   <Route component={(props) => (
                     <div>
                       <h6>Article Title</h6>
-                      <input type="search" placeholder="placeholder Article Title" onKeyPress={this.handleKeyPress.bind(this)} onChange={this.handleChangeArticleTitle.bind(this)}
+                      <input className="alpha" type="search" placeholder="placeholder Article Title" onKeyPress={this.handleKeyPress.bind(this)} onChange={this.handleChangeArticleTitle.bind(this)}
                              defaultValue={this.props.state.articleTitle}/>
                       <h6>Author</h6>
-                      <input type="search" placeholder="placeholder Author" onKeyPress={this.handleKeyPress.bind(this)} onChange={this.handleChangeAuthor.bind(this)}
+                      <input className="alpha" type="search" placeholder="placeholder Author" onKeyPress={this.handleKeyPress.bind(this)} onChange={this.handleChangeAuthor.bind(this)}
                              defaultValue={this.props.state.author}/>
                       <h6>Abstract</h6>
-                      <input type="search" placeholder="placeholder Abstract" onKeyPress={this.handleKeyPress.bind(this)} onChange={this.handleChangeAbstract.bind(this)}
+                      <input className="alpha" type="search" placeholder="placeholder Abstract" onKeyPress={this.handleKeyPress.bind(this)} onChange={this.handleChangeAbstract.bind(this)}
                              defaultValue={this.props.state.abstract}/>
                     </div>
                   )}/>
