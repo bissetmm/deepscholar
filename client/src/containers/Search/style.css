@@ -151,15 +151,18 @@
 
 	.paper,
 	#tables {
-		/*font-family: Arial;*/
+
 	}
 
-	.paper h5 a {
+	.paper header h5 a {
 		line-height: 1.4;
+		font-weight: 400;
 	}
-
-	.paper .authors {
-		font-weight: bold;	
+	.paper header .authors {
+		font-weight: 700;
+	}
+	.paper header h5 {
+		font-weight: 400;
 	}
 
 	.paper span > a {
@@ -168,8 +171,13 @@
 		font-weight: normal;	
 	}
 
+	.paper > p {
+		font-weight: 300;
+	}
+
 	.paper .meta.links {
-		font-size: 95%
+		font-size: 95%;
+		font-weight: 300;
 	}
 
 	.paper .meta.links .material-icons {
