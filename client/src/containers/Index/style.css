@@ -4,10 +4,6 @@
 **
 ****************/
 
-@import url(https://fonts.googleapis.com/css?family=Lato:100,300,400,700,900);
-
-
-
 .index .navbar-fixed {
     margin-bottom: 0 !important; 
     position: fixed !important; 
@@ -36,8 +32,11 @@
 
 
 
-
-
+/****************
+**
+**  Main Visual
+**
+****************/
 
 .index .mainVisual .box {
 	position: absolute;
@@ -46,51 +45,56 @@
     transform: translateY(-50%);
     z-index: 3;
 }
-.index .mainVisual .headline {
-  	margin: 0;
-    font-family: 'Lato'; font-weight: 100;
-    color: #030303;
-}
 
-@media only screen and (max-width: 576px) {
+  /****************
+  **  Headline
+  ****************/
+
   .index .mainVisual .headline {
-    font-size: 12vw;
+    	margin: 0;
+      font-weight: 100;
+      color: #030303;
   }
-}
 
-
-.index .mainVisual .input-field {
-	margin-top: 3.5rem;
-}
-    .index .mainVisual .input-field input{
-    	opacity: 0.85;
-    	border: 1px solid #ffffff !important;
+  @media only screen and (max-width: 576px) {
+    .index .mainVisual .headline {
+      font-size: 12vw;
     }
-    .index .mainVisual .input-field input:focus {
-    	opacity: 1;
+  }
+
+  /****************
+  **  Input
+  ****************/
+
+  .index .mainVisual .input-field {
+  	margin-top: 3.5rem;
+  }
+      .index .mainVisual .input-field input{
+      	opacity: 0.85;
+      }
+      .index .mainVisual .input-field input:focus {
+      	opacity: 1;
+      }
+
+
+  /****************
+  **  Try : ...
+  ****************/
+
+  .index .mainVisual .try {
+    font-family: 'Lato'; font-weight: 300;
+    font-size: 16px;
+  }
+    .index .mainVisual .try .colon {
+      padding: 0 5px;
     }
-
-    .index .mainVisual .input-field .label-icon {
-    	text-align: center;
-    	top: 0%;
+    .index .mainVisual .try a {
+      color: #91bbf3;
+      letter-spacing: 0.075em;
     }
-
-
-.index .mainVisual .try {
-  font-family: 'Lato'; font-weight: 300;
-  font-size: 16px;
-}
-  .index .mainVisual .try .colon {
-    padding: 0 5px;
-  }
-  .index .mainVisual .try a {
-    color: #91bbf3;
-    letter-spacing: 0.075em;
-    font-family: Arial, sans-serif;
-  }
-  .index .mainVisual .try a:hover {
-    text-decoration: underline;
-  }
+    .index .mainVisual .try a:hover {
+      text-decoration: underline;
+    }
 
 
 .index .mainVisual .note {
