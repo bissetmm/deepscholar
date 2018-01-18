@@ -8,6 +8,10 @@
     margin-bottom: 58px;
 }
 
+.search .header-navi {
+    border-bottom: 1px solid #ffffff;
+}
+
 /****************
 **
 **  Sub Navigation
@@ -142,7 +146,8 @@
 		padding-top: 1.2em;
 	}
 
-	.contents .paper:first-child .divider{
+	.contents .paper:first-child .divider,
+	.contents .table:first-child .divider{
 		display: none;
 	}
 
@@ -178,7 +183,7 @@
 
 	.paper .meta.links {
 		font-size: 95%;
-		font-weight: 300;
+		font-weight: 400;
 	}
 
 	.paper .meta.links .material-icons {
