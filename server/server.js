@@ -21,6 +21,8 @@ defineSearchkitRouter("papers");
 defineSearchkitRouter("figs");
 defineSearchkitRouter("tables");
 
+app.use("/auth", require("./auth.js")(app));
+
 app.listen(app.get("port"), () => {
   console.log(`Find the server at: http://localhost:${app.get("port")}/`);
 });

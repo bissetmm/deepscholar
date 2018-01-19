@@ -38,7 +38,7 @@ services:
       - deepscholar.elasticsearch
     ports:
       - "${DS_SERVER_PORT}:3001"
-    command: bash -c 'npm i && npm start'
+    command: bash -c 'npm i && DEEP_SCHOLAR_URL=${DEEP_SCHOLAR_URL} OAUTH_GITHUB_CLIENT_ID=${OAUTH_GITHUB_CLIENT_ID} OAUTH_GITHUB_CLIENT_SECRET=${OAUTH_GITHUB_CLIENT_SECRET} npm start '
   deepscholar.elasticsearch:
     container_name: deepscholar.elasticsearch
     image: docker.elastic.co/elasticsearch/elasticsearch:5.4.3
