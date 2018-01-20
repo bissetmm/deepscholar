@@ -322,20 +322,30 @@ class Search extends Component {
     if (query) {
       bodyParams.query = {
         bool: {
-          must: {
-            nested: {
-              path: "caption",
-              query: {
-                multi_match: {
-                  query,
-                  fields: [
-                    "caption.p",
-                    "caption.title"
-                  ]
+          should: [
+            {
+              multi_match: {
+                query,
+                fields: [
+                  "articleTitle",
+                ]
+              }
+            },
+            {
+              nested: {
+                path: "caption",
+                query: {
+                  multi_match: {
+                    query,
+                    fields: [
+                      "caption.p",
+                      "caption.title"
+                    ]
+                  }
                 }
               }
             }
-          }
+          ]
         }
       };
     }
