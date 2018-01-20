@@ -190,7 +190,6 @@ export class Figures extends Component {
 class Table extends Component {
   render() {
     const {table, label, caption, articleTitle} = this.props.data;
-    console.log(this.props.data);
     const title = articleTitle;
     const html = {__html: `<table class="striped responsive-table">${table}<table>`};
     const footer = ( typeof label !== 'undefined' ? label : '' ) + ' '
