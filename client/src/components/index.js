@@ -187,10 +187,15 @@ export class Figures extends Component {
   }
 }
 
-class Table extends Component {
+export const Table = withRouter(connect(mapStateToProps)(class Table extends Component {
+  handleClick(paperUrl, e) {
+    this.props.dispatch(saveScrollY(this.props.location.key, window.scrollY));
+    this.props.history.push(paperUrl);
+  }
+
   render() {
-    const {table, label, caption, articleTitle} = this.props.data;
-    const title = articleTitle;
+    const {paperId, table, label, caption, articleTitle} = this.props.data;
+    const paperUrl = `/papers/${paperId}`;
     const html = {__html: `<table class="striped responsive-table">${table}<table>`};
     const footer = ( typeof label !== 'undefined' ? label : '' ) + ' '
                     + ( typeof caption.title !== 'undefined' ? caption.title : '' ) + ' ' 
@@ -200,7 +205,7 @@ class Table extends Component {
       <article className="table">
         <div className="divider"></div>
         <header>
-          <h5>{title}</h5>
+          <h5><a href="javascript:void(0)" onClick={this.handleClick.bind(this, paperUrl)}>{articleTitle}</a></h5>
         </header>
         <div dangerouslySetInnerHTML={html}></div>
         <footer>
@@ -209,13 +214,13 @@ class Table extends Component {
       </article>
     );
   }
-}
+}));
 
 export class Tables extends Component {
   render() {
     const tables = this.props.data.map((value, i) => {
       const {paperId, table, label, caption, articleTitle} = value;
-      const data = {table, label, caption, articleTitle};
+      const data = {paperId, table, label, caption, articleTitle};
 
       return <Table key={i} data={data} />;
     });
