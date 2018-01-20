@@ -151,51 +151,6 @@
 		display: none;
 	}
 
-	/****************
-	**  Paper
-	****************/
-
-	.paper,
-	#tables {
-
-	}
-
-	.paper header h5 a {
-		line-height: 1.4;
-		font-weight: 400;
-	}
-	.paper header .authors {
-		font-weight: 700;
-	}
-	.paper header h5 {
-		font-weight: 400;
-	}
-
-	.paper span > a {
-		font-size: 95%;
-		margin-left: 4px;
-		font-weight: normal;	
-	}
-
-	.paper > p {
-		font-weight: 400;
-	}
-
-	.paper .meta.links {
-		font-size: 95%;
-		font-weight: 400;
-	}
-
-	.paper .meta.links .material-icons {
-		font-size: 22px;
-	    margin-right: 3px;
-	    color: #1e50a2;
-	}
-
-	/****************
-	**  Table
-	****************/
-
-	.table {
-		width: 100%;
+	.contents .table .divider {
+		margin: 40px 0;
 	}

@@ -1,3 +1,7 @@
+/****************
+**  Paper
+****************/
+
 .paper h5 {
     font-size: 1.3em;
     margin: 20px 0 10px;
@@ -12,6 +16,10 @@
     display: -webkit-box;
 }
 
+.paper > p {
+    font-weight: 400;
+}
+
 .paper p.truncate {
     overflow: hidden;;
     text-overflow: clip;
@@ -20,6 +28,20 @@
     -webkit-line-clamp: 3;
     -webkit-box-orient: vertical;
     /* autoprefixer: on */
+}
+
+.paper span > a {
+    font-size: 95%;
+    margin-left: 4px;
+    font-weight: normal;    
+}
+
+.paper header .authors {
+    font-weight: 700;
+}
+.paper header h5 a {
+    line-height: 1.4;
+    font-weight: 400;
 }
 
 .paper footer {
@@ -32,6 +54,17 @@
 
 .paper ul.meta li {
     display: inline-block;
+}
+
+.paper .meta.links {
+    font-size: 95%;
+    font-weight: 400;
+}
+
+.paper .meta.links .material-icons {
+    font-size: 22px;
+    margin-right: 3px;
+    color: #1e50a2;
 }
 
 .paper ul.authors li {
@@ -54,7 +87,30 @@
     border: 1px solid lightgray;
 }
 
+
+/****************
+**  Table
+****************/
+
 #tables {
     display: flex;
     flex-wrap: wrap;
+    width: 100%;
+}
+
+.table a:hover {
+    text-decoration: underline;
+}
+
+.table header h5{
+    font-size: 1.3em;
+    margin: 20px 0 10px;
+
+    line-height: 1.4;
+    font-weight: 400;
+}
+
+.table footer p {
+    margin: 10px 0;
+    font-weight: 400;
 }
