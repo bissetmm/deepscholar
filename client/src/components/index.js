@@ -189,9 +189,12 @@ export class Figures extends Component {
 
 class Table extends Component {
   render() {
-    const {table, label, caption} = this.props.data;
-    const title = caption ? (caption.title || (caption.p ? caption.p[0] : null)) : label;
+    const {table, label, caption, articleTitle} = this.props.data;
+    const title = articleTitle;
     const html = {__html: `<table class="striped responsive-table">${table}<table>`};
+    const footer = ( typeof label !== 'undefined' ? label : '' ) + ' '
+                    + ( typeof caption.title !== 'undefined' ? caption.title : '' ) + ' ' 
+                    + ( typeof caption.p !== 'undefined' ? caption.p.join(' ') : '' );
 
     return (
       <article className="table">
@@ -200,6 +203,9 @@ class Table extends Component {
           <h5>{title}</h5>
         </header>
         <div dangerouslySetInnerHTML={html}></div>
+        <footer>
+          <h6>{footer}</h6>
+        </footer>
       </article>
     );
   }
@@ -208,8 +214,8 @@ class Table extends Component {
 export class Tables extends Component {
   render() {
     const tables = this.props.data.map((value, i) => {
-      const {paperId, table, label, caption} = value;
-      const data = {table, label, caption};
+      const {paperId, table, label, caption, articleTitle} = value;
+      const data = {table, label, caption, articleTitle};
 
       return <Table key={i} data={data} />;
     });
