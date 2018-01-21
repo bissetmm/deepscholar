@@ -7,7 +7,7 @@ import Index from '../Index/index.js';
 import Search from '../Search/index.js';
 import Detail from '../Detail/index.js';
 import {ScrollToTop} from '../../components/index.js';
-import {changeQuery, deleteAllScrollY} from '../../module';
+import {changeQuery, deleteAllScrollY, signedIn, signedOut} from '../../module';
 import './style.css';
 
 function mapStateToProps(state) {
@@ -19,6 +19,16 @@ const NavBar = connect(mapStateToProps)(class NavBar extends Component {
     super(props);
     this.searchTimer = null;
     this.query = null;
+  }
+
+  componentDidMount() {
+    window.addEventListener("message", (event) => {
+      if (event.origin !== window.location.origin || event.data.type !== "authenticated") {
+        return;
+      }
+
+      this.props.dispatch(signedIn(event.data.user));
+    });
   }
 
   componentDidUpdate(prevProps) {
@@ -83,7 +93,18 @@ const NavBar = connect(mapStateToProps)(class NavBar extends Component {
     this.query = e.target.value;
   }
 
+  handleClickSignIn() {
+    window.open("/auth/github");
+  }
+
+  handleClickSignOut() {
+    this.props.dispatch(signedOut());
+  }
+
   render() {
+    const {user} = this.props.state;
+    const isSignedIn = user !== null;
+
     return (
       <div className="nav-wrapper">
         <div className="row">
@@ -99,6 +120,14 @@ const NavBar = connect(mapStateToProps)(class NavBar extends Component {
               <label className="label-icon" htmlFor="search"><i className="material-icons">search</i>
               </label>
             </div>
+            <ul className="right">
+              {!isSignedIn &&
+              <li><a href="#" onClick={this.handleClickSignIn.bind(this)}>Sign in</a></li>
+              }
+              {isSignedIn &&
+              <li><a href="#" onClick={this.handleClickSignOut.bind(this)}>Hi, {user.profile.displayName}. Sign out</a></li>
+              }
+            </ul>
           </div>
         </div>
       </div>

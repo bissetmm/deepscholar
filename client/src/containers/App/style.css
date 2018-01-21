@@ -70,6 +70,9 @@ div.container {
 		width: 100%;
 		max-width: 140px;
 	}
+	.header-navi ul a {
+		color: #1e50a2;
+	}
 	@media only screen and (max-width: 992px) {
 		.header-navi .brand-logo {
 			margin-left: 0;
