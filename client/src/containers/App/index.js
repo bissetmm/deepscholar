@@ -8,6 +8,7 @@ import Search from '../Search/index.js';
 import Detail from '../Detail/index.js';
 import {ScrollToTop} from '../../components/index.js';
 import {changeQuery, deleteAllScrollY, signedIn, signedOut} from '../../module';
+import './materializeTheme.css';
 import './style.css';
 
 function mapStateToProps(state) {
@@ -112,7 +113,7 @@ const NavBar = connect(mapStateToProps)(class NavBar extends Component {
             <Link to="/" className="brand-logo"><img src="/images/deepscholar_logo.svg"/></Link>
           </div>
           <div className="col s8 l7">
-            <div className="input-field">
+            <div className="input-field input-field--search">
               <form onSubmit={this.handleSubmit.bind(this)}>
                 <input type="search" placeholder="Search" ref="search" onChange={this.handleChange.bind(this)}
                        defaultValue={this.props.state.query}/>

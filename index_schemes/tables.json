@@ -2,6 +2,15 @@
   "mappings": {
     "lang": {
       "properties": {
+        "articleTitle": {
+          "type": "text",
+          "fields": {
+            "keyword": {
+              "type": "keyword"
+            }
+          },
+          "fielddata": true
+        },
         "caption": {
           "type": "nested",
           "properties": {

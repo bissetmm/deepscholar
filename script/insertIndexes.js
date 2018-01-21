@@ -172,7 +172,8 @@ function processPaper(s, dirPath) {
           tableWraps.concat(Array.prototype.concat.apply([], tableWrapsInTableWrapGroup));
           tableWraps.forEach((tableWrap) => {
             const tableMeta = {index: defaultTableMeta};
-            s.append(`\n${JSON.stringify(tableMeta)}\n${JSON.stringify(Object.assign(tableWrap, {paperId}))}`);
+            const articleTitle = data.front.articleTitle;
+            s.append(`\n${JSON.stringify(tableMeta)}\n${JSON.stringify(Object.assign(tableWrap, {articleTitle}, {paperId} ))}`);
           });
         } catch (e) {
           console.error(`${fileName} may be invalid format.`);

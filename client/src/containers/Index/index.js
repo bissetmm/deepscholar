@@ -73,7 +73,7 @@ class Index extends Component {
 
             <div className="col s8 l6">
 
-              <div className="input-field">
+              <div className="input-field input-field--search noBorder">
                 <form onSubmit={this.handleSubmit.bind(this)}>
                   <input type="search" placeholder="Search" onChange={this.handleChange.bind(this)} />
                 </form>

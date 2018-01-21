@@ -4,7 +4,68 @@
 **
 ****************/
 
+.search .navbar-fixed {
+    margin-bottom: 58px;
+}
 
+.search .header-navi {
+    border-bottom: 1px solid #ffffff;
+}
+
+/****************
+**
+**  Sub Navigation
+**
+****************/
+.subNavi {
+	position: fixed;
+	left: 0;
+	top: 64px;
+	width: 100%;
+	height: 56px;
+	border-bottom: 1px solid #b7b7b7;
+	background-color: white;
+}
+
+.subNavi .tabs {
+    margin-top: 16px; 
+}
+
+.subNavi .container > .row {
+  	margin-bottom: 0;
+}
+
+@media only screen and (max-width: 600px) { 
+	.subNavi {
+		height: 50px;
+	}
+}
+
+
+
+/****************
+**  Results
+****************/
+
+.subNavi .results {
+	position: relative; 
+}
+.subNavi .results p {
+	margin: 0;
+	line-height: 56px;
+	padding-right: 2.75rem;
+	text-align: center; 
+}
+.subNavi .results p .num {
+	font-weight: 500;
+}
+
+@media only screen and (max-width: 600px) { 
+	.subNavi .results p {
+		height: 50px;
+		padding-right: 0;
+	}
+}
 
 /****************
 **
@@ -13,57 +74,65 @@
 ****************/
 
 .sidebar {
-	padding-right: 32px !important;
-	padding-left: 4px;
+	position: relative;
 }
 
 .sidebar > div {
-	margin-left: 16px;
-	margin-right: 16px;
+	position: fixed;
+	height: calc(100vh - 64px - 60px);
+	overflow-y: scroll;
+
+	padding-right: 2em !important;
+	padding-top: 20px !important;
+}
+.sidebar > div::-webkit-scrollbar {
+  display: none;
 }
 
-	/****************
-	**  Lead
-	****************/
-
-	.sidebar h5 {
-	    letter-spacing: -0.03em !important;
-	    font-size: 1.3rem !important;
-	    margin-top: 16px !important;
-	    margin-bottom: 30px !important;
+@media only screen and (min-width: 993px) {
+	.sidebar .col.l3 {
+		width: 23%;
+		max-width: 310px;
 	}
+}
 
-	.sidebar h6 {
-		
-	}
+/****************
+**  Lead
+****************/
 
-	/****************
-	**  Input Field
-	****************/
+.sidebar h5 {
+	position: relative;
+	left: -3px;
+    font-weight: 500;
+    font-size: 20px !important;
+    letter-spacing: 0.1em;
+    margin-top: 16px !important;
+    margin-bottom: 24px !important;
+}
 
-	.sidebar input[type=search]:not(.browser-default){
-		height: 1.5rem !important;
-		border-bottom: 1px solid #e0e0e0;
-	}
+.sidebar h5 .material-icons {
+    position: relative;
+    top: 2px;
+    font-size: 19px;
+	vertical-align: top;
+	margin-right: 4px;
+}
 
-	.sidebar input[type=search]:not(.browser-default):focus {
-		border-bottom: 1px solid rgba(10, 25, 51, 0.75);
-	    -webkit-box-shadow: none;
-	    box-shadow: none;
-	}
+.sidebar h6 {
+	font-weight: 500;
+    font-size: 0.85rem !important;
+    letter-spacing: 0.075em;
+}
 
-	/****************
-	**  Publication Year
-	****************/
-	.sidebar .publication-year {
-		padding: 0 11px;
-	    margin-top: 1rem;
-	    margin-bottom: 1.5rem;
-	}
 
-	.sidebar .publication-year {
-	    padding: 0 20px;
-	}
+/****************
+**  Publication Year
+****************/
+.sidebar .publication-year {
+	padding: 0 11px;
+    margin-top: 1rem;
+    margin-bottom: 1.5rem;
+}
 
 
 
@@ -73,67 +142,15 @@
 **
 ****************/
 
-	/****************
-	**  Tabs
-	****************/
-	.tabs .tab a,
-	.tabs .tab a:hover,
-	.tabs .tab a:active {
-	    color: #1e50a2 !important;
-	    letter-spacing: 0.1em;
+	.contents .row{
+		padding-top: 1.2em;
 	}
 
-	.tabs .tab a:hover {
-	    text-decoration: underline;
+	.contents .paper:first-child .divider,
+	.contents .table:first-child .divider{
+		display: none;
 	}
 
-	.tabs .indicator {
-	    background-color: #1e50a2;
-	    border-radius: 5px;
+	.contents .table .divider {
+		margin: 40px 0;
 	}
-
-	/****************
-	**  Results
-	****************/
-
-	#tab-texts > p {
-	    margin: 1.3em 0 1em;
-	}
-
-	/****************
-	**  Paper
-	****************/
-
-	.paper,
-	#tables {
-		font-family: Arial;
-	}
-
-	.paper .authors {
-		font-weight: bold;	
-	}
-
-	.paper span > a {
-		font-size: 95%;
-		margin-left: 4px;
-		font-weight: normal;	
-	}
-
-	.paper .meta.links {
-		font-size: 95%
-	}
-
-	.paper .meta.links .material-icons {
-		font-size: 22px;
-	    margin-right: 3px;
-	    color: #1e50a2;
-	}
-
-	/****************
-	**  Paper
-	****************/
-
-	.table {
-		width: 100%;
-	}
-
