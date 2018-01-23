@@ -16,6 +16,8 @@ function mapStateToProps(state) {
 }
 
 const NavBar = connect(mapStateToProps)(class NavBar extends Component {
+  static USER_STORE_KEY = "user";
+
   constructor(props) {
     super(props);
     this.searchTimer = null;
@@ -28,8 +30,15 @@ const NavBar = connect(mapStateToProps)(class NavBar extends Component {
         return;
       }
 
-      this.props.dispatch(signedIn(event.data.user));
+      const user = event.data.user;
+      window.localStorage.setItem(NavBar.USER_STORE_KEY, JSON.stringify(user));
+      this.props.dispatch(signedIn(user));
     });
+
+    const user = window.localStorage.getItem(NavBar.USER_STORE_KEY);
+    if (user) {
+      this.props.dispatch(signedIn((JSON.parse(user))));
+    }
   }
 
   componentDidUpdate(prevProps) {
@@ -94,11 +103,14 @@ const NavBar = connect(mapStateToProps)(class NavBar extends Component {
     this.query = e.target.value;
   }
 
-  handleClickSignIn() {
+  handleClickSignIn(e) {
+    e.preventDefault();
     window.open("/auth/github");
   }
 
-  handleClickSignOut() {
+  handleClickSignOut(e) {
+    e.preventDefault();
+    window.localStorage.removeItem(NavBar.USER_STORE_KEY);
     this.props.dispatch(signedOut());
   }
 
@@ -112,7 +124,7 @@ const NavBar = connect(mapStateToProps)(class NavBar extends Component {
           <div className="col s4 l3">
             <Link to="/" className="brand-logo"><img src="/images/deepscholar_logo.svg"/></Link>
           </div>
-          <div className="col s8 l7">
+          <div className="col s7 l6">
             <div className="input-field input-field--search">
               <form onSubmit={this.handleSubmit.bind(this)}>
                 <input type="search" placeholder="Search" ref="search" onChange={this.handleChange.bind(this)}
@@ -171,6 +183,6 @@ class App extends Component {
       </HashRouter>
     );
   }
-}
+};
 
 export default App;
