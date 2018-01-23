@@ -121,15 +121,15 @@ const NavBar = connect(mapStateToProps)(class NavBar extends Component {
               <label className="label-icon" htmlFor="search"><i className="material-icons">search</i>
               </label>
             </div>
-            <ul className="right">
-              {!isSignedIn &&
-              <li><a href="#" onClick={this.handleClickSignIn.bind(this)}>Sign in</a></li>
-              }
-              {isSignedIn &&
-              <li><a href="#" onClick={this.handleClickSignOut.bind(this)}>Hi, {user.profile.displayName}. Sign out</a></li>
-              }
-            </ul>
           </div>
+          <ul className="right">
+            {!isSignedIn &&
+            <li><a href="#" onClick={this.handleClickSignIn.bind(this)}>Sign in</a></li>
+            }
+            {isSignedIn &&
+            <li><a href="#" onClick={this.handleClickSignOut.bind(this)}>Hi, {user.profile.displayName}. Sign out</a></li>
+            }
+          </ul>
         </div>
       </div>
     );
