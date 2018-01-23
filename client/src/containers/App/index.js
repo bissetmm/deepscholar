@@ -122,11 +122,16 @@ const NavBar = connect(mapStateToProps)(class NavBar extends Component {
       <li><a href="#" onClick={this.handleClickSignIn.bind(this, provider)}>{provider}</a></li>
     );
 
+    const src = user ? user.profile.photos[0].value : null;
+
     return (
       <div className="navbar-fixed">
         <nav className="header-navi z-depth-0">
           <ul id="providers" className="dropdown-content">
             {providers}
+          </ul>
+          <ul id="user-menu" className="dropdown-content">
+            <li><a href="#" onClick={this.handleClickSignOut.bind(this)}>Sign out</a></li>
           </ul>
           <div className="nav-wrapper">
             <div className="row">
@@ -148,7 +153,7 @@ const NavBar = connect(mapStateToProps)(class NavBar extends Component {
                 <li><a href="#" className="dropdown-button" data-activates="providers">Sign in</a></li>
                 }
                 {isSignedIn &&
-                <li><a href="#" onClick={this.handleClickSignOut.bind(this)}>Hi, {user.profile.displayName}. Sign out</a></li>
+                <li><a href="#" className="dropdown-button" data-activates="user-menu"><img className="avatar" src={src} />{user.profile.displayName}</a></li>
                 }
               </ul>
             </div>
