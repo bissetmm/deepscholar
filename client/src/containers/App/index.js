@@ -125,7 +125,7 @@ const NavBar = connect(mapStateToProps)(class NavBar extends Component {
     return (
       <div className="navbar-fixed">
         <nav className="header-navi z-depth-0">
-          <ul id="authentication" className="dropdown-content">
+          <ul id="providers" className="dropdown-content">
             {providers}
           </ul>
           <div className="nav-wrapper">
@@ -145,7 +145,7 @@ const NavBar = connect(mapStateToProps)(class NavBar extends Component {
               </div>
               <ul className="right">
                 {!isSignedIn &&
-                <li><a href="#" className="dropdown-button" data-activates="authentication">Sign in</a></li>
+                <li><a href="#" className="dropdown-button" data-activates="providers">Sign in</a></li>
                 }
                 {isSignedIn &&
                 <li><a href="#" onClick={this.handleClickSignOut.bind(this)}>Hi, {user.profile.displayName}. Sign out</a></li>

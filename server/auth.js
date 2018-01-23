@@ -64,7 +64,6 @@ function generateAccessToken(type, username) {
 }
 
 function generateUserToken(req, res) {
-  console.log(req);
   const accessToken = generateAccessToken("github", req.user.id);
   res.render('authenticated.html', {
     token: accessToken,
@@ -72,18 +71,23 @@ function generateUserToken(req, res) {
   });
 }
 
+const providers = [
+  {type: "google", scope: ['openid', 'profile', 'email']},
+  {type: "github", scope: ['read:user']}
+];
+
 module.exports = (app) => {
   app.use(passport.initialize());
 
   const router = express.Router();
-  router.get('/google', passport.authenticate('google', {scope: ['openid', 'profile', 'email']}));
-  router.get('/google/callback',
-    passport.authenticate('google', {session: false}),
-    generateUserToken);
-  router.get('/github', passport.authenticate('github'));
-  router.get('/github/callback',
-    passport.authenticate('github', {session: false}),
-    generateUserToken);
+
+  providers.forEach(provider => {
+    router.get(`/${provider.type}`, passport.authenticate(provider.type, {session: false, scope: provider.scope}));
+    router.get(`/${provider.type}/callback`,
+      passport.authenticate(provider.type, {session: false}),
+      generateUserToken);
+
+  });
 
   return router;
 };
