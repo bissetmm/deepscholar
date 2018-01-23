@@ -103,9 +103,9 @@ const NavBar = connect(mapStateToProps)(class NavBar extends Component {
     this.query = e.target.value;
   }
 
-  handleClickSignIn(e) {
+  handleClickSignIn(provider, e) {
     e.preventDefault();
-    window.open("/auth/github");
+    window.open(`/auth/${provider.toLowerCase()}`);
   }
 
   handleClickSignOut(e) {
@@ -118,31 +118,42 @@ const NavBar = connect(mapStateToProps)(class NavBar extends Component {
     const {user} = this.props.state;
     const isSignedIn = user !== null;
 
+    const providers = ["Google", "Github"].map(provider =>
+      <li><a href="#" onClick={this.handleClickSignIn.bind(this, provider)}>{provider}</a></li>
+    );
+
     return (
-      <div className="nav-wrapper">
-        <div className="row">
-          <div className="col s4 l3">
-            <Link to="/" className="brand-logo"><img src="/images/deepscholar_logo.svg"/></Link>
-          </div>
-          <div className="col s7 l6">
-            <div className="input-field input-field--search">
-              <form onSubmit={this.handleSubmit.bind(this)}>
-                <input type="search" placeholder="Search" ref="search" onChange={this.handleChange.bind(this)}
-                       defaultValue={this.props.state.query}/>
-              </form>
-              <label className="label-icon" htmlFor="search"><i className="material-icons">search</i>
-              </label>
+      <div className="navbar-fixed">
+        <nav className="header-navi z-depth-0">
+          <ul id="authentication" className="dropdown-content">
+            {providers}
+          </ul>
+          <div className="nav-wrapper">
+            <div className="row">
+              <div className="col s4 l3">
+                <Link to="/" className="brand-logo"><img src="/images/deepscholar_logo.svg"/></Link>
+              </div>
+              <div className="col s7 l6">
+                <div className="input-field input-field--search">
+                  <form onSubmit={this.handleSubmit.bind(this)}>
+                    <input type="search" placeholder="Search" ref="search" onChange={this.handleChange.bind(this)}
+                           defaultValue={this.props.state.query}/>
+                  </form>
+                  <label className="label-icon" htmlFor="search"><i className="material-icons">search</i>
+                  </label>
+                </div>
+              </div>
+              <ul className="right">
+                {!isSignedIn &&
+                <li><a href="#" className="dropdown-button" data-activates="authentication">Sign in</a></li>
+                }
+                {isSignedIn &&
+                <li><a href="#" onClick={this.handleClickSignOut.bind(this)}>Hi, {user.profile.displayName}. Sign out</a></li>
+                }
+              </ul>
             </div>
           </div>
-          <ul className="right">
-            {!isSignedIn &&
-            <li><a href="#" onClick={this.handleClickSignIn.bind(this)}>Sign in</a></li>
-            }
-            {isSignedIn &&
-            <li><a href="#" onClick={this.handleClickSignOut.bind(this)}>Hi, {user.profile.displayName}. Sign out</a></li>
-            }
-          </ul>
-        </div>
+        </nav>
       </div>
     );
   }
@@ -157,13 +168,9 @@ class App extends Component {
     return (
       <HashRouter>
         <div>
-          <div className="navbar-fixed">
-            <nav className="header-navi z-depth-0">
-              <Route component={(props) => (
-                <NavBar {...props}/>
-              )}/>
-            </nav>
-          </div>
+          <Route component={(props) => (
+            <NavBar {...props}/>
+          )}/>
           <div className="container">
             <div>
               <Switch>
