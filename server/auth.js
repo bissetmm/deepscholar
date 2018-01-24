@@ -2,7 +2,6 @@ const express = require("express");
 const passport = require("passport");
 const passportJwt = require("passport-jwt");
 const GithubStrategy = require("passport-github").Strategy;
-const GoogleStrategy = require("passport-google-oauth").OAuth2Strategy;
 
 const jwtOptions = {
   jwtFromRequest: passportJwt.ExtractJwt.fromAuthHeaderAsBearerToken(),
@@ -19,15 +18,6 @@ passport.use(new passportJwt.Strategy(jwtOptions, (payload, done) => {
   return done();
 }));
 
-passport.use('google', new GoogleStrategy({
-    clientID: process.env.OAUTH_GOOGLE_CLIENT_ID,
-    clientSecret: process.env.OAUTH_GOOGLE_CLIENT_SECRET,
-    callbackURL: `${process.env.DEEP_SCHOLAR_URL}/auth/google/callback`
-  },
-  (accessToken, refreshToken, profile, done) => {
-    done(null, profile);
-  }
-));
 passport.use('github', new GithubStrategy({
     clientID: process.env.OAUTH_GITHUB_CLIENT_ID,
     clientSecret: process.env.OAUTH_GITHUB_CLIENT_SECRET,
@@ -72,7 +62,6 @@ function generateUserToken(req, res) {
 }
 
 const providers = [
-  {type: "google", scope: ['openid', 'profile', 'email']},
   {type: "github", scope: ['read:user']}
 ];
 

@@ -103,9 +103,9 @@ const NavBar = connect(mapStateToProps)(class NavBar extends Component {
     this.query = e.target.value;
   }
 
-  handleClickSignIn(provider, e) {
+  handleClickSignIn(e) {
     e.preventDefault();
-    window.open(`/auth/${provider.toLowerCase()}`);
+    window.open('/auth/github');
   }
 
   handleClickSignOut(e) {
@@ -118,21 +118,11 @@ const NavBar = connect(mapStateToProps)(class NavBar extends Component {
     const {user} = this.props.state;
     const isSignedIn = user !== null;
 
-    const providers = ["Google", "Github"].map(provider =>
-      <li><a href="#" onClick={this.handleClickSignIn.bind(this, provider)}>{provider}</a></li>
-    );
-
     const src = user ? user.profile.photos[0].value : null;
 
     return (
       <div className="navbar-fixed">
         <nav className="header-navi z-depth-0">
-          <ul id="providers" className="dropdown-content">
-            {providers}
-          </ul>
-          <ul id="user-menu" className="dropdown-content">
-            <li><a href="#" onClick={this.handleClickSignOut.bind(this)}>Sign out</a></li>
-          </ul>
           <div className="nav-wrapper">
             <div className="row">
               <div className="col s4 l3">
@@ -150,10 +140,10 @@ const NavBar = connect(mapStateToProps)(class NavBar extends Component {
               </div>
               <ul className="right">
                 {!isSignedIn &&
-                <li><a href="#" className="dropdown-button" data-activates="providers">Sign in</a></li>
+                <li><a href="#" onClick={this.handleClickSignIn.bind(this)}>Sign in</a></li>
                 }
                 {isSignedIn &&
-                <li><a href="#" className="dropdown-button" data-activates="user-menu"><img className="avatar" src={src} />{user.profile.displayName}</a></li>
+                <li><a href="#" onClick={this.handleClickSignOut.bind(this)}><img className="avatar" src={src} />Sign out</a></li>
                 }
               </ul>
             </div>
