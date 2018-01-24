@@ -1,0 +1,21 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Authenticated</title>
+</head>
+<body>
+Authenticated successfully.
+
+<script type="text/javascript">
+  const message = {
+    type: "authenticated",
+    user: {
+      token: '{{token}}',
+      profile: {{{user}}}
+    }
+  };
+  window.opener.postMessage(message, location.origin);
+  window.close();
+</script>
+</body>
+</html>

@@ -7,7 +7,7 @@ import Index from '../Index/index.js';
 import Search from '../Search/index.js';
 import Detail from '../Detail/index.js';
 import {ScrollToTop} from '../../components/index.js';
-import {changeQuery, deleteAllScrollY} from '../../module';
+import {changeQuery, deleteAllScrollY, signedIn, signedOut} from '../../module';
 import './materializeTheme.css';
 import './style.css';
 
@@ -16,10 +16,29 @@ function mapStateToProps(state) {
 }
 
 const NavBar = connect(mapStateToProps)(class NavBar extends Component {
+  static USER_STORE_KEY = "user";
+
   constructor(props) {
     super(props);
     this.searchTimer = null;
     this.query = null;
+  }
+
+  componentDidMount() {
+    window.addEventListener("message", (event) => {
+      if (event.origin !== window.location.origin || event.data.type !== "authenticated") {
+        return;
+      }
+
+      const user = event.data.user;
+      window.localStorage.setItem(NavBar.USER_STORE_KEY, JSON.stringify(user));
+      this.props.dispatch(signedIn(user));
+    });
+
+    const user = window.localStorage.getItem(NavBar.USER_STORE_KEY);
+    if (user) {
+      this.props.dispatch(signedIn((JSON.parse(user))));
+    }
   }
 
   componentDidUpdate(prevProps) {
@@ -84,24 +103,52 @@ const NavBar = connect(mapStateToProps)(class NavBar extends Component {
     this.query = e.target.value;
   }
 
+  handleClickSignIn(e) {
+    e.preventDefault();
+    window.open('/auth/github');
+  }
+
+  handleClickSignOut(e) {
+    e.preventDefault();
+    window.localStorage.removeItem(NavBar.USER_STORE_KEY);
+    this.props.dispatch(signedOut());
+  }
+
   render() {
+    const {user} = this.props.state;
+    const isSignedIn = user !== null;
+
+    const src = user ? user.profile.photos[0].value : null;
+
     return (
-      <div className="nav-wrapper">
-        <div className="row">
-          <div className="col s4 l3">
-            <Link to="/" className="brand-logo"><img src="/images/deepscholar_logo.svg"/></Link>
-          </div>
-          <div className="col s8 l7">
-            <div className="input-field input-field--search">
-              <form onSubmit={this.handleSubmit.bind(this)}>
-                <input type="search" placeholder="Search" ref="search" onChange={this.handleChange.bind(this)}
-                       defaultValue={this.props.state.query}/>
-              </form>
-              <label className="label-icon" htmlFor="search"><i className="material-icons">search</i>
-              </label>
+      <div className="navbar-fixed">
+        <nav className="header-navi z-depth-0">
+          <div className="nav-wrapper">
+            <div className="row">
+              <div className="col s4 l3">
+                <Link to="/" className="brand-logo"><img src="/images/deepscholar_logo.svg"/></Link>
+              </div>
+              <div className="col s7 l6">
+                <div className="input-field input-field--search">
+                  <form onSubmit={this.handleSubmit.bind(this)}>
+                    <input type="search" placeholder="Search" ref="search" onChange={this.handleChange.bind(this)}
+                           defaultValue={this.props.state.query}/>
+                  </form>
+                  <label className="label-icon" htmlFor="search"><i className="material-icons">search</i>
+                  </label>
+                </div>
+              </div>
+              <ul className="right">
+                {!isSignedIn &&
+                <li><a href="#" onClick={this.handleClickSignIn.bind(this)}>Sign in</a></li>
+                }
+                {isSignedIn &&
+                <li><a href="#" onClick={this.handleClickSignOut.bind(this)}><img className="avatar" src={src} />Sign out</a></li>
+                }
+              </ul>
             </div>
           </div>
-        </div>
+        </nav>
       </div>
     );
   }
@@ -116,13 +163,9 @@ class App extends Component {
     return (
       <HashRouter>
         <div>
-          <div className="navbar-fixed">
-            <nav className="header-navi z-depth-0">
-              <Route component={(props) => (
-                <NavBar {...props}/>
-              )}/>
-            </nav>
-          </div>
+          <Route component={(props) => (
+            <NavBar {...props}/>
+          )}/>
           <div className="container">
             <div>
               <Switch>
@@ -142,6 +185,6 @@ class App extends Component {
       </HashRouter>
     );
   }
-}
+};
 
 export default App;

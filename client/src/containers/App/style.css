@@ -45,6 +45,9 @@
 		width: 100%;
 		max-width: 140px;
 	}
+	.header-navi ul a {
+		color: #1e50a2;
+	}
 	@media only screen and (max-width: 992px) {
 		.header-navi .brand-logo {
 			margin-left: 0;
@@ -52,6 +55,17 @@
 		    -webkit-transform: translateX(0); 
 		    transform: translateX(0); 
 		}
+	}
+
+	/****************
+	**  Avator
+	****************/
+	.header-navi .avatar {
+		position: relative;
+		vertical-align: middle;
+		width: 30px;
+		height: 30px;
+		margin-right: 6px;
 	}
 
 	/****************

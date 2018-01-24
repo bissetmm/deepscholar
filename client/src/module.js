@@ -6,6 +6,7 @@ const queries = matches ? matches[2] : "";
 const parsed = queryString.parse(queries);
 const category = matches ? matches[1] : null;
 const initialState = {
+  user: null,
   category: category || null,
   query: parsed.q || null,
   articleTitle: parsed.articleTitle || null,
@@ -41,6 +42,14 @@ const initialState = {
 
 export function reducers(state = initialState, action) {
   switch (action.type) {
+    case SIGNED_IN:
+      return Object.assign({}, state, {
+        user: action.user
+      });
+    case SIGNED_OUT:
+      return Object.assign({}, state, {
+        user: null
+      });
     case CHANGE_QUERY:
       return Object.assign({}, state, {
         category: action.category || null,
@@ -153,6 +162,24 @@ export function reducers(state = initialState, action) {
     default:
       return state;
   }
+}
+
+const SIGNED_IN = "SIGNED_IN";
+
+export function signedIn(user) {
+  return {
+    type: SIGNED_IN,
+    user
+  };
+}
+
+const SIGNED_OUT = "SIGNED_OUT";
+
+export function signedOut() {
+  return {
+    type: SIGNED_OUT,
+    user: null
+  };
 }
 
 const CHANGE_QUERY = "CHANGE_QUERY";
