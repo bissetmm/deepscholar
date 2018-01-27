@@ -105,7 +105,7 @@ const NavBar = connect(mapStateToProps)(class NavBar extends Component {
 
   handleClickSignIn(e) {
     e.preventDefault();
-    window.open('/auth/github');
+    window.open('/api/auth/github');
   }
 
   handleClickSignOut(e) {
