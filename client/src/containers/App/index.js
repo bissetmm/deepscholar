@@ -143,7 +143,7 @@ const NavBar = connect(mapStateToProps)(class NavBar extends Component {
                 <li><a href="#" onClick={this.handleClickSignIn.bind(this)}>Sign in</a></li>
                 }
                 {isSignedIn &&
-                <li><a href="#" onClick={this.handleClickSignOut.bind(this)}><img className="avatar" src={src} />Sign out</a></li>
+                <li><a href="#" className="tooltipped" data-position="bottom" data-delay="50" data-tooltip={user.profile.username} onClick={this.handleClickSignOut.bind(this)}><img className="avatar" src={src} />Sign out</a></li>
                 }
               </ul>
             </div>
