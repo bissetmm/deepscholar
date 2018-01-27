@@ -133,12 +133,14 @@ input.alpha[type=search]:not(.browser-default):focus {
 	height: 40px; 
 }
 .tabs.tabs--alpha .tab {
-	padding: 0 1%;
-	height: 40px; 
+	/*padding: 0;*/
+	height: 40px; 	
 }
 .tabs.tabs--alpha .tab a{
 	position: relative;
 	overflow: visible;
+
+	padding: 0 16px;
 
 	height: 40px;
 
@@ -150,14 +152,16 @@ input.alpha[type=search]:not(.browser-default):focus {
 
 	cursor: pointer;
 	
-	border: 1px solid #b7b7b7;
-	border-bottom: 1px solid #b7b7b7;
+	border: 1px solid transparent;
+	border-bottom: 1px solid #e1e4e8;
 	border-radius: 2px 2px 0 0;
 
-	-webkit-transition: border-bottom .5s ease;
-	transition: border-bottom .5s ease; 
+	/*-webkit-transition: border-bottom .5s ease;*/
+	/*transition: border-bottom .5s ease; */
 }
 .tabs.tabs--alpha .tab a.active{
+	background-color: #fff;
+	border: 1px solid #e1e4e8;
 	border-bottom: 1px solid #ffffff; 
 }
 .tabs.tabs--alpha .tab a:before{
@@ -169,35 +173,39 @@ input.alpha[type=search]:not(.browser-default):focus {
 	width: calc(100% + 2px);
 	height: 3px;
 
-	background: #90a8d2;
+	background: transparent;
 	
 
 	border-radius: 9px;
-	-webkit-transition: background-color 0.5s;
-	transition: background-color 0.5s; 
+	/*-webkit-transition: background-color 0.5s;*/
+	/*transition: background-color 0.5s; */
 }
 .tabs.tabs--alpha .tab a.active:before{
 	background: #1e50a2;
 }
 .tabs.tabs--alpha .tab a .txt{
 	display: inline-block;
-	position: absolute;
-	left: calc(50% + 8px);
+	/*position: absolute;*/
+	/*left: calc(50% + 8px);*/
 
-	-webkit-transform: translateX(-50%);
-	transform: translateX(-50%); 
+	font-size: 1rem;
+
+	/*-webkit-transform: translateX(-50%);*/
+	/*transform: translateX(-50%); */
 }
 .tabs.tabs--alpha .tab a .txt .material-icons{
-	display: block;
-	position: absolute;
-	left: -30px;
-	top: 50%;
+	/*display: block;*/
+	/*position: absolute;*/
+	/*left: -30px;*/
+	/*top: 50%;*/
 
-	font-size: 18px;
+	font-size: 17px;
 	line-height: 1;
+	vertical-align: text-bottom;
+    padding-right: 4px;
 	
-	-webkit-transform: translate(0, -50%);
-	transform: translate(0, -50%); 
+	/*-webkit-transform: translate(0, -50%);*/
+	/*transform: translate(0, -50%); */
 }
 .tabs.tabs--alpha .indicator {
 	display: none; 
@@ -206,8 +214,8 @@ input.alpha[type=search]:not(.browser-default):focus {
 @media only screen and (max-width: 993px) {
 	.tabs.tabs--alpha .tab a .txt{
 		position: relative;
-    	left: 50%;
-    	width: 100%;
+    	/*left: 50%;*/
+    	/*width: 100%;*/
 	}
 	.tabs.tabs--alpha .tab a .txt .material-icons {
 		display: inline;

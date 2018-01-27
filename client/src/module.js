@@ -5,6 +5,13 @@ const matches = window.location.hash.match(/#\/([a-zA-Z]+).*\?(.+)/);
 const queries = matches ? matches[2] : "";
 const parsed = queryString.parse(queries);
 const category = matches ? matches[1] : null;
+const labelList = {
+                    "label1" : ["red"   , [] ] , // labelName : [color, paperList]
+                    "label2" : ["blue"  , [] ] ,
+                    "label3" : ["green" , [] ] ,
+                    "label4" : ["grey"  , [] ] ,
+                    "label5" : ["yellow", [] ]
+                  };
 const initialState = {
   user: null,
   category: category || null,
@@ -24,6 +31,8 @@ const initialState = {
   figures: [],
   figuresTotal: 0,
   figuresFetchSize: 10000,
+  labelList: labelList,
+  labelFilter: [],
   tables: [],
   tablesTotal: 0,
   tablesFetchSize: 20,
@@ -158,6 +167,20 @@ export function reducers(state = initialState, action) {
     case DELETE_ALL_SCROLL_Y:
       return Object.assign({}, state, {
         scrollYPositions: new Map()
+      });
+    case UPDATE_LABELED_PAPER:
+      const newLabelList = Object.assign({}, state.labelList);
+      const key = action.label;
+      const newPaperList = action.list;
+      newLabelList[key][1] = newPaperList;
+      return Object.assign({}, state, {
+        labelList: newLabelList
+      });
+    case UPDATE_LABEL_FILTER:
+      const LabelFilter = state.labelFilter;
+      const newLabelFilter = action.list;
+      return Object.assign({}, state, {
+        labelFilter: newLabelFilter
       });
     default:
       return state;
@@ -347,5 +370,23 @@ const DELETE_ALL_SCROLL_Y = "DELETE_ALL_SCROLL_Y";
 export function deleteAllScrollY() {
   return {
     type: DELETE_SCROLL_Y
+  };
+}
+
+const UPDATE_LABELED_PAPER = "UPDATE_LABELED_PAPER";
+export function updateLabeledPaper(label, list) {
+  return {
+    type: UPDATE_LABELED_PAPER,
+    label: label,
+    list: list,
+  };
+}
+
+const UPDATE_LABEL_FILTER = "UPDATE_LABEL_FILTER";
+
+export function updateLabelFilter(labelList) {
+  return {
+    type: UPDATE_LABEL_FILTER,
+    list: labelList,
   };
 }

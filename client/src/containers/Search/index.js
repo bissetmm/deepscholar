@@ -5,10 +5,8 @@ import {withRouter, HashRouter, Switch, Route} from 'react-router-dom';
 import {RangeSliderHistogram} from 'searchkit';
 import {Papers, Figures, Tables} from '../../components/index.js';
 import Api from '../../api';
-import {
-  changeQuery, changePage, requestPapers, receivePapers, requestFigures, receiveFigures, requestTables, receiveTables, deleteScrollY, changeYears,
-  changeBooktitle
-} from '../../module';
+import { changeQuery, changePage, requestPapers, receivePapers, requestFigures, receiveFigures, requestTables, receiveTables, deleteScrollY, changeYears
+  , changeBooktitle, updateLabeledPaper, updateLabelFilter } from '../../module';
 import './style.css';
 import 'searchkit/release/theme.css';
 import Detail from "../Detail";
@@ -100,6 +98,243 @@ const PublicationFilter = connect(mapStateToProps)(class PublicationFilter exten
   }
 });
 
+const FilterStyle = connect(mapStateToProps)(class FilterStyle extends Component {
+
+  render() {
+    const {labelList} = this.props.state;
+    let style = '';
+
+    Object.keys(labelList).map(key => {
+      const labelName = key;
+      const color = labelList[labelName][0];
+      const list = labelList[labelName][1];
+      list.map(function(val, i) {
+        style += '.paper' + val + ' h5 .' + key + ' { margin: 0 4px; }';
+        style += '.paper' + val + ' h5 .' + key + ':after { content: "' + key + '"; }';
+      })
+    })
+
+    return <style>{style}</style>;
+  }
+});
+
+const FilterList = connect(mapStateToProps)(class FilterList extends Component {
+
+  render() {
+    const {labelList} = this.props.state;
+    const {name, txt} = this.props;
+
+    const headTxt = txt == 'Labels' ? 'Filter by label' : 'Apply labels';
+
+    const lists = Object.keys(labelList).map(key => {
+      const labelName = key;
+      const color = labelList[labelName][0];
+      return ( 
+        <li key={labelName} className={labelName} data-name={labelName} onClick={this.props.onClickList}>
+          <i className="material-icons check">check</i>
+          <i className="material-icons remove">remove</i>
+          <span className={'color ' + color}></span>{labelName}
+        </li>
+      )
+    });
+
+    return (
+      <div className={'dropdown dropdown--alpha ' + name}>
+        <a className='dropdown-button btn z-depth-0' data-beloworigin="true" data-activates={name} onClick={this.props.onClickBtn}>{txt}<i className="material-icons">arrow_drop_down</i></a>
+        <ul id={name} className='dropdown-content z-depth-0'>
+          <li className='head'>{headTxt}<i className="material-icons close">close</i></li>
+          {lists}
+        </ul>
+      </div>
+    )
+  }
+});
+
+const FilterNormal = connect(mapStateToProps)(class FilterNormal extends Component {
+
+  addFilter(labelName){
+    const labelFilter = this.props.state.labelFilter.slice();
+    const newList = labelFilter
+                      .concat(labelName) // Marge
+                      .filter(function (x,i,self) { return self.indexOf(x) === i; }); // Remove overlap
+    this.props.dispatch( updateLabelFilter(newList) );
+  }
+  removeFilter(labelName){
+    const labelFilter = this.props.state.labelFilter.slice();
+    const newList = labelFilter.filter(function(v){ return v != labelName; }); // remove
+    this.props.dispatch( updateLabelFilter(newList) );
+  }
+  removeAllFilter(){
+    const newList = [];
+    this.props.dispatch( updateLabelFilter(newList) );
+  }
+
+  handleClickList(e) {
+    const target = e.currentTarget;
+    const label = target.dataset.name;
+
+    const self = this;
+    setTimeout(function(){ // Do after animation
+      if( !target.classList.contains('chkAll') ) {
+        target.classList.add('chkAll');
+        self.addFilter(label);
+      } else {
+        target.classList.remove('chkAll');  
+        self.removeFilter(label);
+      }
+    },300);
+  }
+
+  handleClick(e) {
+    const target = e.currentTarget;
+    const self = this;
+    setTimeout(function(){ // Do after animation
+      const normalFilter = document.getElementById('normalFilter');
+      const li = normalFilter.childNodes;
+      for( let i = 0; i < li.length; i++ ) {
+          li[i].classList.remove('chkAll');  
+      }
+      self.removeAllFilter();
+    },300);
+  }
+
+  render() {
+    const labelFilter = this.props.state.labelFilter.slice();
+    let closeBtn;
+    if( labelFilter.length > 0 ) {
+      closeBtn = <a className="isFilter" onClick={this.handleClick.bind(this)}><i className="material-icons">close</i>Clear current filters</a>;
+    }
+    return (
+      <div>
+        {closeBtn}
+        <FilterList name="normalFilter" txt="Labels" onClickList={this.handleClickList.bind(this)} />
+      </div>
+    )
+  }
+});
+
+const FilterChoose = connect(mapStateToProps)(class FilterChoose extends Component {
+
+  getCheckedList(){
+    const target = document.querySelectorAll('.paper input:checked');
+    const list = [];
+    [].forEach.call(target, function(e) {
+      list.push(e.id)
+    });
+    return list;
+  }
+
+  addLabel(target) {
+    const label = target.dataset.name;
+    const chkList = this.getCheckedList();
+    const labelList = Object.assign({}, this.props.state.labelList);
+    const newList = labelList[label][1]
+                      .concat(chkList) // Marge
+                      .filter(function (x,i,self) { return self.indexOf(x) === i; }); // Remove overlap
+
+    this.props.dispatch( updateLabeledPaper(label, newList) );
+  }
+
+  removeLabel(target) {
+    const label = target.dataset.name;
+    const chkList = this.getCheckedList();
+    const oldList = this.props.state.labelList[label][1].slice();
+    let newList = [];
+    oldList.map(function(val, i) {
+      const index = chkList.indexOf(val);
+      if (index === -1) newList.push(val);
+    });
+    this.props.dispatch( updateLabeledPaper(label, newList) );
+  }
+
+  handleClickList(e) {
+    const target = e.currentTarget;
+    if( target.classList.contains('chk') || target.classList.contains('chkAll') ) {
+      this.removeLabel(target);  
+    } else {
+      this.addLabel(target);  
+    }
+
+    const filterLabel = document.querySelector('.toolBar');
+    filterLabel.classList.remove('choosing');
+
+    const filterChooseAll = document.querySelector('#checkAll');
+    filterChooseAll.checked = false;      
+  }
+
+  handleClickBtn(e) {    
+    const list = this.getCheckedList();
+    const {labelList} = this.props.state;
+    Object.keys(labelList).map(key => {
+      const labelName = key;      
+      let result = 0;
+      let count = 0;
+      list.map(function(val, i) {
+        if( labelList[labelName][1].includes(list[i]) ) {
+          result = 1;
+          count++;
+        }
+      });
+      if( count === list.length ) {
+        result = 2; 
+      }
+      const target = document.querySelector('.toolBar .chooseFilter li.' + labelName);
+      target.classList.remove('chkAll', 'chk');
+      switch (result) {
+        case 2:
+          target.classList.add('chkAll');
+          break;
+        case 1:
+          target.classList.add('chk');
+          break;
+      }
+    })
+  }
+
+  render() {
+    return (
+      <div>
+        <FilterList name="chooseFilter" txt="Label" onClickBtn={this.handleClickBtn.bind(this)} onClickList={this.handleClickList.bind(this)} />
+        <FilterStyle/>
+      </div>
+    );
+  }
+});
+
+const ToolBar = connect(mapStateToProps)(class ToolBar extends Component {
+
+  handleChange(e) {
+    const chks = document.querySelectorAll('.paper input[type="checkbox"]');
+    const filterLabel = document.querySelector('.toolBar');
+    for( let i = 0; i < chks.length; i++ ) {
+      chks[i].checked = e.target.checked;      
+    }
+    if ( e.target.checked === true ) {
+      filterLabel.classList.add('choosing');
+    } else {
+      filterLabel.classList.remove('choosing');
+    }
+  }
+
+  render() {
+
+    return (
+      <div className="toolBar">
+
+        <div className="checkbox">
+          <input type="checkbox" id="checkAll" className="filled-in" onChange={this.handleChange.bind(this)} />
+          <label htmlFor="checkAll"></label>
+        </div>
+
+        <FilterNormal />
+        <FilterChoose />
+      </div>
+    );
+
+  } 
+
+});
+
 class Search extends Component {
   constructor(props) {
     super(props);
@@ -120,12 +355,14 @@ class Search extends Component {
   componentDidMount() {
     this.search(this.props.state.category);
     window.jQuery('ul.tabs').tabs();
+    window.jQuery('.dropdown-button').dropdown();
   }
 
+
   componentDidUpdate(prevProps) {
-    const {category: oldCategory, query: oldQuery, articleTitle: oldArticleTitle, author: oldAuthor, abstract: oldAbstract, gte: oldGte, lte: oldLte, booktitles: oldBooktitles, page: oldPage} = prevProps.state;
-    const {category: newCategory, query: newQuery, articleTitle: newArticleTitle, author: newAuthor, abstract: newAbstract, gte: newGte, lte: newLte, booktitles: newBooktitles, page: newPage} = this.props.state;
-    if (oldCategory !== newCategory || oldQuery !== newQuery || oldArticleTitle !== newArticleTitle || oldAuthor !== newAuthor || oldAbstract !== newAbstract || oldPage !== newPage || oldGte !== newGte || oldLte !== newLte || Array.from(oldBooktitles).join("") !== Array.from(newBooktitles).join("")) {
+    const {category: oldCategory, query: oldQuery, articleTitle: oldArticleTitle, author: oldAuthor, abstract: oldAbstract, gte: oldGte, lte: oldLte, booktitles: oldBooktitles, page: oldPage, labelFilter: oldlabelFilter} = prevProps.state;
+    const {category: newCategory, query: newQuery, articleTitle: newArticleTitle, author: newAuthor, abstract: newAbstract, gte: newGte, lte: newLte, booktitles: newBooktitles, page: newPage, labelFilter: newlabelFilter} = this.props.state;
+    if (oldCategory !== newCategory || oldQuery !== newQuery || oldArticleTitle !== newArticleTitle || oldAuthor !== newAuthor || oldAbstract !== newAbstract || oldPage !== newPage || oldGte !== newGte || oldLte !== newLte || Array.from(oldBooktitles).join("") !== Array.from(newBooktitles).join("") || oldlabelFilter !== newlabelFilter) {
 
       this.search(newCategory);
     }
@@ -156,7 +393,7 @@ class Search extends Component {
   }
 
   searchPapers() {
-    const {query, articleTitle, author, abstract, page, gte, lte, booktitles} = this.props.state;
+    const {query, articleTitle, author, abstract, page, gte, lte, booktitles, labelList, labelFilter} = this.props.state;
     this.props.dispatch(requestPapers(query, articleTitle, author, abstract, page));
     const from = page * this.props.state.papersFetchSize;
 
@@ -240,6 +477,17 @@ class Search extends Component {
       });
     }
 
+    let filterdList = [];
+    labelFilter.map(function(e, i) {
+      filterdList = filterdList
+                      .concat(labelList[e][1])
+                      .filter(function (x, i, self) {
+                        return self.indexOf(x) === i;
+                      });
+      if( filterdList.length == 0 ) { filterdList.push("") }; // for empty filter
+    })
+    const labelFilterList = filterdList.length > 0 ? { terms: { _id: filterdList } } : null;
+
     const body = JSON.stringify({
       query: {
         bool: {
@@ -248,8 +496,9 @@ class Search extends Component {
       },
       post_filter: {
         bool: {
-          must: postFilterMust
-        }
+          must: postFilterMust,
+          filter: labelFilterList
+        },
       },
       from,
       size: this.props.state.papersFetchSize,
@@ -265,7 +514,7 @@ class Search extends Component {
             field: "booktitle.keyword",
             size: 10
           }
-        }
+        },
       }
     });
     Api.searchPapers({body}).then((json) => {
@@ -438,7 +687,6 @@ class Search extends Component {
             <div className="container">
               <div className="row">
                 <div className="results col s4 l3">
-
                   <Switch>
                     <Route path="/figures" component={(props) => (
                         <p><span className="num">{figuresTotal || 0}</span> results</p>
@@ -451,9 +699,9 @@ class Search extends Component {
                     )}/>
                   </Switch>
                 </div>
+
                 <div className="col s8 l9">
                   <ul className="tabs tabs--alpha">
-                    <li className="col l1 hide-on-small-only"></li>
                     {categories.map((category) => {
                       let icon;
                       switch (category) {
@@ -467,7 +715,7 @@ class Search extends Component {
                           icon = '';
                       }
 
-                      return <li key={category} className="tab col s3" onClick={this.handleClickTab.bind(this, category)}>
+                      return <li key={category} className="tab" onClick={this.handleClickTab.bind(this, category)}>
                         <a className={this.props.state.category === category ? 'active' : ''}>
                           <span className="txt">
                             <i className="material-icons hide-on-small-only">{icon}</i>
@@ -487,7 +735,7 @@ class Search extends Component {
             <div className="col s4 l3 sidebar">            
               <div className="col s4 l3">
                 <h5><i className="material-icons">find_in_page</i>Filter</h5>
-                <div>
+                <div>                
 
                 <Switch>
                   <Route path="/figures" component={(props) => (
@@ -525,8 +773,11 @@ class Search extends Component {
               </div>
             </div>
             <div className="contents col s8 l9">
+
+              <ToolBar/>
+
               <div className="row">
-                
+
                   <Switch>
                     <Route path="/figures" component={(props) => (
                       <div className="col s12">
