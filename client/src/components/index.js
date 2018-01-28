@@ -218,7 +218,7 @@ export class Figures extends Component {
   render() {
     const figures = this.props.data.map((figure) => {
       const {paperId, img, caption, label} = figure;
-      const url = (/^https?:\/\//).test(img) ? img : `/static/figs/${paperId}/${img}`;
+      const url = (/^https?:\/\//).test(img) ? img : `/api/documents/${paperId}/${img}`;
       const data = {img, url, caption, label};
 
       return <Figure key={figure.img} data={data} />;

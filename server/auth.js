@@ -21,7 +21,7 @@ passport.use(new passportJwt.Strategy(jwtOptions, (payload, done) => {
 passport.use('github', new GithubStrategy({
     clientID: process.env.OAUTH_GITHUB_CLIENT_ID,
     clientSecret: process.env.OAUTH_GITHUB_CLIENT_SECRET,
-    callbackURL: `${process.env.DEEP_SCHOLAR_URL}/auth/github/callback`
+    callbackURL: `${process.env.DEEP_SCHOLAR_URL}/api/auth/github/callback`
   },
   (accessToken, refreshToken, profile, done) => {
     done(null, profile);

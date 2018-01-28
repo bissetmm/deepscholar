@@ -1,6 +1,6 @@
 class Api {
   static fetchApi(indexName, options) {
-    return fetch(`/${indexName}/_search`, options)
+    return fetch(`/api/${indexName}/_search`, options)
       .then((response) => {
         if (response.status >= 200 && response.status < 300) {
           return response;
