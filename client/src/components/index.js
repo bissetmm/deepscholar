@@ -109,13 +109,16 @@ export const Paper = withRouter(connect(mapStateToProps)(class Paper extends Com
   }
 
   render() {
-    const {id, articleTitle, year, author} = this.props.data;
-    let {abstract} = this.props.data;
+    const {id, year, articleTitle, author} = this.props.data._source;
+    const { articleTitle: highlightedArticleTitle} = this.props.data.highlight || {};
+    let {abstract} = this.props.data._source;
     const paperUrl = `/papers/${id}`;
     const authors = <Authors data={author} paperId={id} asFull={this.props.asFull}/>;
     const attachmentBaseUrl = `/api/documents/${id}/${id}`;
     const pdfUrl = `${window.location.origin}${attachmentBaseUrl}.pdf`;
     const pdfannoUrl = `https://paperai.github.io/pdfanno/latest/?pdf=${pdfUrl}`;
+
+    const title = {__html: highlightedArticleTitle || articleTitle};
 
     const concatAllString = (o) => {
       if (util.isString(o)) {
@@ -146,7 +149,7 @@ export const Paper = withRouter(connect(mapStateToProps)(class Paper extends Com
         <CheckForFilter paperId={id} />
         <header>
           <h5>
-            <a href="javascript:void(0)" onClick={this.handleClick.bind(this, paperUrl)}>{articleTitle}</a>
+            <a href="javascript:void(0)" onClick={this.handleClick.bind(this, paperUrl)} dangerouslySetInnerHTML={title}></a>
             <FilterLabels paperId={id} />
           </h5>
           {authors}

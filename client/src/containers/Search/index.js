@@ -502,6 +502,11 @@ class Search extends Component {
       },
       from,
       size: this.props.state.papersFetchSize,
+      highlight: {
+        fields: {
+          articleTitle: {number_of_fragments: 0}
+        }
+      },
       aggs: {
         year: {
           histogram: {
