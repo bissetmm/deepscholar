@@ -62,7 +62,47 @@ const FullTextToggle = connect(mapStateToProps)(class FullTextToggle extends Com
   }
 });
 
-export const Paper = withRouter(connect(mapStateToProps)(class Paper extends Component {
+const CheckForFilter = connect(mapStateToProps)(class CheckBoxForFilter extends Component {
+
+  handleChange(e) {
+    const target = document.querySelector('.toolBar');
+    if( document.querySelectorAll('.paper input:checked').length > 0 ) {
+      target.classList.add('choosing');
+    } else {
+      target.classList.remove('choosing');
+    }
+  }
+
+  render() {
+    const paperId = this.props.paperId;
+    return (
+      <div className="checkbox">
+        <input type="checkbox" id={paperId} className="filled-in" onChange={this.handleChange.bind(this)} />
+        <label htmlFor={paperId}></label>
+      </div>
+    );
+  }
+});
+
+const FilterLabels = connect(mapStateToProps)(class FilterLabels extends Component {
+
+  render() {
+    const {labelList} = this.props.state;
+    const labels = Object.keys(labelList).map(key => {
+      const labelName = key;
+      return <span key={key} className={key + ' ' + labelList[labelName][0]}></span>
+    })
+    
+    return (
+      <span className="filterLabels">
+        {labels}
+      </span>
+    );
+  }
+});
+
+export const Paper = withRouter(connect(mapStateToProps)(class Paper extends Component {  
+
   handleClick(paperUrl, e) {
     this.props.dispatch(saveScrollY(this.props.location.key, window.scrollY));
     this.props.history.push(paperUrl);
@@ -74,6 +114,7 @@ export const Paper = withRouter(connect(mapStateToProps)(class Paper extends Com
     const paperUrl = `/papers/${id}`;
     const pdfannoUrl = `https://paperai.github.io/pdfanno/?pdf=${url}`;
     const authors = <Authors data={author} paperId={id} asFull={this.props.asFull}/>;
+
 
     const concatAllString = (o) => {
       if (util.isString(o)) {
@@ -99,10 +140,14 @@ export const Paper = withRouter(connect(mapStateToProps)(class Paper extends Com
     }
 
     return (
-      <article className="paper">
+      <article className={'paper ' + 'paper'+id}>
         <div className="divider"></div>
+        <CheckForFilter paperId={id} />
         <header>
-          <h5><a href="javascript:void(0)" onClick={this.handleClick.bind(this, paperUrl)}>{articleTitle}</a></h5>
+          <h5>
+            <a href="javascript:void(0)" onClick={this.handleClick.bind(this, paperUrl)}>{articleTitle}</a>
+            <FilterLabels paperId={id} />
+          </h5>
           {authors}
           <h6>{articleTitle} {year}</h6>
         </header>

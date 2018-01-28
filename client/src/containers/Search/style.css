@@ -6,10 +6,15 @@
 
 .search .navbar-fixed {
     margin-bottom: 58px;
+    z-index: 1;
 }
 
 .search .header-navi {
-    border-bottom: 1px solid #ffffff;
+    border-bottom: 1px solid #e1e4e8;
+}
+
+.search .contents {
+	padding-top: 32px;
 }
 
 /****************
@@ -23,8 +28,10 @@
 	top: 64px;
 	width: 100%;
 	height: 56px;
-	border-bottom: 1px solid #b7b7b7;
-	background-color: white;
+	border-bottom: 1px solid #e1e4e8;
+	background-color: #fafbfc;
+
+	z-index: 3;
 }
 
 .subNavi .tabs {
@@ -33,6 +40,15 @@
 
 .subNavi .container > .row {
   	margin-bottom: 0;
+}
+
+.subNavi:after{
+	content: "";
+    height: 12px;
+    width: 100vw;
+    position: fixed;
+    top: 120px;
+    background-color: #fff;
 }
 
 @media only screen and (max-width: 600px) { 
@@ -67,6 +83,156 @@
 	}
 }
 
+
+/****************
+**  Tool Bar 
+****************/
+.toolBar {
+	position: fixed;
+    top: 132px;
+    width: 73vw !important;
+    max-width: 990px;
+	padding-left: 40px;
+    background-color: #f6f8fa;
+    border: 1px solid #e1e4e8;
+    border-radius: 1px;
+    transform: translateX(-37px);
+    z-index: 99;
+}
+.toolBar .checkbox{
+    position: absolute;
+    left: 8px;
+    top: 7px;
+}
+.toolBar .chooseFilter{ display: none; }
+.toolBar.choosing .normalFilter { display: none; }
+.toolBar.choosing .chooseFilter { display: block; }
+
+.isFilter {
+    position: absolute;
+    left: 32px;
+    top: 6px;
+
+    padding: 0 8px 0 3px;
+    
+    border: 1px solid #e1e4e8;
+    border-radius: 3px;
+    background: #fff;
+    
+    cursor: pointer;
+}
+
+.isFilter i {
+	vertical-align: top;
+    font-size: 22px;
+}
+
+.dropdown {
+	text-align: right;
+	padding-right: 16px;
+	float: right;
+}
+
+.dropdown-button {
+	max-width: 72px;
+    color: #0a1933;
+    font-weight: 300;
+    text-transform: initial;
+    background-color: transparent !important;
+    line-height: 36px;
+}
+.dropdown-button i {
+	line-height: 36px;
+    vertical-align: top;
+}
+.dropdown-content {
+	min-width: 160px;
+	border: 1px solid #e1e4e8;
+}
+.dropdown-content li {
+	padding: 0 30px !important;
+	border-bottom: 1px solid #e1e4e8;
+}
+.dropdown-content li i {
+	position: absolute;
+    left: 6px;
+    top: 6px;
+    font-size: 19px;
+}
+.dropdown-content li.head {
+	background-color: #f6f8fa!important;
+    cursor: default;
+    font-weight: 500;
+    font-size: 0.9em;
+    padding: 0 14px !important;
+}
+.dropdown-content li.head i {
+	left: auto;
+    right: 5px;
+    top: 9px;
+    font-size: 18px;
+    cursor: pointer;
+}
+
+.dropdown-content li:hover, .dropdown-content li.active, .dropdown-content li.selected {
+    background-color: #f6f8fa;
+}
+
+
+
+
+
+
+.dropdown,
+.dropdown * {
+	position: relative;
+	z-index: 99;
+}
+
+.dropdown-button {
+	width: 100%;
+	padding: 0;
+	background-color: grey;
+}
+.dropdown-button:hover {
+	background-color: grey;
+}
+.dropdown-button.active:after {
+	content: "";
+	position: fixed;
+    top: 0;
+    left: 0;
+    height: 100vh;
+    width: 100vw;
+    cursor: default;
+}
+
+.dropdown-content li {
+	height: 36px;
+    line-height: 36px;
+    min-height: auto;
+    padding-left: 8px;
+    display: block;
+}
+.dropdown-content li .material-icons.check,
+.dropdown-content li .material-icons.remove {
+	display: none;
+}
+.dropdown-content li.chkAll .material-icons.check,
+.dropdown-content li.chk .material-icons.remove {
+	display: inline;
+}
+
+.dropdown-content .color {
+	display: inline-block;
+    width: 16px;
+    height: 16px;
+    padding: 0;
+    margin-right: 7px;
+    vertical-align: text-top;
+}
+
+
 /****************
 **
 **  Side bar
@@ -82,8 +248,9 @@
 	height: calc(100vh - 64px - 60px);
 	overflow-y: scroll;
 
-	padding-right: 2em !important;
-	padding-top: 20px !important;
+	padding-right: 3em !important;
+    padding-left: 0 !important;
+    padding-top: 16px !important;
 }
 .sidebar > div::-webkit-scrollbar {
   display: none;
@@ -151,6 +318,42 @@
 		display: none;
 	}
 
+	.contents .paper {
+		position: relative;
+	}
+
+
+	.contents .paper .checkbox {
+		position: absolute;
+		left: -28px;
+		top: 24px;
+	}
+	.contents .paper:first-child .checkbox {
+		top: 2px;
+	}
+
 	.contents .table .divider {
 		margin: 40px 0;
 	}
+
+	.contents .paper .filterLabels > span {
+		position: relative;
+		top: -1px;
+		display: inline-block;
+		/*margin: 4px;*/
+	    font-size: 65%;	    
+	    font-size: 65%;
+    	line-height: 17px;
+    	vertical-align: text-bottom;
+
+    	border-radius: 1px;
+    	opacity: 0.94;
+	}
+	.contents .paper .filterLabels > span:after {
+		padding: 2px 6px;
+	}
+
+	[type="checkbox"].filled-in:not(:checked)+label:after {
+		border-width: 1px !important;
+	}
+
