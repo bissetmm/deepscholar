@@ -109,39 +109,22 @@ export const Paper = withRouter(connect(mapStateToProps)(class Paper extends Com
   }
 
   render() {
-    const {id, year, articleTitle, author} = this.props.data._source;
-    const { articleTitle: highlightedArticleTitle} = this.props.data.highlight || {};
-    let {abstract} = this.props.data._source;
+    const {id, year, abstract: rawAbstract, articleTitle: rawArticleTitle, journalTitle: rawJournalTitle, author} = this.props.data._source;
+    const {abstract: highlightedAbstract, articleTitle: highlightedArticleTitle, journalTitle: highlightedJournalTitle} = this.props.data.highlight || {};
     const paperUrl = `/papers/${id}`;
     const authors = <Authors data={author} paperId={id} asFull={this.props.asFull}/>;
     const attachmentBaseUrl = `/api/documents/${id}/${id}`;
     const pdfUrl = `${window.location.origin}${attachmentBaseUrl}.pdf`;
     const pdfannoUrl = `https://paperai.github.io/pdfanno/latest/?pdf=${pdfUrl}`;
 
-    const title = {__html: highlightedArticleTitle || articleTitle};
+    const articleTitle = {__html: highlightedArticleTitle || rawArticleTitle};
+    const journalTitle = {__html: `${highlightedJournalTitle || rawJournalTitle} ${year}`};
 
-    const concatAllString = (o) => {
-      if (util.isString(o)) {
-        return o;
-      }
-
-      if (util.isObject(o)) {
-        return Object.keys(o).map((k) => {
-          return concatAllString(o[k]);
-        }).join();
-      }
-
-      if (util.isArray(o)) {
-        return o.map((k) => {
-          return concatAllString(o[k]);
-        }).join();
-      }
-    };
-
-    abstract = concatAllString(abstract) || "";
+    let abstract = highlightedAbstract ? highlightedAbstract[0] : rawAbstract;
     if (!this.props.asFull) {
       abstract = this.props.state.enabledFullTextPaperIds.has(id) ? abstract : abstract.substr(0, 400);
     }
+    abstract = {__html: abstract};
 
     return (
       <article className={'paper ' + 'paper'+id}>
@@ -149,13 +132,13 @@ export const Paper = withRouter(connect(mapStateToProps)(class Paper extends Com
         <CheckForFilter paperId={id} />
         <header>
           <h5>
-            <a href="javascript:void(0)" onClick={this.handleClick.bind(this, paperUrl)} dangerouslySetInnerHTML={title}></a>
+            <a href="javascript:void(0)" onClick={this.handleClick.bind(this, paperUrl)} dangerouslySetInnerHTML={articleTitle}></a>
             <FilterLabels paperId={id} />
           </h5>
           {authors}
-          <h6>{articleTitle} {year}</h6>
+          <h6 dangerouslySetInnerHTML={journalTitle}></h6>
         </header>
-        <p>{abstract}{!this.props.asFull && <FullTextToggle paperId={id}/>}</p>
+        <p><span dangerouslySetInnerHTML={abstract}></span>{!this.props.asFull && <FullTextToggle paperId={id}/>}</p>
         <footer>
           <ul className="meta links valign-wrapper blue-text">
             <li>
@@ -178,7 +161,7 @@ export const Paper = withRouter(connect(mapStateToProps)(class Paper extends Com
 export class Papers extends Component {
   render() {
     const papers = this.props.data.map((paper) =>
-      <Paper data={paper} key={paper.id} asFull={false}/>
+      <Paper data={paper} key={paper._source.id} asFull={false}/>
     );
 
     return (

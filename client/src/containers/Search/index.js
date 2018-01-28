@@ -409,6 +409,7 @@ class Search extends Component {
                   fields: [
                     "id",
                     "articleTitle",
+                    "journalTitle",
                     "abstract",
                     "url"
                   ]
@@ -504,7 +505,9 @@ class Search extends Component {
       size: this.props.state.papersFetchSize,
       highlight: {
         fields: {
-          articleTitle: {number_of_fragments: 0}
+          articleTitle: {number_of_fragments: 0},
+          journalTitle: {number_of_fragments: 0},
+          abstract: {number_of_fragments: 0}
         }
       },
       aggs: {
