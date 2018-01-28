@@ -114,7 +114,7 @@ export const Paper = withRouter(connect(mapStateToProps)(class Paper extends Com
     const paperUrl = `/papers/${id}`;
     const pdfannoUrl = `https://paperai.github.io/pdfanno/?pdf=${url}`;
     const authors = <Authors data={author} paperId={id} asFull={this.props.asFull}/>;
-
+    const attachmentBaseUrl = `/api/documents/${id}/${id}`;
 
     const concatAllString = (o) => {
       if (util.isString(o)) {
@@ -155,9 +155,13 @@ export const Paper = withRouter(connect(mapStateToProps)(class Paper extends Com
         <footer>
           <ul className="meta links valign-wrapper blue-text">
             <li>
-              <div className="valign-wrapper">
-                <i className="material-icons">picture_as_pdf</i><a href={url} target="_blank">pdf</a>
-              </div>
+              <a href={`${attachmentBaseUrl}.pdf`} target="_blank">pdf</a>
+            </li>
+            <li>
+              <a href={`${attachmentBaseUrl}.xml`} target="_blank">xml</a>
+            </li>
+            <li>
+              <a href={`${attachmentBaseUrl}.pdf.txt`} target="_blank">pdf.txt</a>
             </li>
             <li><a href={pdfannoUrl} target="_blank">pdfanno</a></li>
           </ul>
