@@ -115,7 +115,7 @@ export const Paper = withRouter(connect(mapStateToProps)(class Paper extends Com
     const authors = <Authors data={author} paperId={id} asFull={this.props.asFull}/>;
     const attachmentBaseUrl = `/api/documents/${id}/${id}`;
     const pdfUrl = `${window.location.origin}${attachmentBaseUrl}.pdf`;
-    const pdfannoUrl = `https://paperai.github.io/pdfanno/?pdf=${pdfUrl}`;
+    const pdfannoUrl = `https://paperai.github.io/pdfanno/latest/?pdf=${pdfUrl}`;
 
     const concatAllString = (o) => {
       if (util.isString(o)) {
