@@ -90,7 +90,7 @@
 .toolBar {
 	position: fixed;
     top: 132px;
-    width: 73vw !important;
+    width: 73.5vw !important;
     max-width: 990px;
 	padding-left: 40px;
     background-color: #f6f8fa;
@@ -99,14 +99,33 @@
     transform: translateX(-37px);
     z-index: 99;
 }
-.toolBar .checkbox{
+
+.toolBar .tools {
+	text-align: right;
+	height: 36px;
+}
+
+.toolBar .tools div{
+	display: inline-block;
+}
+.toolBar .tools > div {
+}
+
+.toolBar .tools .download ul li.item{
+	padding-left: 16px !important;
+}
+.toolBar .tools .download ul li.item b {
+	padding-right: 8px;
+}
+
+.toolBar .checkAll{
     position: absolute;
     left: 8px;
-    top: 7px;
+    top: 8px;
 }
-.toolBar .chooseFilter{ display: none; }
-.toolBar.choosing .normalFilter { display: none; }
-.toolBar.choosing .chooseFilter { display: block; }
+.toolBar .chooseFilter{ display: none !important; }
+.toolBar.choosing .normalFilter { display: none !important; }
+.toolBar.choosing .chooseFilter { display: block !important; }
 
 .isFilter {
     position: absolute;
@@ -134,7 +153,7 @@
 }
 
 .dropdown-button {
-	max-width: 72px;
+	max-width: 90px;
     color: #0a1933;
     font-weight: 300;
     text-transform: initial;

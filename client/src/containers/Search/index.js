@@ -98,33 +98,13 @@ const PublicationFilter = connect(mapStateToProps)(class PublicationFilter exten
   }
 });
 
-const FilterStyle = connect(mapStateToProps)(class FilterStyle extends Component {
+const FilterListCommon = connect(mapStateToProps)(class FilterListCommon extends Component {
 
   render() {
     const {labelList} = this.props.state;
-    let style = '';
+    const {name} = this.props;
 
-    Object.keys(labelList).map(key => {
-      const labelName = key;
-      const color = labelList[labelName][0];
-      const list = labelList[labelName][1];
-      list.map(function(val, i) {
-        style += '.paper' + val + ' h5 .' + key + ' { margin: 0 4px; }';
-        style += '.paper' + val + ' h5 .' + key + ':after { content: "' + key + '"; }';
-      })
-    })
-
-    return <style>{style}</style>;
-  }
-});
-
-const FilterList = connect(mapStateToProps)(class FilterList extends Component {
-
-  render() {
-    const {labelList} = this.props.state;
-    const {name, txt} = this.props;
-
-    const headTxt = txt == 'Labels' ? 'Filter by label' : 'Apply labels';
+    const headTxt = name == 'chooseFilter' ? 'Apply labels' : 'Filter by label';
 
     const lists = Object.keys(labelList).map(key => {
       const labelName = key;
@@ -140,7 +120,7 @@ const FilterList = connect(mapStateToProps)(class FilterList extends Component {
 
     return (
       <div className={'dropdown dropdown--alpha ' + name}>
-        <a className='dropdown-button btn z-depth-0' data-beloworigin="true" data-activates={name} onClick={this.props.onClickBtn}>{txt}<i className="material-icons">arrow_drop_down</i></a>
+        <a className='dropdown-button btn z-depth-0' data-beloworigin="true" data-activates={name} onClick={this.props.onClickBtn}>Labels<i className="material-icons">arrow_drop_down</i></a>
         <ul id={name} className='dropdown-content z-depth-0'>
           <li className='head'>{headTxt}<i className="material-icons close">close</i></li>
           {lists}
@@ -207,7 +187,7 @@ const FilterNormal = connect(mapStateToProps)(class FilterNormal extends Compone
     return (
       <div>
         {closeBtn}
-        <FilterList name="normalFilter" txt="Labels" onClickList={this.handleClickList.bind(this)} />
+        <FilterListCommon name="normalFilter" onClickList={this.handleClickList.bind(this)} />
       </div>
     )
   }
@@ -292,47 +272,97 @@ const FilterChoose = connect(mapStateToProps)(class FilterChoose extends Compone
   }
 
   render() {
+    const {labelList} = this.props.state;
+    let style = '';
+
+    Object.keys(labelList).map(key => {
+      const labelName = key;
+      const color = labelList[labelName][0];
+      const list = labelList[labelName][1];
+      list.map(function(val, i) {
+        style += '.paper' + val + ' h5 .' + key + ' { margin: 0 4px; }';
+        style += '.paper' + val + ' h5 .' + key + ':after { content: "' + key + '"; }';
+      })
+    })
+
     return (
       <div>
-        <FilterList name="chooseFilter" txt="Label" onClickBtn={this.handleClickBtn.bind(this)} onClickList={this.handleClickList.bind(this)} />
-        <FilterStyle/>
+        <FilterListCommon name="chooseFilter" onClickBtn={this.handleClickBtn.bind(this)} onClickList={this.handleClickList.bind(this)} />
+        <style>{style}</style>
       </div>
     );
   }
 });
 
-const ToolBar = connect(mapStateToProps)(class ToolBar extends Component {
+const Download = connect(mapStateToProps)(class Download extends Component {
 
-  handleChange(e) {
-    const chks = document.querySelectorAll('.paper input[type="checkbox"]');
-    const filterLabel = document.querySelector('.toolBar');
-    for( let i = 0; i < chks.length; i++ ) {
-      chks[i].checked = e.target.checked;      
-    }
-    if ( e.target.checked === true ) {
-      filterLabel.classList.add('choosing');
-    } else {
-      filterLabel.classList.remove('choosing');
-    }
+  handleClick(e) {
+    // const JSZip = require('jszip'); 
+    console.log('msg');
+    // テストファイルをDL
+    // let zip = new JSZip();
+    // まとめてDL
+      // ZIP導入
   }
 
   render() {
+    const name = 'download';
+    const txt = 'Download';
+    const headTxt = 'Download Paper';
+    return (
+      <div className={'dropdown dropdown--alpha ' + name}>
+        <a className='dropdown-button btn z-depth-0' data-beloworigin="true" data-activates={name}>{txt}<i className="material-icons">arrow_drop_down</i></a>
+        <ul id={name} className='dropdown-content z-depth-0'>
+          <li onClick={this.handleClick.bind(this)} className='head'>{headTxt}<i className="material-icons close">close</i></li>
+          <li onClick={this.handleClick.bind(this)} className='item pdf'><b>・</b>pdf</li>
+          <li onClick={this.handleClick.bind(this)} className='item xml'><b>・</b>xml</li>
+          <li onClick={this.handleClick.bind(this)} className='item pdftxt'><b>・</b>pdf.txt</li>
+          <li onClick={this.handleClick.bind(this)} className='item annoxlsx'><b>・</b>Anno (.xlsx)</li>
+          <li onClick={this.handleClick.bind(this)} className='item annotsv'><b>・</b>Anno (.tsv)</li>
+        </ul>
+      </div>
+    );
+  }
+});
 
+const CheckAll = connect(mapStateToProps)(class CheckAll extends Component {
+
+  handleChange(e) {
+    const filterLabel = document.querySelector('.toolBar');
+    const chks = document.querySelectorAll('.paper input[type="checkbox"]');
+
+    for( let i = 0; i < chks.length; i++ ) chks[i].checked = e.target.checked;
+            
+    ( e.target.checked === true ) ? filterLabel.classList.add('choosing') : filterLabel.classList.remove('choosing');
+  }
+
+  render() {
+    return (
+      <div className="checkAll">
+        <input type="checkbox" id="checkAll" className="filled-in" onChange={this.handleChange.bind(this)} />
+        <label htmlFor="checkAll"></label>
+      </div>
+    );
+  }
+});
+
+const ToolBar = connect(mapStateToProps)(class ToolBar extends Component {  
+
+  render() {
     return (
       <div className="toolBar">
 
-        <div className="checkbox">
-          <input type="checkbox" id="checkAll" className="filled-in" onChange={this.handleChange.bind(this)} />
-          <label htmlFor="checkAll"></label>
+        <CheckAll />
+  
+        <div className="tools">
+          <FilterNormal />
+          <FilterChoose />
+          <Download />
         </div>
 
-        <FilterNormal />
-        <FilterChoose />
       </div>
     );
-
   } 
-
 });
 
 class Search extends Component {
