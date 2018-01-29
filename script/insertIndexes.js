@@ -133,7 +133,8 @@ function processPaper(s, dirPath) {
         throw error;
       }
 
-      // Add CDATA to <table>
+      // Add CDATA to <abstract>, <table>
+      xml = xml.replace(/<abstract>/g, '<abstract><![CDATA[').replace(/<\/abstract>/g, ']]></abstract>');
       xml = xml.replace(/<table>/g, '<table><![CDATA[').replace(/<\/table>/g, ']]></table>');
 
       parseString(xml, (error, result) => {

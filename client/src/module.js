@@ -260,7 +260,7 @@ const RECEIVE_PAPER = "RECEIVE_PAPER";
 export function receivePaper(json) {
   return {
     type: RECEIVE_PAPER,
-    paper: json.hits.hits.map((item) => item._source)[0]
+    paper: json.hits.hits[0]
   };
 }
 
@@ -282,7 +282,7 @@ const RECEIVE_PAPERS = "RECEIVE_PAPERS";
 export function receivePapers(json) {
   return {
     type: RECEIVE_PAPERS,
-    papers: json.hits.hits.map((item) => item._source),
+    papers: json.hits.hits,
     papersTotal: json.hits.total,
     aggregations: json.aggregations
   };

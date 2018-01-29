@@ -409,6 +409,7 @@ class Search extends Component {
                   fields: [
                     "id",
                     "articleTitle",
+                    "journalTitle",
                     "abstract",
                     "url"
                   ]
@@ -421,8 +422,7 @@ class Search extends Component {
                     multi_match: {
                       query,
                       fields: [
-                        "author.surname",
-                        "author.givenNames"
+                        "author.*"
                       ]
                     }
                   }
@@ -446,8 +446,7 @@ class Search extends Component {
             multi_match: {
               query: author,
               fields: [
-                "author.surname",
-                "author.givenNames"
+                "author.*"
               ]
             }
           }
@@ -502,6 +501,14 @@ class Search extends Component {
       },
       from,
       size: this.props.state.papersFetchSize,
+      highlight: {
+        fields: {
+          articleTitle: {number_of_fragments: 0},
+          journalTitle: {number_of_fragments: 0},
+          abstract: {number_of_fragments: 0},
+          "author.*": {number_of_fragments: 0}
+        }
+      },
       aggs: {
         year: {
           histogram: {
