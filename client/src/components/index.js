@@ -101,7 +101,7 @@ const FilterLabels = connect(mapStateToProps)(class FilterLabels extends Compone
   }
 });
 
-export const Paper = withRouter(connect(mapStateToProps)(class Paper extends Component {  
+export const Paper = withRouter(connect(mapStateToProps)(class Paper extends Component {
 
   handleClick(paperUrl, e) {
     this.props.dispatch(saveScrollY(this.props.location.key, window.scrollY));
@@ -109,12 +109,13 @@ export const Paper = withRouter(connect(mapStateToProps)(class Paper extends Com
   }
 
   render() {
-    const {id, articleTitle, year, url, author} = this.props.data;
+    const {id, articleTitle, year, author} = this.props.data;
     let {abstract} = this.props.data;
     const paperUrl = `/papers/${id}`;
-    const pdfannoUrl = `https://paperai.github.io/pdfanno/?pdf=${url}`;
     const authors = <Authors data={author} paperId={id} asFull={this.props.asFull}/>;
     const attachmentBaseUrl = `/api/documents/${id}/${id}`;
+    const pdfUrl = `${window.location.origin}${attachmentBaseUrl}.pdf`;
+    const pdfannoUrl = `https://paperai.github.io/pdfanno/?pdf=${pdfUrl}`;
 
     const concatAllString = (o) => {
       if (util.isString(o)) {
@@ -155,7 +156,7 @@ export const Paper = withRouter(connect(mapStateToProps)(class Paper extends Com
         <footer>
           <ul className="meta links valign-wrapper blue-text">
             <li>
-              <a href={`${attachmentBaseUrl}.pdf`} target="_blank">pdf</a>
+              <a href={pdfUrl} target="_blank">pdf</a>
             </li>
             <li>
               <a href={`${attachmentBaseUrl}.xml`} target="_blank">xml</a>
