@@ -297,12 +297,22 @@ const FilterChoose = connect(mapStateToProps)(class FilterChoose extends Compone
 const Download = connect(mapStateToProps)(class Download extends Component {
 
   handleClick(e) {
-    // const JSZip = require('jszip'); 
-    console.log('msg');
-    // テストファイルをDL
-    // let zip = new JSZip();
-    // まとめてDL
-      // ZIP導入
+    const JSZip = window.JSZip; // use jszip,js
+    const JSZipUtils = window.JSZipUtils; // use jszip,js
+    const saveAs = window.saveAs; // use FileSaver.js
+    const zip = new JSZip();
+
+    const dir = zip.folder("paper");
+    JSZipUtils.getBinaryContent("/images/test.json", function (err, data) {
+      if(err) alert("Download Error");
+         
+      dir.file("test.json", data, {binary:true});
+
+      zip.generateAsync({type:"blob"})
+      .then(function(content) {
+          saveAs(content, "paper.zip");
+      });
+    });
   }
 
   render() {
