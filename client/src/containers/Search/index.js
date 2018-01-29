@@ -422,8 +422,7 @@ class Search extends Component {
                     multi_match: {
                       query,
                       fields: [
-                        "author.surname",
-                        "author.givenNames"
+                        "author.*"
                       ]
                     }
                   }
@@ -447,8 +446,7 @@ class Search extends Component {
             multi_match: {
               query: author,
               fields: [
-                "author.surname",
-                "author.givenNames"
+                "author.*"
               ]
             }
           }
@@ -507,7 +505,8 @@ class Search extends Component {
         fields: {
           articleTitle: {number_of_fragments: 0},
           journalTitle: {number_of_fragments: 0},
-          abstract: {number_of_fragments: 0}
+          abstract: {number_of_fragments: 0},
+          "author.*": {number_of_fragments: 0}
         }
       },
       aggs: {

@@ -32,9 +32,28 @@ const Authors = connect(mapStateToProps)(class Authors extends Component {
     if (!this.props.asFull && !this.props.state.enabledAllAuthorsPaperIds.has(this.props.paperId)) {
       data = this.props.data.slice(0, 2);
     }
-    const authors = data.map(author =>
-      <li key={author.surname + author.givenNames}>{author.surname} {author.givenNames}</li>
-    );
+    const highlightedSurnameList = this.props.highlight["author.surname"] || [];
+    const highlightedGivenNamesList = this.props.highlight["author.givenNames"] || [];
+
+    const authors = data.map((author) => {
+      let surname = author.surname;
+      for (const highlightedSurname of highlightedSurnameList) {
+        if (highlightedSurname === `<em>${surname}</em>`){
+          surname = highlightedSurname;
+          break;
+        }
+      }
+
+      let givenNames = author.givenNames;
+      for (const highlightedGivenNames of highlightedGivenNamesList) {
+        if (highlightedGivenNames === `<em>${givenNames}</em>`){
+          givenNames = highlightedGivenNames;
+          break;
+        }
+      }
+      const label = {__html: `${surname} ${givenNames}`};
+      return <li key={author.surname + author.givenNames} dangerouslySetInnerHTML={label}></li>;
+    });
     const haveMore = this.props.data.length > 2;
 
     return (
@@ -110,9 +129,10 @@ export const Paper = withRouter(connect(mapStateToProps)(class Paper extends Com
 
   render() {
     const {id, year, abstract: rawAbstract, articleTitle: rawArticleTitle, journalTitle: rawJournalTitle, author} = this.props.data._source;
-    const {abstract: highlightedAbstract, articleTitle: highlightedArticleTitle, journalTitle: highlightedJournalTitle} = this.props.data.highlight || {};
+    const highlight = this.props.data.highlight || {};
+    const {abstract: highlightedAbstract, articleTitle: highlightedArticleTitle, journalTitle: highlightedJournalTitle} = highlight;
     const paperUrl = `/papers/${id}`;
-    const authors = <Authors data={author} paperId={id} asFull={this.props.asFull}/>;
+    const authors = <Authors data={author} highlight={highlight} paperId={id} asFull={this.props.asFull}/>;
     const attachmentBaseUrl = `/api/documents/${id}/${id}`;
     const pdfUrl = `${window.location.origin}${attachmentBaseUrl}.pdf`;
     const pdfannoUrl = `https://paperai.github.io/pdfanno/latest/?pdf=${pdfUrl}`;
