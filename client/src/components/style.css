@@ -16,8 +16,13 @@
     display: -webkit-box;
 }
 
-.paper > p {
+.paper > .abstract {
+    display: inline;
+}
+
+.paper > .abstract p {
     font-weight: 400;
+    display: inline;
 }
 
 .paper p.truncate {

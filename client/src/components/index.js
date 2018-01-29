@@ -158,7 +158,7 @@ export const Paper = withRouter(connect(mapStateToProps)(class Paper extends Com
           {authors}
           <h6 dangerouslySetInnerHTML={journalTitle}></h6>
         </header>
-        <p><span dangerouslySetInnerHTML={abstract}></span>{!this.props.asFull && <FullTextToggle paperId={id}/>}</p>
+        <div className="abstract" dangerouslySetInnerHTML={abstract}></div>{!this.props.asFull && <FullTextToggle paperId={id}/>}
         <footer>
           <ul className="meta links valign-wrapper blue-text">
             <li>
