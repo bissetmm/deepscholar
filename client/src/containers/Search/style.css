@@ -111,10 +111,10 @@
 .toolBar .tools > div {
 }
 
-.toolBar .tools .download ul li.item{
+.toolBar .tools .download ul li:not(.head){
 	padding-left: 16px !important;
 }
-.toolBar .tools .download ul li.item b {
+.toolBar .tools .download ul li:not(.head) b {
 	padding-right: 8px;
 }
 
