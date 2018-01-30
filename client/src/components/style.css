@@ -16,8 +16,13 @@
     display: -webkit-box;
 }
 
-.paper > p {
+.paper > .abstract {
+    display: inline;
+}
+
+.paper > .abstract p {
     font-weight: 400;
+    display: inline;
 }
 
 .paper p.truncate {
@@ -37,7 +42,7 @@
 }
 
 .paper header .authors {
-    font-weight: 700;
+    font-weight: 400;
 }
 .paper header h5 a {
     line-height: 1.4;
