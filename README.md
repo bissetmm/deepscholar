@@ -130,11 +130,16 @@ Index(tables) created.
     -rw-r--r--  1 dataich  staff  451885 11 26 22:01 server/public/figs/PMC5000010/PMC5000010_5.png
     ```
 
-### Delete
+### Delete indexes
 ```
 $ npm -s run es:deleteIndexes
 All Indexes have been deleted.
+```
 
+### Delete database
+```
+$ npm -s run db:dropDatabase
+All databases have been deleted.
 ```
 
 ### Development Tools
