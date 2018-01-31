@@ -21,8 +21,5 @@
     "mongodb": "^3.0.2",
     "properties": "^1.2.1",
     "request": "^2.83.0"
-  },
-  "dependencies": {
-    "passport-jwt": "^3.0.1"
   }
 }
