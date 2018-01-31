@@ -2,6 +2,7 @@ const express = require("express");
 const passport = require("passport");
 const passportJwt = require("passport-jwt");
 const GithubStrategy = require("passport-github").Strategy;
+const DB = require("./db");
 
 const jwtOptions = {
   jwtFromRequest: passportJwt.ExtractJwt.fromAuthHeaderAsBearerToken(),
@@ -24,18 +25,15 @@ passport.use('github', new GithubStrategy({
     callbackURL: `${process.env.DEEP_SCHOLAR_URL}/api/auth/github/callback`
   },
   (accessToken, refreshToken, profile, done) => {
-    done(null, profile);
+    DB.findOrCreateUser(profile).then((user) => {
+      console.log(user);
+      done(null, user);
+    });
   }
 ));
-passport.serializeUser((user, done) => {
-  done(null, user);
-});
-
-passport.deserializeUser((user, done) => {
-  done(null, user);
-});
 
 const jwt = require("jsonwebtoken");
+
 function generateAccessToken(type, username) {
   const expiresIn = "1 hour";
   const issuer = process.env.DEEP_SCHOLAR_TOKEN_ISSUER;
@@ -54,10 +52,10 @@ function generateAccessToken(type, username) {
 }
 
 function generateUserToken(req, res) {
-  const accessToken = generateAccessToken("github", req.user.id);
+  const accessToken = generateAccessToken("github", req.user._id);
   res.render('authenticated.html', {
     token: accessToken,
-    user: JSON.stringify(req.user)
+    profile: JSON.stringify(req.user.profile)
   });
 }
 

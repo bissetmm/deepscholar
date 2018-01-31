@@ -36,6 +36,7 @@ services:
       - NODE_ENV=development
     depends_on:
       - deepscholar.elasticsearch
+      - deepscholar.database
     ports:
       - "${DS_SERVER_PORT}:3001"
     command: bash -c "
@@ -47,6 +48,15 @@ services:
       OAUTH_GITHUB_CLIENT_ID=${OAUTH_GITHUB_CLIENT_ID}
       OAUTH_GITHUB_CLIENT_SECRET=${OAUTH_GITHUB_CLIENT_SECRET}
       npm start"
+  deepscholar.database:
+    container_name: deepscholar.database
+    volumes:
+      - dbdata:/data/db
+    image: mongo:3.6
+    environment:
+      - MONGO_INITDB_DATABASE=deepscholar
+    ports:
+      - "${DS_DB_PORT}:27017"
   deepscholar.elasticsearch:
     container_name: deepscholar.elasticsearch
     image: docker.elastic.co/elasticsearch/elasticsearch:5.4.3
@@ -75,5 +85,7 @@ services:
     ports:
       - "${DS_ESHEAD_PORT}:9100"
 volumes:
+  dbdata:
+    driver: local
   esdata:
     driver: local
