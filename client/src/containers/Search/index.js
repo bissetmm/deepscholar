@@ -450,6 +450,7 @@ const Download = connect(mapStateToProps)(class Download extends Component {
           });
 
         if(result.length === 1 && result[0] === 'error') {
+          document.querySelector('.toolBar').classList.remove('choosing');
           return false;
         }
 
@@ -457,6 +458,7 @@ const Download = connect(mapStateToProps)(class Download extends Component {
         .then(function(content) {
             saveAs(content, "paper.zip");
         });
+        document.querySelector('.toolBar').classList.remove('choosing');
       }
     }, 1000);
 

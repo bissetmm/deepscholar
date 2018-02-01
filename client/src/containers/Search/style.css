@@ -252,6 +252,16 @@
 }
 
 
+.toolBar .download > a{
+	opacity: 0.4;
+	pointer-events : none;
+}
+.toolBar.choosing .download > a{
+	opacity: 1;
+	pointer-events : initial;
+}
+
+
 /****************
 **
 **  Side bar
