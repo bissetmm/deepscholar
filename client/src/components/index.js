@@ -200,8 +200,8 @@ class Figure extends Component {
 
   render() {
     const {img, url, caption, label} = this.props.data;
-    const title = caption.title || label;
-    const p = caption.p || "";
+    const title = (caption && caption.title) || label;
+    const p = (caption && caption.p) || "";
     const subHtml = `<h4>${title}</h4><p>${p}</p>`;
     return (
       <a key={img} href={url} data-sub-html={subHtml} >
