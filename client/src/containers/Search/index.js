@@ -98,33 +98,13 @@ const PublicationFilter = connect(mapStateToProps)(class PublicationFilter exten
   }
 });
 
-const FilterStyle = connect(mapStateToProps)(class FilterStyle extends Component {
+const FilterListCommon = connect(mapStateToProps)(class FilterListCommon extends Component {
 
   render() {
     const {labelList} = this.props.state;
-    let style = '';
+    const {name} = this.props;
 
-    Object.keys(labelList).map(key => {
-      const labelName = key;
-      const color = labelList[labelName][0];
-      const list = labelList[labelName][1];
-      list.map(function(val, i) {
-        style += '.paper' + val + ' h5 .' + key + ' { margin: 0 4px; }';
-        style += '.paper' + val + ' h5 .' + key + ':after { content: "' + key + '"; }';
-      })
-    })
-
-    return <style>{style}</style>;
-  }
-});
-
-const FilterList = connect(mapStateToProps)(class FilterList extends Component {
-
-  render() {
-    const {labelList} = this.props.state;
-    const {name, txt} = this.props;
-
-    const headTxt = txt == 'Labels' ? 'Filter by label' : 'Apply labels';
+    const headTxt = name == 'chooseFilter' ? 'Apply labels' : 'Filter by label';
 
     const lists = Object.keys(labelList).map(key => {
       const labelName = key;
@@ -140,7 +120,7 @@ const FilterList = connect(mapStateToProps)(class FilterList extends Component {
 
     return (
       <div className={'dropdown dropdown--alpha ' + name}>
-        <a className='dropdown-button btn z-depth-0' data-beloworigin="true" data-activates={name} onClick={this.props.onClickBtn}>{txt}<i className="material-icons">arrow_drop_down</i></a>
+        <a className='dropdown-button btn z-depth-0' data-beloworigin="true" data-activates={name} onClick={this.props.onClickBtn}>Labels<i className="material-icons">arrow_drop_down</i></a>
         <ul id={name} className='dropdown-content z-depth-0'>
           <li className='head'>{headTxt}<i className="material-icons close">close</i></li>
           {lists}
@@ -207,7 +187,7 @@ const FilterNormal = connect(mapStateToProps)(class FilterNormal extends Compone
     return (
       <div>
         {closeBtn}
-        <FilterList name="normalFilter" txt="Labels" onClickList={this.handleClickList.bind(this)} />
+        <FilterListCommon name="normalFilter" onClickList={this.handleClickList.bind(this)} />
       </div>
     )
   }
@@ -292,47 +272,330 @@ const FilterChoose = connect(mapStateToProps)(class FilterChoose extends Compone
   }
 
   render() {
+    const {labelList} = this.props.state;
+    let style = '';
+
+    Object.keys(labelList).map(key => {
+      const labelName = key;
+      const color = labelList[labelName][0];
+      const list = labelList[labelName][1];
+      list.map(function(val, i) {
+        style += '.paper' + val + ' h5 .' + key + ' { margin: 0 4px; }';
+        style += '.paper' + val + ' h5 .' + key + ':after { content: "' + key + '"; }';
+      })
+    })
+
     return (
       <div>
-        <FilterList name="chooseFilter" txt="Label" onClickBtn={this.handleClickBtn.bind(this)} onClickList={this.handleClickList.bind(this)} />
-        <FilterStyle/>
+        <FilterListCommon name="chooseFilter" onClickBtn={this.handleClickBtn.bind(this)} onClickList={this.handleClickList.bind(this)} />
+        <style>{style}</style>
       </div>
     );
   }
 });
 
-const ToolBar = connect(mapStateToProps)(class ToolBar extends Component {
+const Download = connect(mapStateToProps)(class Download extends Component {
 
-  handleChange(e) {
-    const chks = document.querySelectorAll('.paper input[type="checkbox"]');
-    const filterLabel = document.querySelector('.toolBar');
-    for( let i = 0; i < chks.length; i++ ) {
-      chks[i].checked = e.target.checked;      
+  handleClick(e) {
+    const JSZip = window.JSZip;          
+    const JSZipUtils = window.JSZipUtils;
+    const saveAs = window.saveAs;        
+    const TSV = window.TSV;
+
+    const zip = new JSZip();
+    const dir = zip.folder("paper");
+
+    function deactivateToolbar() {
+      document.querySelector('.toolBar').classList.remove('choosing');
     }
-    if ( e.target.checked === true ) {
-      filterLabel.classList.add('choosing');
-    } else {
-      filterLabel.classList.remove('choosing');
+    function cancelAllChecked() {
+      const filterChooseAll = document.querySelector('#checkAll');
+      filterChooseAll.checked = false;
+      const target = document.querySelectorAll('.paper input:checked');
+      [].forEach.call(target, function(e) {
+        e.checked = false;
+      });
     }
+
+    function getCheckedList() {
+      const target = document.querySelectorAll('.paper input:checked');
+      const list = [];
+      [].forEach.call(target, function(e) {
+        list.push(e.id);
+      });
+      return list;
+    }
+
+    function getExtention(e) {
+      let ext = e.target.className;
+      switch (ext){
+        case 'pdftxt':
+          ext = 'pdf.txt';
+          break;
+        case 'annoxlsx':
+          ext = 'xlsx';
+          break;
+        case 'annotsv':
+          ext = 'tsv';
+          break;
+      }
+      return ext;
+    }
+
+    // function jsonToCsv(data, paperId){
+    //   const d = [{
+    //       title: data["glossary"]["title"],
+    //       ID: data["glossary"]["GlossDiv"]["GlossList"]["GlossEntry"]["ID"],
+    //       GlossTerm: data["glossary"]["GlossDiv"]["GlossList"]["GlossEntry"]["GlossTerm"],
+    //       Abbrev: data["glossary"]["GlossDiv"]["GlossList"]["GlossEntry"]["Abbrev"]
+    //     }, {
+    //       title: data["glossary"]["title"],
+    //       ID: data["glossary"]["GlossDiv"]["GlossList"]["GlossEntry"]["ID"],
+    //       GlossTerm: data["glossary"]["GlossDiv"]["GlossList"]["GlossEntry"]["GlossTerm"],
+    //       Abbrev: data["glossary"]["GlossDiv"]["GlossList"]["GlossEntry"]["Abbrev"]
+    //     }];
+    //   const csv = TSV.CSV.stringify(d);
+    //   return csv;
+    // }
+    // function jsonToXlsx(data, paperId){
+    //   const XLSX = window.XLSX;
+
+    //   const dataId = data["glossary"]["GlossDiv"]["GlossList"]["GlossEntry"]["ID"];
+    //   const dataTerm = data["glossary"]["GlossDiv"]["GlossList"]["GlossEntry"]["GlossTerm"];
+    //   const wb = XLSX.read("", {type:"array"});
+    //   const ws = XLSX.utils.json_to_sheet([
+    //             { A: "S", B: "h", C: "e", D: "e", E: "t", F: "J", G: dataId }
+    //           ], {header: ["A", "B", "C", "D", "E", "F", "G"], skipHeader: true});
+    //           XLSX.utils.sheet_add_json(ws, [
+    //             { A: 1, B: 2 }, { A: 2, B: 3 }, { A: 3, B: dataTerm }
+    //           ], {skipHeader: true, origin: "A2"});
+    //           XLSX.utils.sheet_add_json(ws, [
+    //             { A: 5, B: 6, C: 7 }, { A: 6, B: 7, C: 8 }, { A: 7, B: 8, C: 9 }
+    //           ], {skipHeader: true, origin: { r: 1, c: 4 }, header: [ "A", "B", "C" ]});
+    //           XLSX.utils.sheet_add_json(ws, [
+    //             { A: 4, B: 5, C: 6, D: 7, E: 8, F: 9, G: 0 }
+    //           ], {header: ["A", "B", "C", "D", "E", "F", "G"], skipHeader: true, origin: -1});
+      
+    //   const sheetTitle = data["glossary"]["title"];
+    //   wb.SheetNames.push(sheetTitle);
+    //   wb.Sheets[sheetTitle] = ws;
+    //   wb.SheetNames.shift();
+      
+    //   return XLSX.write(wb, { bookType:'xlsx', bookSST:false, type:'array' });
+    // }
+    // function jsonToTsv(data){
+    //   const d = [{
+    //       title: data["glossary"]["title"],
+    //       ID: data["glossary"]["GlossDiv"]["GlossList"]["GlossEntry"]["ID"],
+    //       GlossTerm: data["glossary"]["GlossDiv"]["GlossList"]["GlossEntry"]["GlossTerm"]
+    //     }, {
+    //       title: data["glossary"]["title"],
+    //       ID: data["glossary"]["GlossDiv"]["GlossList"]["GlossEntry"]["ID"],
+    //       GlossTerm: data["glossary"]["GlossDiv"]["GlossList"]["GlossEntry"]["GlossTerm"]
+    //     }];
+    //   var tsv = TSV.stringify(d);
+    //   return tsv;
+    // }
+    function tomlToXlsx(data, paperId){
+      const toml = window.toml;
+      const convert = toml.parse(data);
+
+      const XLSX = window.XLSX;
+      const dataId = "xxx";
+      const dataTerm = "yyy";
+      const wb = XLSX.read("", {type:"array"});
+      const ws = XLSX.utils.json_to_sheet([
+                { A: 'Relation', 
+                  B: 'Dir', 
+                  C: 'Span1 text', 
+                  D: 'Span1 label', 
+                  E: 'Span2 text', 
+                  F: 'Span2 label', 
+                  G: 'Reference' }
+              ], {header: ["A", "B", "C", "D", "E", "F", "G"], skipHeader: true});
+      let i = 2;
+      for (let key in convert) {
+          if (convert.hasOwnProperty(key)) {
+
+              if ( convert[key]['type'] === 'relation' || convert[key]['type'] === undefined ) {
+                const id1 = Number(convert[key]['ids'][0]);
+                const id2 = Number(convert[key]['ids'][1]);
+                const origin = "A" + i;
+                XLSX.utils.sheet_add_json(ws, [
+                  { A: convert[key]['label'], 
+                    B: convert[key]['dir'], 
+                    C: convert[id1]['text'], 
+                    D: convert[id1]['label'], 
+                    E: convert[id2]['text'], 
+                    F: convert[id2]['label'], 
+                    G: paperId }
+                ],{skipHeader: true, origin: origin});
+                
+                i++;
+              }
+          }
+      }
+      
+      const sheetTitle = paperId;
+      wb.SheetNames.push(sheetTitle);
+      wb.Sheets[sheetTitle] = ws;
+      wb.SheetNames.shift();
+      
+      return XLSX.write(wb, { bookType:'xlsx', bookSST:false, type:'array' });
+    }
+    function tomlToTsv(data, paperId){
+      const toml = window.toml;
+      const convert = toml.parse(data);
+      const d = [];
+      for (let key in convert) {
+          if (convert.hasOwnProperty(key)) {
+
+              if ( convert[key]['type'] === 'relation' || convert[key]['type'] === undefined ) {
+                const id1 = Number(convert[key]['ids'][0]);
+                const id2 = Number(convert[key]['ids'][1]);
+                const obj = {};
+                      obj['Relation'] = convert[key]['label'];
+                      obj['Dir'] = convert[key]['dir'];
+                      obj['Span1 text'] = convert[id1]['text'];
+                      obj['Span1 label'] = convert[id1]['label'];
+                      obj['Span2 text'] = convert[id2]['text'];
+                      obj['Span2 label'] = convert[id2]['label'];
+                      obj['Reference'] = paperId;
+                d.push(obj);
+              }
+              
+          }
+      }
+      const tsv = TSV.stringify(d);
+      return tsv;
+    }
+
+    const apiPath = '/api/documents/';
+
+    const ext = getExtention(e);
+    if( ext == 'head' || ext.indexOf('close') != -1 ) return false;
+
+    const list = getCheckedList();
+    if ( list.length === 0 ) return false; 
+
+
+    cancelAllChecked();
+
+    
+    let DownloadFlag = new Array(list.length);
+
+    for (let i = 0; i < list.length; i++) {
+
+      const url = apiPath + list[i] + '/' + list[i] + '.' + ( ( ext === 'xlsx' || ext === 'tsv' ) ? 'anno' : ext ) ;
+
+      if ( ext === 'xlsx' || ext === 'tsv' ) {
+          window.jQuery.ajax({ type: 'GET', url: url, dataType: 'text'})
+          .done(function(data) {
+            // const convert = ( ext === 'xlsx' ) ? jsonToXlsx(data, list[i]) : jsonToTsv(data); // for JSON
+            const convert = ( ext === 'xlsx' ) ? tomlToXlsx(data, list[i]) : tomlToTsv(data, list[i]); // hor TOML
+            dir.file(list[i] + '.' + ext, convert, {binary:true} );
+            DownloadFlag[i] = true;
+          })
+          .fail(function() {
+            DownloadFlag[i] = false;
+          });
+      } else {
+        JSZipUtils.getBinaryContent(url, function (err, data) {
+          if(err) {
+            DownloadFlag[i] = false;
+          } else {            
+            dir.file(list[i] + '.' + ext, data, {binary:true});
+            DownloadFlag[i] = true;
+          }
+        });
+      }
+    }
+
+    
+    const id = setInterval( function(){ // wait until all paper downloaded
+      let count = 0;
+      for (let j = 0; j < DownloadFlag.length; j++) { 
+        if( DownloadFlag[j] !== undefined ) count++;
+      }
+
+      if( count === DownloadFlag.length ){　
+
+        clearInterval(id);
+        
+        DownloadFlag = DownloadFlag.filter(function (x, i, self) { // remove overwrap in array
+              return self.indexOf(x) === i;
+          });
+
+        if( DownloadFlag.length !== 1 || DownloadFlag[0] !== false) {
+          zip.generateAsync({type:"blob"}) // download zip
+              .then(function(content) {
+                  saveAs(content, "paper.zip");
+              });
+        } 
+        deactivateToolbar()
+      }
+    }, 1000);
+
   }
 
   render() {
+    const name = 'download';
+    const txt = 'Download';
+    const headTxt = 'Download all';
+    return (
+      <div className={'dropdown dropdown--alpha ' + name}>
+        <a className='dropdown-button btn z-depth-0' data-beloworigin="true" data-activates={name}>{txt}<i className="material-icons">arrow_drop_down</i></a>
+        <ul id={name} className='dropdown-content z-depth-0'>
+          <li onClick={this.handleClick.bind(this)} className='head'>{headTxt}<i className="material-icons close">close</i></li>
+          <li onClick={this.handleClick.bind(this)} className='pdf'><b>・</b>pdf</li>
+          <li onClick={this.handleClick.bind(this)} className='xml'><b>・</b>xml</li>
+          <li onClick={this.handleClick.bind(this)} className='pdftxt'><b>・</b>pdf.txt</li>
+          <li onClick={this.handleClick.bind(this)} className='annoxlsx'><b>・</b>Anno (.xlsx)</li>
+          <li onClick={this.handleClick.bind(this)} className='annotsv'><b>・</b>Anno (.tsv)</li>
+        </ul>
+      </div>
+    );
+  }
+});
 
+const CheckAll = connect(mapStateToProps)(class CheckAll extends Component {
+
+  handleChange(e) {
+    const filterLabel = document.querySelector('.toolBar');
+    const chks = document.querySelectorAll('.paper input[type="checkbox"]');
+
+    for( let i = 0; i < chks.length; i++ ) chks[i].checked = e.target.checked;
+            
+    ( e.target.checked === true ) ? filterLabel.classList.add('choosing') : filterLabel.classList.remove('choosing');
+  }
+
+  render() {
+    return (
+      <div className="checkAll">
+        <input type="checkbox" id="checkAll" className="filled-in" onChange={this.handleChange.bind(this)} />
+        <label htmlFor="checkAll"></label>
+      </div>
+    );
+  }
+});
+
+const ToolBar = connect(mapStateToProps)(class ToolBar extends Component {  
+
+  render() {
     return (
       <div className="toolBar">
 
-        <div className="checkbox">
-          <input type="checkbox" id="checkAll" className="filled-in" onChange={this.handleChange.bind(this)} />
-          <label htmlFor="checkAll"></label>
+        <CheckAll />
+  
+        <div className="tools">
+          <FilterNormal />
+          <FilterChoose />
+          <Download />
         </div>
 
-        <FilterNormal />
-        <FilterChoose />
       </div>
     );
-
   } 
-
 });
 
 class Search extends Component {

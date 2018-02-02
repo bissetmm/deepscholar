@@ -27,7 +27,7 @@ class Index extends Component {
     e.preventDefault();
 
     if( this.query == this.props.state.query && this.props.state.page == 0) { // 検索ページから戻り、同じ文字列を検索する場合、遷移がトリガーしない為、ここで強制遷移（検索はしないで前回の画面をそのまま表示）
-      this.props.history.push("/search/texts?q=" + this.query + "&page=1");
+      this.props.history.push("/texts?q=" + this.query + "&page=1");
       return false;
     }
 
