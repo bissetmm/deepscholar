@@ -473,7 +473,7 @@ const Download = connect(mapStateToProps)(class Download extends Component {
     const apiPath = '/api/documents/';
 
     const ext = getExtention(e);
-    if( ext == 'head' ) return false;
+    if( ext == 'head' || ext.indexOf('close') != -1 ) return false;
 
     const list = getCheckedList();
     if ( list.length === 0 ) return false; 
