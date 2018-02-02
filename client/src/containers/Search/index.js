@@ -300,9 +300,14 @@ const Download = connect(mapStateToProps)(class Download extends Component {
     const JSZip = window.JSZip;          
     const JSZipUtils = window.JSZipUtils;
     const saveAs = window.saveAs;        
-    const zip = new JSZip();
     const TSV = window.TSV;
 
+    const zip = new JSZip();
+    const dir = zip.folder("paper");
+
+    function deactivateToolbar() {
+      document.querySelector('.toolBar').classList.remove('choosing');
+    }
     function cancelAllChecked() {
       const filterChooseAll = document.querySelector('#checkAll');
       filterChooseAll.checked = false;
@@ -337,63 +342,118 @@ const Download = connect(mapStateToProps)(class Download extends Component {
       return ext;
     }
 
-    function jsonToCsv(data, title){
-      const d = [{
-          title: data["glossary"]["title"],
-          ID: data["glossary"]["GlossDiv"]["GlossList"]["GlossEntry"]["ID"],
-          GlossTerm: data["glossary"]["GlossDiv"]["GlossList"]["GlossEntry"]["GlossTerm"],
-          Abbrev: data["glossary"]["GlossDiv"]["GlossList"]["GlossEntry"]["Abbrev"]
-        }, {
-          title: data["glossary"]["title"],
-          ID: data["glossary"]["GlossDiv"]["GlossList"]["GlossEntry"]["ID"],
-          GlossTerm: data["glossary"]["GlossDiv"]["GlossList"]["GlossEntry"]["GlossTerm"],
-          Abbrev: data["glossary"]["GlossDiv"]["GlossList"]["GlossEntry"]["Abbrev"]
-        }];
-      const csv = TSV.CSV.stringify(d);
-      return csv;
-    }
-    function jsonToXlsx(data, title){
-      const XLSX = window.XLSX;
+    // function jsonToCsv(data, title){
+    //   const d = [{
+    //       title: data["glossary"]["title"],
+    //       ID: data["glossary"]["GlossDiv"]["GlossList"]["GlossEntry"]["ID"],
+    //       GlossTerm: data["glossary"]["GlossDiv"]["GlossList"]["GlossEntry"]["GlossTerm"],
+    //       Abbrev: data["glossary"]["GlossDiv"]["GlossList"]["GlossEntry"]["Abbrev"]
+    //     }, {
+    //       title: data["glossary"]["title"],
+    //       ID: data["glossary"]["GlossDiv"]["GlossList"]["GlossEntry"]["ID"],
+    //       GlossTerm: data["glossary"]["GlossDiv"]["GlossList"]["GlossEntry"]["GlossTerm"],
+    //       Abbrev: data["glossary"]["GlossDiv"]["GlossList"]["GlossEntry"]["Abbrev"]
+    //     }];
+    //   const csv = TSV.CSV.stringify(d);
+    //   return csv;
+    // }
+    // function jsonToXlsx(data, title){
+    //   const XLSX = window.XLSX;
 
-      const dataId = data["glossary"]["GlossDiv"]["GlossList"]["GlossEntry"]["ID"];
-      const dataTerm = data["glossary"]["GlossDiv"]["GlossList"]["GlossEntry"]["GlossTerm"];
-      const wb = XLSX.read("", {type:"array"});
-      const ws = XLSX.utils.json_to_sheet([
-                { A: "S", B: "h", C: "e", D: "e", E: "t", F: "J", G: dataId }
-              ], {header: ["A", "B", "C", "D", "E", "F", "G"], skipHeader: true});
-              XLSX.utils.sheet_add_json(ws, [
-                { A: 1, B: 2 }, { A: 2, B: 3 }, { A: 3, B: dataTerm }
-              ], {skipHeader: true, origin: "A2"});
-              XLSX.utils.sheet_add_json(ws, [
-                { A: 5, B: 6, C: 7 }, { A: 6, B: 7, C: 8 }, { A: 7, B: 8, C: 9 }
-              ], {skipHeader: true, origin: { r: 1, c: 4 }, header: [ "A", "B", "C" ]});
-              XLSX.utils.sheet_add_json(ws, [
-                { A: 4, B: 5, C: 6, D: 7, E: 8, F: 9, G: 0 }
-              ], {header: ["A", "B", "C", "D", "E", "F", "G"], skipHeader: true, origin: -1});
+    //   const dataId = data["glossary"]["GlossDiv"]["GlossList"]["GlossEntry"]["ID"];
+    //   const dataTerm = data["glossary"]["GlossDiv"]["GlossList"]["GlossEntry"]["GlossTerm"];
+    //   const wb = XLSX.read("", {type:"array"});
+    //   const ws = XLSX.utils.json_to_sheet([
+    //             { A: "S", B: "h", C: "e", D: "e", E: "t", F: "J", G: dataId }
+    //           ], {header: ["A", "B", "C", "D", "E", "F", "G"], skipHeader: true});
+    //           XLSX.utils.sheet_add_json(ws, [
+    //             { A: 1, B: 2 }, { A: 2, B: 3 }, { A: 3, B: dataTerm }
+    //           ], {skipHeader: true, origin: "A2"});
+    //           XLSX.utils.sheet_add_json(ws, [
+    //             { A: 5, B: 6, C: 7 }, { A: 6, B: 7, C: 8 }, { A: 7, B: 8, C: 9 }
+    //           ], {skipHeader: true, origin: { r: 1, c: 4 }, header: [ "A", "B", "C" ]});
+    //           XLSX.utils.sheet_add_json(ws, [
+    //             { A: 4, B: 5, C: 6, D: 7, E: 8, F: 9, G: 0 }
+    //           ], {header: ["A", "B", "C", "D", "E", "F", "G"], skipHeader: true, origin: -1});
       
-      const sheetTitle = data["glossary"]["title"];
-      wb.SheetNames.push(sheetTitle);
-      wb.Sheets[sheetTitle] = ws;
-      wb.SheetNames.shift();
+    //   const sheetTitle = data["glossary"]["title"];
+    //   wb.SheetNames.push(sheetTitle);
+    //   wb.Sheets[sheetTitle] = ws;
+    //   wb.SheetNames.shift();
       
-      return XLSX.write(wb, { bookType:'xlsx', bookSST:false, type:'array' });
+    //   return XLSX.write(wb, { bookType:'xlsx', bookSST:false, type:'array' });
+    // }
+    // function jsonToTsv(data){
+    //   const d = [{
+    //       title: data["glossary"]["title"],
+    //       ID: data["glossary"]["GlossDiv"]["GlossList"]["GlossEntry"]["ID"],
+    //       GlossTerm: data["glossary"]["GlossDiv"]["GlossList"]["GlossEntry"]["GlossTerm"]
+    //     }, {
+    //       title: data["glossary"]["title"],
+    //       ID: data["glossary"]["GlossDiv"]["GlossList"]["GlossEntry"]["ID"],
+    //       GlossTerm: data["glossary"]["GlossDiv"]["GlossList"]["GlossEntry"]["GlossTerm"]
+    //     }];
+    //   var tsv = TSV.stringify(d);
+    //   return tsv;
+    // }
+    function tomlToXlsx(data, title){
+      // const XLSX = window.XLSX;
+
+      // const dataId = data["glossary"]["GlossDiv"]["GlossList"]["GlossEntry"]["ID"];
+      // const dataTerm = data["glossary"]["GlossDiv"]["GlossList"]["GlossEntry"]["GlossTerm"];
+      // const wb = XLSX.read("", {type:"array"});
+      // const ws = XLSX.utils.json_to_sheet([
+      //           { A: "S", B: "h", C: "e", D: "e", E: "t", F: "J", G: dataId }
+      //         ], {header: ["A", "B", "C", "D", "E", "F", "G"], skipHeader: true});
+      //         XLSX.utils.sheet_add_json(ws, [
+      //           { A: 1, B: 2 }, { A: 2, B: 3 }, { A: 3, B: dataTerm }
+      //         ], {skipHeader: true, origin: "A2"});
+      //         XLSX.utils.sheet_add_json(ws, [
+      //           { A: 5, B: 6, C: 7 }, { A: 6, B: 7, C: 8 }, { A: 7, B: 8, C: 9 }
+      //         ], {skipHeader: true, origin: { r: 1, c: 4 }, header: [ "A", "B", "C" ]});
+      //         XLSX.utils.sheet_add_json(ws, [
+      //           { A: 4, B: 5, C: 6, D: 7, E: 8, F: 9, G: 0 }
+      //         ], {header: ["A", "B", "C", "D", "E", "F", "G"], skipHeader: true, origin: -1});
+      
+      // const sheetTitle = data["glossary"]["title"];
+      // wb.SheetNames.push(sheetTitle);
+      // wb.Sheets[sheetTitle] = ws;
+      // wb.SheetNames.shift();
+      
+      // return XLSX.write(wb, { bookType:'xlsx', bookSST:false, type:'array' });
     }
-    function jsonToTsv(data){
-      const d = [{
-          title: data["glossary"]["title"],
-          ID: data["glossary"]["GlossDiv"]["GlossList"]["GlossEntry"]["ID"],
-          GlossTerm: data["glossary"]["GlossDiv"]["GlossList"]["GlossEntry"]["GlossTerm"]
-        }, {
-          title: data["glossary"]["title"],
-          ID: data["glossary"]["GlossDiv"]["GlossList"]["GlossEntry"]["ID"],
-          GlossTerm: data["glossary"]["GlossDiv"]["GlossList"]["GlossEntry"]["GlossTerm"]
-        }];
-      var tsv = TSV.stringify(d);
+    function tomlToTsv(data, paperId){
+      const toml = window.toml;
+      const convert = toml.parse(data);
+      const d = [];
+      for (let key in convert) {
+          if (convert.hasOwnProperty(key)) {
+
+              if ( convert[key]['type'] === 'relation' ) {
+                const id1 = Number(convert[key]['ids'][0]);
+                const id2 = Number(convert[key]['ids'][1]);
+                const obj = {
+                  'Relation': convert[key]['label'],
+                  'Dir': convert[key]['dir'],
+                  'Span1 text': convert[id1]['text'],
+                  'Span1 label': convert[id1]['label'],
+                  'Span2 text': convert[id2]['text'],
+                  'Span2 label': convert[id2]['label'],
+                  'Reference': paperId,
+                };
+                d.push(obj);
+              }
+              
+          }
+      }
+      const tsv = TSV.stringify(d);
       return tsv;
     }
 
-    const apiPath = '/api/documents/';
+    // const apiPath = '/api/documents/';
+    const apiPath = '/images/';
     const ext = getExtention(e);
+    if( ext == 'head' ) return false;
 
     const list = getCheckedList();
     if ( list.length === 0 ) { 
@@ -402,29 +462,28 @@ const Download = connect(mapStateToProps)(class Download extends Component {
       cancelAllChecked(); 
     }
 
-    const dir = zip.folder("paper");
-
+    
     let DownloadFlag = new Array(list.length);
+
     for (let i = 0; i < list.length; i++) {
 
-      const url = apiPath + list[i] + '/' + list[i] + '.' + ( ( ext === 'xlsx' || ext === 'tsv' ) ? 'anno' : ext ) ;
+      const url = apiPath + /*list[i] + '/' +*/ list[i] + '.' + ( ( ext === 'xlsx' || ext === 'tsv' ) ? 'anno' : ext ) ;
 
       if ( ext === 'xlsx' || ext === 'tsv' ) {
-          window.jQuery.getJSON( url, {
-            format: "json"
-          })
+          window.jQuery.ajax({ type: 'GET', url: url, dataType: 'text'})
           .done(function(data) {
-            const convert = ( ext === 'xlsx' ) ? jsonToXlsx(data, list[i]) : jsonToTsv(data);
-            dir.file(list[i] + '.' + ext, convert, {binary:true});
+            // const convert = ( ext === 'xlsx' ) ? jsonToXlsx(data, list[i]) : jsonToTsv(data); // for JSON
+            const convert = ( ext === 'xlsx' ) ? tomlToXlsx(data, list[i]) : tomlToTsv(data, list[i]); // hor TOML
+            dir.file(list[i] + '.' + ext, convert, {binary:true} );
             DownloadFlag[i] = true;
           })
           .fail(function() {
-            DownloadFlag[i] = 'error';
+            DownloadFlag[i] = false;
           });
       } else {
         JSZipUtils.getBinaryContent(url, function (err, data) {
           if(err) {
-            DownloadFlag[i] = 'error';
+            DownloadFlag[i] = false;
           } else {            
             dir.file(list[i] + '.' + ext, data, {binary:true});
             DownloadFlag[i] = true;
@@ -434,31 +493,27 @@ const Download = connect(mapStateToProps)(class Download extends Component {
     }
 
     
-    const id = setInterval( function(){
+    const id = setInterval( function(){ // wait until all paper downloaded
       let count = 0;
-      for (let j = 0; j < DownloadFlag.length; j++) {
-        if( DownloadFlag[j] !== undefined ) {
-          count++;
-        }
+      for (let j = 0; j < DownloadFlag.length; j++) { 
+        if( DownloadFlag[j] !== undefined ) count++;
       }
 
       if( count === DownloadFlag.length ){　
+
         clearInterval(id);
         
-        const result = DownloadFlag.filter(function (x, i, self) {
+        DownloadFlag = DownloadFlag.filter(function (x, i, self) { // remove overwrap in array
               return self.indexOf(x) === i;
           });
 
-        if(result.length === 1 && result[0] === 'error') {
-          document.querySelector('.toolBar').classList.remove('choosing');
-          return false;
-        }
-
-        zip.generateAsync({type:"blob"})
-        .then(function(content) {
-            saveAs(content, "paper.zip");
-        });
-        document.querySelector('.toolBar').classList.remove('choosing');
+        if( DownloadFlag.length !== 1 || DownloadFlag[0] !== false) {
+          zip.generateAsync({type:"blob"}) // download zip
+              .then(function(content) {
+                  saveAs(content, "paper.zip");
+              });
+        } 
+        deactivateToolbar()
       }
     }, 1000);
 
