@@ -342,7 +342,7 @@ const Download = connect(mapStateToProps)(class Download extends Component {
       return ext;
     }
 
-    // function jsonToCsv(data, title){
+    // function jsonToCsv(data, paperId){
     //   const d = [{
     //       title: data["glossary"]["title"],
     //       ID: data["glossary"]["GlossDiv"]["GlossList"]["GlossEntry"]["ID"],
@@ -357,7 +357,7 @@ const Download = connect(mapStateToProps)(class Download extends Component {
     //   const csv = TSV.CSV.stringify(d);
     //   return csv;
     // }
-    // function jsonToXlsx(data, title){
+    // function jsonToXlsx(data, paperId){
     //   const XLSX = window.XLSX;
 
     //   const dataId = data["glossary"]["GlossDiv"]["GlossList"]["GlossEntry"]["ID"];
@@ -396,31 +396,52 @@ const Download = connect(mapStateToProps)(class Download extends Component {
     //   var tsv = TSV.stringify(d);
     //   return tsv;
     // }
-    function tomlToXlsx(data, title){
-      // const XLSX = window.XLSX;
+    function tomlToXlsx(data, paperId){
+      const toml = window.toml;
+      const convert = toml.parse(data);
 
-      // const dataId = data["glossary"]["GlossDiv"]["GlossList"]["GlossEntry"]["ID"];
-      // const dataTerm = data["glossary"]["GlossDiv"]["GlossList"]["GlossEntry"]["GlossTerm"];
-      // const wb = XLSX.read("", {type:"array"});
-      // const ws = XLSX.utils.json_to_sheet([
-      //           { A: "S", B: "h", C: "e", D: "e", E: "t", F: "J", G: dataId }
-      //         ], {header: ["A", "B", "C", "D", "E", "F", "G"], skipHeader: true});
-      //         XLSX.utils.sheet_add_json(ws, [
-      //           { A: 1, B: 2 }, { A: 2, B: 3 }, { A: 3, B: dataTerm }
-      //         ], {skipHeader: true, origin: "A2"});
-      //         XLSX.utils.sheet_add_json(ws, [
-      //           { A: 5, B: 6, C: 7 }, { A: 6, B: 7, C: 8 }, { A: 7, B: 8, C: 9 }
-      //         ], {skipHeader: true, origin: { r: 1, c: 4 }, header: [ "A", "B", "C" ]});
-      //         XLSX.utils.sheet_add_json(ws, [
-      //           { A: 4, B: 5, C: 6, D: 7, E: 8, F: 9, G: 0 }
-      //         ], {header: ["A", "B", "C", "D", "E", "F", "G"], skipHeader: true, origin: -1});
+      const XLSX = window.XLSX;
+      const dataId = "xxx";
+      const dataTerm = "yyy";
+      const wb = XLSX.read("", {type:"array"});
+      const ws = XLSX.utils.json_to_sheet([
+                { A: 'Relation', 
+                  B: 'Dir', 
+                  C: 'Span1 text', 
+                  D: 'Span1 label', 
+                  E: 'Span2 text', 
+                  F: 'Span2 label', 
+                  G: 'Reference' }
+              ], {header: ["A", "B", "C", "D", "E", "F", "G"], skipHeader: true});
+      let i = 2;
+      for (let key in convert) {
+          if (convert.hasOwnProperty(key)) {
+
+              if ( convert[key]['type'] === 'relation' || convert[key]['type'] === undefined ) {
+                const id1 = Number(convert[key]['ids'][0]);
+                const id2 = Number(convert[key]['ids'][1]);
+                const origin = "A" + i;
+                XLSX.utils.sheet_add_json(ws, [
+                  { A: convert[key]['label'], 
+                    B: convert[key]['dir'], 
+                    C: convert[id1]['text'], 
+                    D: convert[id1]['label'], 
+                    E: convert[id2]['text'], 
+                    F: convert[id2]['label'], 
+                    G: paperId }
+                ],{skipHeader: true, origin: origin});
+                
+                i++;
+              }
+          }
+      }
       
-      // const sheetTitle = data["glossary"]["title"];
-      // wb.SheetNames.push(sheetTitle);
-      // wb.Sheets[sheetTitle] = ws;
-      // wb.SheetNames.shift();
+      const sheetTitle = paperId;
+      wb.SheetNames.push(sheetTitle);
+      wb.Sheets[sheetTitle] = ws;
+      wb.SheetNames.shift();
       
-      // return XLSX.write(wb, { bookType:'xlsx', bookSST:false, type:'array' });
+      return XLSX.write(wb, { bookType:'xlsx', bookSST:false, type:'array' });
     }
     function tomlToTsv(data, paperId){
       const toml = window.toml;
