@@ -429,18 +429,17 @@ const Download = connect(mapStateToProps)(class Download extends Component {
       for (let key in convert) {
           if (convert.hasOwnProperty(key)) {
 
-              if ( convert[key]['type'] === 'relation' ) {
+              if ( convert[key]['type'] === 'relation' || convert[key]['type'] === undefined ) {
                 const id1 = Number(convert[key]['ids'][0]);
                 const id2 = Number(convert[key]['ids'][1]);
-                const obj = {
-                  'Relation': convert[key]['label'],
-                  'Dir': convert[key]['dir'],
-                  'Span1 text': convert[id1]['text'],
-                  'Span1 label': convert[id1]['label'],
-                  'Span2 text': convert[id2]['text'],
-                  'Span2 label': convert[id2]['label'],
-                  'Reference': paperId,
-                };
+                const obj = {};
+                      obj['Relation'] = convert[key]['label'];
+                      obj['Dir'] = convert[key]['dir'];
+                      obj['Span1 text'] = convert[id1]['text'];
+                      obj['Span1 label'] = convert[id1]['label'];
+                      obj['Span2 text'] = convert[id2]['text'];
+                      obj['Span2 label'] = convert[id2]['label'];
+                      obj['Reference'] = paperId;
                 d.push(obj);
               }
               
