@@ -449,24 +449,23 @@ const Download = connect(mapStateToProps)(class Download extends Component {
       return tsv;
     }
 
-    // const apiPath = '/api/documents/';
-    const apiPath = '/images/';
+    const apiPath = '/api/documents/';
+
     const ext = getExtention(e);
     if( ext == 'head' ) return false;
 
     const list = getCheckedList();
-    if ( list.length === 0 ) { 
-      return false; 
-    } else { 
-      cancelAllChecked(); 
-    }
+    if ( list.length === 0 ) return false; 
+
+
+    cancelAllChecked();
 
     
     let DownloadFlag = new Array(list.length);
 
     for (let i = 0; i < list.length; i++) {
 
-      const url = apiPath + /*list[i] + '/' +*/ list[i] + '.' + ( ( ext === 'xlsx' || ext === 'tsv' ) ? 'anno' : ext ) ;
+      const url = apiPath + list[i] + '/' + list[i] + '.' + ( ( ext === 'xlsx' || ext === 'tsv' ) ? 'anno' : ext ) ;
 
       if ( ext === 'xlsx' || ext === 'tsv' ) {
           window.jQuery.ajax({ type: 'GET', url: url, dataType: 'text'})
