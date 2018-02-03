@@ -591,8 +591,8 @@ const Download = connect(mapStateToProps)(class Download extends Component {
           <li onClick={this.handleClick.bind(this)} className='pdf'><b>・</b>pdf</li>
           <li onClick={this.handleClick.bind(this)} className='xml'><b>・</b>xml</li>
           <li onClick={this.handleClick.bind(this)} className='pdftxt'><b>・</b>pdf.txt</li>
-          <li onClick={this.handleClick.bind(this)} className='annoxlsx'><b>・</b>Anno (.xlsx)</li>
-          <li onClick={this.handleClick.bind(this)} className='annotsv'><b>・</b>Anno (.tsv)</li>
+          <li onClick={this.handleClick.bind(this)} className='annoxlsx'><b>・</b>anno (.xlsx)</li>
+          <li onClick={this.handleClick.bind(this)} className='annotsv'><b>・</b>anno (.tsv)</li>
         </ul>
       </div>
     );
