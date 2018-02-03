@@ -410,7 +410,7 @@ const Download = connect(mapStateToProps)(class Download extends Component {
                 { A: 'Relation', 
                   B: 'Dir', 
                   C: 'Text1', 
-                  D: 'Label', 
+                  D: 'Label1', 
                   E: 'Text2', 
                   F: 'Label2', 
                   G: 'Reference' }
