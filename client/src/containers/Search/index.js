@@ -308,13 +308,19 @@ const Download = connect(mapStateToProps)(class Download extends Component {
     function deactivateToolbar() {
       document.querySelector('.toolBar').classList.remove('choosing');
     }
-    function cancelAllChecked() {
+
+    function cancelChecked() {
       const filterChooseAll = document.querySelector('#checkAll');
       filterChooseAll.checked = false;
       const target = document.querySelectorAll('.paper input:checked');
       [].forEach.call(target, function(e) {
         e.checked = false;
       });
+    }
+
+    function uniqueArray(array) {
+      const uniqueArray = array.filter(function (x, i, self) { return self.indexOf(x) === i; });
+      return uniqueArray;
     }
 
     function getCheckedList() {
@@ -357,9 +363,9 @@ const Download = connect(mapStateToProps)(class Download extends Component {
     //   const csv = TSV.CSV.stringify(d);
     //   return csv;
     // }
+
     // function jsonToXlsx(data, paperId){
     //   const XLSX = window.XLSX;
-
     //   const dataId = data["glossary"]["GlossDiv"]["GlossList"]["GlossEntry"]["ID"];
     //   const dataTerm = data["glossary"]["GlossDiv"]["GlossList"]["GlossEntry"]["GlossTerm"];
     //   const wb = XLSX.read("", {type:"array"});
@@ -375,14 +381,13 @@ const Download = connect(mapStateToProps)(class Download extends Component {
     //           XLSX.utils.sheet_add_json(ws, [
     //             { A: 4, B: 5, C: 6, D: 7, E: 8, F: 9, G: 0 }
     //           ], {header: ["A", "B", "C", "D", "E", "F", "G"], skipHeader: true, origin: -1});
-      
     //   const sheetTitle = data["glossary"]["title"];
     //   wb.SheetNames.push(sheetTitle);
     //   wb.Sheets[sheetTitle] = ws;
     //   wb.SheetNames.shift();
-      
     //   return XLSX.write(wb, { bookType:'xlsx', bookSST:false, type:'array' });
     // }
+
     // function jsonToTsv(data){
     //   const d = [{
     //       title: data["glossary"]["title"],
@@ -396,13 +401,10 @@ const Download = connect(mapStateToProps)(class Download extends Component {
     //   var tsv = TSV.stringify(d);
     //   return tsv;
     // }
-    function tomlToXlsx(data, paperId){
-      const toml = window.toml;
-      const convert = toml.parse(data);
 
+    function tomlToXlsx(data){
+      const toml = window.toml;
       const XLSX = window.XLSX;
-      const dataId = "xxx";
-      const dataTerm = "yyy";
       const wb = XLSX.read("", {type:"array"});
       const ws = XLSX.utils.json_to_sheet([
                 { A: 'Relation', 
@@ -413,61 +415,98 @@ const Download = connect(mapStateToProps)(class Download extends Component {
                   F: 'Span2 label', 
                   G: 'Reference' }
               ], {header: ["A", "B", "C", "D", "E", "F", "G"], skipHeader: true});
-      let i = 2;
-      for (let key in convert) {
-          if (convert.hasOwnProperty(key)) {
 
-              if ( convert[key]['type'] === 'relation' || convert[key]['type'] === undefined ) {
-                const id1 = Number(convert[key]['ids'][0]);
-                const id2 = Number(convert[key]['ids'][1]);
-                const origin = "A" + i;
-                XLSX.utils.sheet_add_json(ws, [
-                  { A: convert[key]['label'], 
-                    B: convert[key]['dir'], 
-                    C: convert[id1]['text'], 
-                    D: convert[id1]['label'], 
-                    E: convert[id2]['text'], 
-                    F: convert[id2]['label'], 
-                    G: paperId }
+      let row = 2;
+      for (let i = 0; i < data.length; i++) {
+
+        let convert = toml.parse(data[i]['data']);
+
+        for (let key in convert) {
+          if (convert.hasOwnProperty(key)) {
+            if ( convert[key]['type'] === 'relation' || convert[key]['type'] === undefined ) {
+              const id1 = Number(convert[key]['ids'][0]);
+              const id2 = Number(convert[key]['ids'][1]);
+              const origin = "A" + row;
+              XLSX.utils.sheet_add_json(ws, [
+                { A: convert[key]['label'], 
+                  B: convert[key]['dir'], 
+                  C: convert[id1]['text'], 
+                  D: convert[id1]['label'], 
+                  E: convert[id2]['text'], 
+                  F: convert[id2]['label'], 
+                  G: data[i]['id'] }
                 ],{skipHeader: true, origin: origin});
-                
-                i++;
-              }
-          }
+              
+              row++;
+            }
+          } 
+        }
       }
       
-      const sheetTitle = paperId;
+      const sheetTitle = 'Paper';
       wb.SheetNames.push(sheetTitle);
       wb.Sheets[sheetTitle] = ws;
       wb.SheetNames.shift();
       
       return XLSX.write(wb, { bookType:'xlsx', bookSST:false, type:'array' });
     }
-    function tomlToTsv(data, paperId){
-      const toml = window.toml;
-      const convert = toml.parse(data);
-      const d = [];
-      for (let key in convert) {
-          if (convert.hasOwnProperty(key)) {
 
-              if ( convert[key]['type'] === 'relation' || convert[key]['type'] === undefined ) {
-                const id1 = Number(convert[key]['ids'][0]);
-                const id2 = Number(convert[key]['ids'][1]);
-                const obj = {};
-                      obj['Relation'] = convert[key]['label'];
-                      obj['Dir'] = convert[key]['dir'];
-                      obj['Span1 text'] = convert[id1]['text'];
-                      obj['Span1 label'] = convert[id1]['label'];
-                      obj['Span2 text'] = convert[id2]['text'];
-                      obj['Span2 label'] = convert[id2]['label'];
-                      obj['Reference'] = paperId;
-                d.push(obj);
-              }
-              
+    function tomlToTsv(data){
+      const toml = window.toml;
+      // const convert = toml.parse(data);
+      const d = [];
+
+      for (let i = 0; i < data.length; i++) {
+
+        let convert = toml.parse(data[i]['data']);
+
+        for (let key in convert) {
+          if (convert.hasOwnProperty(key)) {
+            if ( convert[key]['type'] === 'relation' || convert[key]['type'] === undefined ) {
+              const id1 = Number(convert[key]['ids'][0]);
+              const id2 = Number(convert[key]['ids'][1]);
+              const obj = {};
+                    obj['Relation'] = convert[key]['label'];
+                    obj['Dir'] = convert[key]['dir'];
+                    obj['Span1 text'] = convert[id1]['text'];
+                    obj['Span1 label'] = convert[id1]['label'];
+                    obj['Span2 text'] = convert[id2]['text'];
+                    obj['Span2 label'] = convert[id2]['label'];
+                    obj['Reference'] = data[i]['id'];
+              d.push(obj);
+            }
           }
+        }
+
       }
+
       const tsv = TSV.stringify(d);
       return tsv;
+    }
+
+    function downloadZip(){
+      zip.generateAsync({type:"blob"})
+          .then(function(content) {
+              saveAs(content, "paper.zip");
+          });
+    }
+
+    function downloadBlob(data, ext){
+
+      let type;
+      switch (ext) {
+        case 'xlsx' :
+          type = "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet";
+          break;
+        case 'tsv' :
+          type = "text/plain;charset=utf-8";
+          break;
+        default :
+          type = "text/plain;charset=utf-8";
+      }
+
+      const blob = new Blob([data], {type: type});
+      saveAs(blob, 'paper.' + ext);
     }
 
     const apiPath = '/api/documents/';
@@ -479,7 +518,7 @@ const Download = connect(mapStateToProps)(class Download extends Component {
     if ( list.length === 0 ) return false; 
 
 
-    cancelAllChecked();
+    cancelChecked();
 
     
     let DownloadFlag = new Array(list.length);
@@ -491,10 +530,9 @@ const Download = connect(mapStateToProps)(class Download extends Component {
       if ( ext === 'xlsx' || ext === 'tsv' ) {
           window.jQuery.ajax({ type: 'GET', url: url, dataType: 'text'})
           .done(function(data) {
-            // const convert = ( ext === 'xlsx' ) ? jsonToXlsx(data, list[i]) : jsonToTsv(data); // for JSON
-            const convert = ( ext === 'xlsx' ) ? tomlToXlsx(data, list[i]) : tomlToTsv(data, list[i]); // hor TOML
-            dir.file(list[i] + '.' + ext, convert, {binary:true} );
-            DownloadFlag[i] = true;
+            DownloadFlag[i] = {};
+            DownloadFlag[i]['data'] = data;
+            DownloadFlag[i]['id'] = list[i];
           })
           .fail(function() {
             DownloadFlag[i] = false;
@@ -514,6 +552,7 @@ const Download = connect(mapStateToProps)(class Download extends Component {
     
     const id = setInterval( function(){ // wait until all paper downloaded
       let count = 0;
+
       for (let j = 0; j < DownloadFlag.length; j++) { 
         if( DownloadFlag[j] !== undefined ) count++;
       }
@@ -521,18 +560,20 @@ const Download = connect(mapStateToProps)(class Download extends Component {
       if( count === DownloadFlag.length ){　
 
         clearInterval(id);
-        
-        DownloadFlag = DownloadFlag.filter(function (x, i, self) { // remove overwrap in array
-              return self.indexOf(x) === i;
-          });
+                
+        DownloadFlag = uniqueArray(DownloadFlag);
 
         if( DownloadFlag.length !== 1 || DownloadFlag[0] !== false) {
-          zip.generateAsync({type:"blob"}) // download zip
-              .then(function(content) {
-                  saveAs(content, "paper.zip");
-              });
-        } 
-        deactivateToolbar()
+          if ( ext === 'xlsx' || ext === 'tsv' ) {
+            // const d = ( ext === 'xlsx' ) ? jsonToXlsx(data, list[i]) : jsonToTsv(data); // for JSON
+            const d = ( ext === 'xlsx' ) ? tomlToXlsx(DownloadFlag) : tomlToTsv(DownloadFlag); // for TOML
+            downloadBlob(d, ext);
+          } else {
+            downloadZip();  
+          }
+        }
+
+        deactivateToolbar();
       }
     }, 1000);
 
