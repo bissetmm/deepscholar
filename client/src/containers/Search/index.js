@@ -409,10 +409,10 @@ const Download = connect(mapStateToProps)(class Download extends Component {
       const ws = XLSX.utils.json_to_sheet([
                 { A: 'Relation', 
                   B: 'Dir', 
-                  C: 'Span1 text', 
-                  D: 'Span1 label', 
-                  E: 'Span2 text', 
-                  F: 'Span2 label', 
+                  C: 'Text1', 
+                  D: 'Label', 
+                  E: 'Text2', 
+                  F: 'Label2', 
                   G: 'Reference' }
               ], {header: ["A", "B", "C", "D", "E", "F", "G"], skipHeader: true});
 
@@ -468,10 +468,10 @@ const Download = connect(mapStateToProps)(class Download extends Component {
               const obj = {};
                     obj['Relation'] = convert[key]['label'];
                     obj['Dir'] = convert[key]['dir'];
-                    obj['Span1 text'] = convert[id1]['text'];
-                    obj['Span1 label'] = convert[id1]['label'];
-                    obj['Span2 text'] = convert[id2]['text'];
-                    obj['Span2 label'] = convert[id2]['label'];
+                    obj['Text1'] = convert[id1]['text'];
+                    obj['Label1'] = convert[id1]['label'];
+                    obj['Text2'] = convert[id2]['text'];
+                    obj['Label2'] = convert[id2]['label'];
                     obj['Reference'] = data[i]['id'];
               d.push(obj);
             }
