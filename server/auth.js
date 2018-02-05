@@ -2,7 +2,7 @@ const express = require("express");
 const passport = require("passport");
 const passportJwt = require("passport-jwt");
 const GithubStrategy = require("passport-github").Strategy;
-const DB = require("./db");
+const User = require("./models/user");
 
 const jwtOptions = {
   jwtFromRequest: passportJwt.ExtractJwt.fromAuthHeaderAsBearerToken(),
@@ -25,8 +25,7 @@ passport.use('github', new GithubStrategy({
     callbackURL: `${process.env.DEEP_SCHOLAR_URL}/api/auth/github/callback`
   },
   (accessToken, refreshToken, profile, done) => {
-    DB.findOrCreateUser(profile).then((user) => {
-      console.log(user);
+    User.findOrCreate(profile).then((user) => {
       done(null, user);
     });
   }
