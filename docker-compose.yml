@@ -1,7 +1,6 @@
 version: '3'
 services:
   deepscholar.front:
-    container_name: deepscholar.front
     image: nginx
     volumes:
       - ./front/etc/nginx/conf.d/default.conf:/etc/nginx/conf.d/default.conf
@@ -11,7 +10,6 @@ services:
     ports:
       - "${DS_FRONT_PORT}:80"
   deepscholar.client:
-    container_name: deepscholar.client
     volumes:
       - ./client:/root/client
       - /root/client/node_modules/
@@ -25,7 +23,6 @@ services:
       - "${DS_CLIENT_PORT}:3000"
     command: bash -c 'npm i && npm start'
   deepscholar.server:
-    container_name: deepscholar.server
     volumes:
       - ./server:/root/server
       - ${DS_DATA_DIR}:/root/server/documents
@@ -49,7 +46,6 @@ services:
       OAUTH_GITHUB_CLIENT_SECRET=${OAUTH_GITHUB_CLIENT_SECRET}
       npm start"
   deepscholar.database:
-    container_name: deepscholar.database
     volumes:
       - dbdata:/data/db
     image: mongo:3.6
@@ -58,7 +54,6 @@ services:
     ports:
       - "${DS_DB_PORT}:27017"
   deepscholar.elasticsearch:
-    container_name: deepscholar.elasticsearch
     image: docker.elastic.co/elasticsearch/elasticsearch:5.4.3
     environment:
       - xpack.security.enabled=false
@@ -69,7 +64,6 @@ services:
     ports:
       - "${DS_ES_PORT}:9200"
   deepscholar.kibana:
-    container_name: deepscholar.kibana
     image: docker.elastic.co/kibana/kibana:5.4.3
     environment:
       - ELASTICSEARCH_URL=http://deepscholar.elasticsearch:9200
@@ -78,7 +72,6 @@ services:
     ports:
       - "${DS_KIBANA_PORT}:5601"
   deepscholar.elasticsearch-head:
-    container_name: deepscholar.elasticsearch-head
     image: mobz/elasticsearch-head:5
     depends_on:
       - deepscholar.elasticsearch
