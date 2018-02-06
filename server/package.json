@@ -7,6 +7,7 @@
   "dependencies": {
     "body-parser": "^1.17.2",
     "consolidate": "^0.15.0",
+    "elasticsearch": "^14.1.0",
     "express": "^4.15.3",
     "jsonwebtoken": "^8.1.0",
     "mongodb": "^3.0.2",

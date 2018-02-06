@@ -11,12 +11,14 @@ const jwtOptions = {
   audience: process.env.DEEP_SCHOLAR_TOKEN_AUDIENCE
 };
 passport.use(new passportJwt.Strategy(jwtOptions, (payload, done) => {
-  const user = payload.sub;
-  if (user) {
-    return done(null, user, payload);
-  }
+  const sub = JSON.parse(payload.sub);
+  return User.findByObjectId(sub.id).then((user) => {
+    if (user) {
+      return done(null, user, payload);
+    }
 
-  return done();
+    return done();
+  });
 }));
 
 passport.use('github', new GithubStrategy({
@@ -33,12 +35,12 @@ passport.use('github', new GithubStrategy({
 
 const jwt = require("jsonwebtoken");
 
-function generateAccessToken(type, username) {
+function generateAccessToken(type, id) {
   const expiresIn = "1 hour";
   const issuer = process.env.DEEP_SCHOLAR_TOKEN_ISSUER;
   const audience = process.env.DEEP_SCHOLAR_TOKEN_AUDIENCE;
   const secret = process.env.DEEP_SCHOLAR_TOKEN_SECRET;
-  const subject = {type, username}.toString();
+  const subject = JSON.stringify({id});
 
   const token = jwt.sign({}, secret, {
     expiresIn,

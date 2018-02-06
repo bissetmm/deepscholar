@@ -828,7 +828,11 @@ class Search extends Component {
         },
       }
     });
-    Api.searchPapers({body}).then((json) => {
+
+    const {user} = this.props.state;
+    const token = user ? user.token : null;
+
+    Api.searchPapers({body}, token).then((json) => {
       this.props.dispatch(receivePapers(json));
     });
   }

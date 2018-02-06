@@ -1,0 +1,24 @@
+{
+  "mappings": {
+    "lang": {
+      "properties": {
+        "id": {
+          "type": "text",
+          "fielddata": true
+        },
+        "query": {
+          "type": "text",
+          "fields": {
+            "keyword": {
+              "type": "keyword"
+            }
+          },
+          "fielddata": true
+        },
+        "created_at": {
+          "type": "date"
+        }
+      }
+    }
+  }
+}

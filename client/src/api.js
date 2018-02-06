@@ -11,9 +11,13 @@ class Api {
       .catch(console.log);
   }
 
-  static search(indexName, options) {
+  static search(indexName, options, token) {
     const headers = new Headers();
     headers.append("Content-Type", "application/json");
+
+    if (token) {
+      headers.append("authorization", `bearer ${token}`);
+    }
 
     const o = Object.assign({
       accept: "application/json",
@@ -24,8 +28,8 @@ class Api {
     return Api.fetchApi(indexName, o);
   }
 
-  static searchPapers(options) {
-    return Api.search("papers", options);
+  static searchPapers(options, token) {
+    return Api.search("papers", options, token);
   }
 
   static searchFigs(options) {

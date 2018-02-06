@@ -1,11 +1,27 @@
 const DB = require("../db");
+const {ObjectId} = require("mongodb");
 
 module.exports = class User {
   static collection() {
     return DB.connection().collection("users");
   }
 
-  static find(id) {
+  static findByObjectId(id) {
+    return new Promise((resolve, reject) => {
+      const query = {
+        "_id": ObjectId(id)
+      };
+      return this.collection().findOne(query, (error, result) => {
+        if (error) {
+          reject(error);
+        }
+
+        resolve(result);
+      });
+    });
+  }
+
+  static findByProfileId(id) {
     return new Promise((resolve, reject) => {
       const query = {
         "profile.id": id
@@ -35,7 +51,7 @@ module.exports = class User {
   static findOrCreate(profile) {
     const id = profile.id;
 
-    return this.find(id).then((user) => {
+    return this.findByProfileId(id).then((user) => {
       if (user) {
         return user;
       }
