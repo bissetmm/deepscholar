@@ -109,7 +109,7 @@ const FilterLabels = connect(mapStateToProps)(class FilterLabels extends Compone
     const {labelList} = this.props.state;
     const labels = Object.keys(labelList).map(key => {
       const labelName = key;
-      return <span key={key} className={key + ' ' + labelList[labelName][0]}></span>
+      return <span key={key} className={key + ' ' + labelList[labelName][1]}></span>
     })
     
     return (

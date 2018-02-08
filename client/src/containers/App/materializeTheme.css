@@ -133,7 +133,6 @@ input.alpha[type=search]:not(.browser-default):focus {
 	height: 40px; 
 }
 .tabs.tabs--alpha .tab {
-	/*padding: 0;*/
 	height: 40px; 	
 }
 .tabs.tabs--alpha .tab a{
@@ -155,9 +154,6 @@ input.alpha[type=search]:not(.browser-default):focus {
 	border: 1px solid transparent;
 	border-bottom: 1px solid #e1e4e8;
 	border-radius: 2px 2px 0 0;
-
-	/*-webkit-transition: border-bottom .5s ease;*/
-	/*transition: border-bottom .5s ease; */
 }
 .tabs.tabs--alpha .tab a.active{
 	background-color: #fff;
@@ -175,37 +171,20 @@ input.alpha[type=search]:not(.browser-default):focus {
 
 	background: transparent;
 	
-
 	border-radius: 9px;
-	/*-webkit-transition: background-color 0.5s;*/
-	/*transition: background-color 0.5s; */
 }
 .tabs.tabs--alpha .tab a.active:before{
 	background: #1e50a2;
 }
 .tabs.tabs--alpha .tab a .txt{
 	display: inline-block;
-	/*position: absolute;*/
-	/*left: calc(50% + 8px);*/
-
 	font-size: 1rem;
-
-	/*-webkit-transform: translateX(-50%);*/
-	/*transform: translateX(-50%); */
 }
 .tabs.tabs--alpha .tab a .txt .material-icons{
-	/*display: block;*/
-	/*position: absolute;*/
-	/*left: -30px;*/
-	/*top: 50%;*/
-
 	font-size: 17px;
 	line-height: 1;
 	vertical-align: text-bottom;
     padding-right: 4px;
-	
-	/*-webkit-transform: translate(0, -50%);*/
-	/*transform: translate(0, -50%); */
 }
 .tabs.tabs--alpha .indicator {
 	display: none; 
@@ -214,8 +193,6 @@ input.alpha[type=search]:not(.browser-default):focus {
 @media only screen and (max-width: 993px) {
 	.tabs.tabs--alpha .tab a .txt{
 		position: relative;
-    	/*left: 50%;*/
-    	/*width: 100%;*/
 	}
 	.tabs.tabs--alpha .tab a .txt .material-icons {
 		display: inline;
@@ -223,7 +200,6 @@ input.alpha[type=search]:not(.browser-default):focus {
 	   	left: auto; 
 	    vertical-align: text-bottom;
 	    margin-right: 4px;
-	    
 	}
 }
 @media only screen and (max-width: 600px) { 
@@ -254,3 +230,91 @@ input.alpha[type=search]:not(.browser-default):focus {
 	border-radius: 1px;
 	margin: 0 4px;
 }
+
+
+/*********************
+**  Dropdown
+**********************/
+.dropdown.dropdown--alpha {
+	position: relative;
+	text-align: right;
+	padding-right: 16px;
+	z-index: 99;
+}
+.dropdown.dropdown--alpha *{
+	position: relative;
+	z-index: 99;
+}
+.dropdown.dropdown--alpha .dropdown-button {
+	max-width: 90px;
+    color: #0a1933;
+    font-weight: 300;
+    text-transform: initial;
+    background-color: transparent !important;
+    line-height: 36px;
+}
+.dropdown.dropdown--alpha .dropdown-button i {
+	line-height: 36px;
+    vertical-align: top;
+}
+.dropdown.dropdown--alpha .dropdown-content {
+	min-width: 160px;
+	border: 1px solid #e1e4e8;
+}
+.dropdown.dropdown--alpha .dropdown-content li {
+	display: block;
+	padding: 0 30px !important;
+	height: 36px;
+	min-height: auto;
+    line-height: 36px;
+    border-bottom: 1px solid #e1e4e8;
+}
+.dropdown.dropdown--alpha .dropdown-content li:last-child {
+	border-bottom: none;
+}
+.dropdown.dropdown--alpha .dropdown-content li i {
+	position: absolute;
+    left: 6px;
+    top: 6px;
+    font-size: 19px;
+}
+.dropdown.dropdown--alpha .dropdown-content li.head {
+	background-color: #f6f8fa!important;
+    cursor: default;
+    font-weight: 500;
+    font-size: 0.9em;
+    padding: 0 14px !important;
+}
+.dropdown.dropdown--alpha .dropdown-content li.head i {
+	left: auto;
+    right: 5px;
+    top: 9px;
+    font-size: 18px;
+    cursor: pointer;
+}
+.dropdown.dropdown--alpha .dropdown-content li:hover, 
+.dropdown.dropdown--alpha .dropdown-content li.active, 
+.dropdown.dropdown--alpha .dropdown-content li.selected {
+    background-color: #f6f8fa;
+}
+.dropdown.dropdown--alpha .dropdown-content li.foot{
+	height: 35px;
+    padding-left: 51px !important;
+   	border-bottom: none;
+}
+.dropdown.dropdown--alpha .dropdown-content li.foot i {
+	top: 9px;
+    left: 30px;
+    font-size: 17px;
+    color: #1e50a2;
+}
+.dropdown.dropdown--alpha .dropdown-button.active:after {
+	content: "";
+	position: fixed;
+    top: 0;
+    left: 0;
+    height: 100vh;
+    width: 100vw;
+    cursor: default;
+}
+

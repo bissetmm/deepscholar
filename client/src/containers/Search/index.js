@@ -6,7 +6,7 @@ import {RangeSliderHistogram} from 'searchkit';
 import {Papers, Figures, Tables} from '../../components/index.js';
 import Api from '../../api';
 import { changeQuery, changePage, requestPapers, receivePapers, requestFigures, receiveFigures, requestTables, receiveTables, deleteScrollY, changeYears
-  , changeBooktitle, updateLabeledPaper, updateLabelFilter } from '../../module';
+  , changeBooktitle, updateLabeledPaper, updateLabelFilter, addLabelFilter, removeLabelFilter, renameLabelFilter, updateLabelColor } from '../../module';
 import './style.css';
 import 'searchkit/release/theme.css';
 import Detail from "../Detail";
@@ -98,6 +98,112 @@ const PublicationFilter = connect(mapStateToProps)(class PublicationFilter exten
   }
 });
 
+const FilterEdit = connect(mapStateToProps)(class FilterEdit extends Component {
+
+  handleClickColor(e) {
+    const li = e.target.parentNode;
+    li.classList.add('editColor');
+    e.target.focus();
+  }
+  handleClickcolorListMusk(e) {
+    const li = e.target.parentNode;
+    li.classList.remove('editColor');
+  }
+  handleClickChangeColor(e) {
+    const classList = e.target.classList;
+    if( classList.contains('cell') && !classList.contains('active') ) {
+      const labelKey = e.target.dataset.key;
+      const color = e.target.dataset.color;
+      this.props.dispatch( updateLabelColor(labelKey, color) );
+      e.target.parentNode.parentNode.classList.remove('editColor');
+    }    
+  }
+  handleClickAddLabel(e) {
+    this.props.dispatch( addLabelFilter() );
+  }
+
+  handleClickRemoveLabel(e) {
+    const labelName = e.target.parentNode.dataset.name;
+    this.props.dispatch( removeLabelFilter(labelName) );
+  }
+
+  handleClickCreate(e) {
+    const li = e.target.parentNode;
+    const input = li.childNodes[4];
+    li.classList.add('edit');
+    input.focus();
+    input.setSelectionRange(input.value.length, input.value.length);
+    input.value = input.dataset.name;
+  }
+
+  createDone(e){
+    const li = e.target.parentNode;
+    const input = li.childNodes[4];
+    li.classList.remove('edit');
+    input.blur();
+    const labelKey = input.dataset.key; 
+    const oldName = input.dataset.name;
+    const newName = input.value;
+    if( newName == '' || newName == oldName ) {
+      return false
+    } else {
+      this.props.dispatch( renameLabelFilter(labelKey, newName) );
+    }
+  }
+  handleBlurInput(e) {
+    this.createDone(e);
+  }
+
+  handleKeyPress(e) {
+    if (e.key === 'Enter') this.createDone(e);
+  }
+
+  render() {
+    const {labelColor, labelList} = this.props.state;
+
+    const lists = Object.keys(labelList).map(key => {
+      const labelKey = key;
+      const labelName = labelList[key][0];
+      const color = labelList[key][1];
+      return ( 
+        <li key={labelKey} className={labelKey} data-name={labelKey} onClick={this.props.onClickList}>
+          <span className={'color ' + color} data-color={color} onClick={this.handleClickColor.bind(this)}></span>
+          <span className="labelName">{labelName}</span>
+          <ul className="colorList" onClick={this.handleClickChangeColor.bind(this)}>
+            { labelColor.map(function(e, i) {
+              const className = 'cell ' + e + ( ( e === color  ) ? ' active' : '' );
+              return ( <li key={i} data-key={labelKey} data-color={e} className={className}></li> )
+            })}
+          </ul>
+          <div className="colorListMusk" onClick={this.handleClickcolorListMusk.bind(this)}></div>
+          <input type="text" data-key={labelKey} data-name={labelName} onBlur={this.handleBlurInput.bind(this)} onKeyPress={this.handleKeyPress.bind(this)}/>
+          <i className="material-icons create" onClick={this.handleClickCreate.bind(this)}>create</i>
+          <i className="material-icons delete" onClick={this.handleClickRemoveLabel.bind(this)}>delete</i>
+        </li>
+      )
+    });
+
+    return (
+      <div id="filterEditModal" className="filterEditModal modal modal-fixed-footer">
+        <div className="modal-content">
+          <h4>Edit label</h4>
+          <div>
+            <ul>
+              {lists}
+            </ul>
+            <div className="right-align">
+              <span className="addLabel" onClick={this.handleClickAddLabel.bind(this)}><i className="material-icons add">add</i>Add label</span>
+            </div>
+          </div>
+        </div>
+        <div className="modal-footer">
+          <a className="modal-action modal-close waves-effect waves-green btn-flat ">OK</a>
+        </div>
+      </div>
+    )
+  }
+});
+
 const FilterListCommon = connect(mapStateToProps)(class FilterListCommon extends Component {
 
   render() {
@@ -107,10 +213,11 @@ const FilterListCommon = connect(mapStateToProps)(class FilterListCommon extends
     const headTxt = name == 'chooseFilter' ? 'Apply labels' : 'Filter by label';
 
     const lists = Object.keys(labelList).map(key => {
-      const labelName = key;
-      const color = labelList[labelName][0];
+      const labelKey = key;
+      const labelName = labelList[key][0];
+      const color = labelList[key][1];
       return ( 
-        <li key={labelName} className={labelName} data-name={labelName} onClick={this.props.onClickList}>
+        <li key={labelKey} className={labelKey} data-name={labelKey} onClick={this.props.onClickList}>
           <i className="material-icons check">check</i>
           <i className="material-icons remove">remove</i>
           <span className={'color ' + color}></span>{labelName}
@@ -124,6 +231,7 @@ const FilterListCommon = connect(mapStateToProps)(class FilterListCommon extends
         <ul id={name} className='dropdown-content z-depth-0'>
           <li className='head'>{headTxt}<i className="material-icons close">close</i></li>
           {lists}
+          <li data-target="filterEditModal" className='foot modal-trigger'>Edit label<i className="material-icons create">create</i></li>
         </ul>
       </div>
     )
@@ -208,7 +316,7 @@ const FilterChoose = connect(mapStateToProps)(class FilterChoose extends Compone
     const label = target.dataset.name;
     const chkList = this.getCheckedList();
     const labelList = Object.assign({}, this.props.state.labelList);
-    const newList = labelList[label][1]
+    const newList = labelList[label][2]
                       .concat(chkList) // Marge
                       .filter(function (x,i,self) { return self.indexOf(x) === i; }); // Remove overlap
 
@@ -218,7 +326,7 @@ const FilterChoose = connect(mapStateToProps)(class FilterChoose extends Compone
   removeLabel(target) {
     const label = target.dataset.name;
     const chkList = this.getCheckedList();
-    const oldList = this.props.state.labelList[label][1].slice();
+    const oldList = this.props.state.labelList[label][2].slice();
     let newList = [];
     oldList.map(function(val, i) {
       const index = chkList.indexOf(val);
@@ -250,7 +358,7 @@ const FilterChoose = connect(mapStateToProps)(class FilterChoose extends Compone
       let result = 0;
       let count = 0;
       list.map(function(val, i) {
-        if( labelList[labelName][1].includes(list[i]) ) {
+        if( labelList[labelName][2].includes(list[i]) ) {
           result = 1;
           count++;
         }
@@ -276,12 +384,13 @@ const FilterChoose = connect(mapStateToProps)(class FilterChoose extends Compone
     let style = '';
 
     Object.keys(labelList).map(key => {
-      const labelName = key;
-      const color = labelList[labelName][0];
-      const list = labelList[labelName][1];
+      const labelKey = key;
+      const labelName = labelList[labelKey][0];
+      const color = labelList[labelKey][1];
+      const list = labelList[labelKey][2];
       list.map(function(val, i) {
-        style += '.paper' + val + ' h5 .' + key + ' { margin: 0 4px; }';
-        style += '.paper' + val + ' h5 .' + key + ':after { content: "' + key + '"; }';
+        style += '.paper' + val + ' h5 .' + labelKey + ' { margin: 0 4px; }';
+        style += '.paper' + val + ' h5 .' + labelKey + ':after { content: "' + labelName + '"; }';
       })
     })
 
@@ -453,7 +562,6 @@ const Download = connect(mapStateToProps)(class Download extends Component {
 
     function tomlToTsv(data){
       const toml = window.toml;
-      // const convert = toml.parse(data);
       const d = [];
 
       for (let i = 0; i < data.length; i++) {
@@ -660,17 +768,17 @@ class Search extends Component {
     this.search(this.props.state.category);
     window.jQuery('ul.tabs').tabs();
     window.jQuery('.dropdown-button').dropdown();
+    window.jQuery('.modal').modal({ dismissible: false });
   }
 
 
   componentDidUpdate(prevProps) {
     const {category: oldCategory, query: oldQuery, articleTitle: oldArticleTitle, author: oldAuthor, abstract: oldAbstract, gte: oldGte, lte: oldLte, booktitles: oldBooktitles, page: oldPage, labelFilter: oldlabelFilter} = prevProps.state;
     const {category: newCategory, query: newQuery, articleTitle: newArticleTitle, author: newAuthor, abstract: newAbstract, gte: newGte, lte: newLte, booktitles: newBooktitles, page: newPage, labelFilter: newlabelFilter} = this.props.state;
+    
     if (oldCategory !== newCategory || oldQuery !== newQuery || oldArticleTitle !== newArticleTitle || oldAuthor !== newAuthor || oldAbstract !== newAbstract || oldPage !== newPage || oldGte !== newGte || oldLte !== newLte || Array.from(oldBooktitles).join("") !== Array.from(newBooktitles).join("") || oldlabelFilter !== newlabelFilter) {
-
       this.search(newCategory);
     }
-
 
     const locationKey = this.props.location.key;
     if (!this.props.state.scrollYPositions.has(locationKey)) {
@@ -783,7 +891,7 @@ class Search extends Component {
     let filterdList = [];
     labelFilter.map(function(e, i) {
       filterdList = filterdList
-                      .concat(labelList[e][1])
+                      .concat(labelList[e][2])
                       .filter(function (x, i, self) {
                         return self.indexOf(x) === i;
                       });
@@ -1086,6 +1194,7 @@ class Search extends Component {
             <div className="contents col s8 l9">
 
               <ToolBar/>
+              <FilterEdit/>
 
               <div className="row">
 
