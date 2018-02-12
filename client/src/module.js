@@ -5,12 +5,13 @@ const matches = window.location.hash.match(/#\/([a-zA-Z]+).*\?(.+)/);
 const queries = matches ? matches[2] : "";
 const parsed = queryString.parse(queries);
 const category = matches ? matches[1] : null;
+const labelColor = ["red", "blue", "green", "grey", "yellow", "orange", "pink", "purple" ];
 const labelList = {
-                    "label1" : ["red"   , [] ] , // labelName : [color, paperList]
-                    "label2" : ["blue"  , [] ] ,
-                    "label3" : ["green" , [] ] ,
-                    "label4" : ["grey"  , [] ] ,
-                    "label5" : ["yellow", [] ]
+                    "label1" : ["label1", labelColor[0] , [] ] , // labelName : [name, color, paperList]
+                    "label2" : ["label2", labelColor[1] , [] ] ,
+                    "label3" : ["label3", labelColor[2] , [] ] ,
+                    "label4" : ["label4", labelColor[3] , [] ] ,
+                    "label5" : ["label5", labelColor[4] , [] ]
                   };
 const initialState = {
   user: null,
@@ -31,6 +32,7 @@ const initialState = {
   figures: [],
   figuresTotal: 0,
   figuresFetchSize: 10000,
+  labelColor: labelColor,
   labelList: labelList,
   labelFilter: [],
   tables: [],
@@ -172,16 +174,46 @@ export function reducers(state = initialState, action) {
       const newLabelList = Object.assign({}, state.labelList);
       const key = action.label;
       const newPaperList = action.list;
-      newLabelList[key][1] = newPaperList;
+      newLabelList[key][2] = newPaperList;
       return Object.assign({}, state, {
         labelList: newLabelList
+      });
+    case ADD_LABEL_FILTER:
+      const labelColor = state.labelColor;
+      const newLabelListForAdd = Object.assign({}, state.labelList);
+      const length = Object.keys(newLabelListForAdd).length;
+      let no = length + 1;
+      while( newLabelListForAdd['label'+no] ){
+        no++;
+      }
+      newLabelListForAdd['label'+no] = ['New label', labelColor[length%8] , [] ];
+      return Object.assign({}, state, {
+        labelList: newLabelListForAdd
+      });
+    case REMOVE_LABEL_FILTER:
+      const newLabelListForRemove = Object.assign({}, state.labelList);
+      delete newLabelListForRemove[action.labelName];
+      return Object.assign({}, state, {
+        labelList: newLabelListForRemove
+      });
+    case RENAME_LABEL_FILTER:
+      const renamedLabelFilter = Object.assign({}, state.labelList);
+      renamedLabelFilter[action.labelKey][0] = action.newName;;
+      return Object.assign({}, state, {
+        labelList: renamedLabelFilter
+      });
+    case UPDATE_LABEL_COLOR:
+      const coloredLabelFilter = Object.assign({}, state.labelList);
+      coloredLabelFilter[action.labelKey][1] = action.color;
+      return Object.assign({}, state, {
+        labelList: coloredLabelFilter
       });
     case UPDATE_LABEL_FILTER:
       const LabelFilter = state.labelFilter;
       const newLabelFilter = action.list;
       return Object.assign({}, state, {
         labelFilter: newLabelFilter
-      });
+      });    
     default:
       return state;
   }
@@ -379,6 +411,40 @@ export function updateLabeledPaper(label, list) {
     type: UPDATE_LABELED_PAPER,
     label: label,
     list: list,
+  };
+}
+
+const ADD_LABEL_FILTER = "ADD_LABEL_FILTER";
+export function addLabelFilter() {
+  return {
+    type: ADD_LABEL_FILTER,
+  };
+}
+
+const REMOVE_LABEL_FILTER = "REMOVE_LABEL_FILTER";
+export function removeLabelFilter(labelName) {
+  return {
+    type: REMOVE_LABEL_FILTER,
+    labelName: labelName,
+  };
+}
+
+const RENAME_LABEL_FILTER = "RENAME_LABEL_FILTER";
+export function renameLabelFilter(labelKey, newName) {
+  return {
+    type: RENAME_LABEL_FILTER,
+    labelKey: labelKey,
+    newName: newName
+  };
+}
+
+
+const UPDATE_LABEL_COLOR = "UPDATE_LABEL_COLOR";
+export function updateLabelColor(labelKey, color) {
+  return {
+    type: UPDATE_LABEL_COLOR,
+    labelKey: labelKey,
+    color: color
   };
 }
 
