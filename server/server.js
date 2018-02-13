@@ -3,6 +3,9 @@ const bodyParser = require("body-parser");
 const express = require("express");
 const app = express();
 const engines = require('consolidate');
+const searchHistory = require("./models/search_history");
+const passport = require("passport");
+const jwt = require("jsonwebtoken");
 
 app.set('views', `${__dirname}/views`);
 app.engine('html', engines.mustache);
@@ -17,8 +20,28 @@ if (process.env.NODE_ENV === "production") {
 
 const defineSearchkitRouter = (index) => {
   app.use(`/api/${index}`, SearchkitExpress.createRouter({
-    host: process.env.ELASTIC_URL || "http://deepscholar.elasticsearch:9200",
-    index
+    host: "http://deepscholar.elasticsearch:9200",
+    index,
+    queryProcessor: (query, req) => {
+      const authorization = req.headers ? req.headers["authorization"] : null;
+      let userId = null;
+      if (authorization) {
+        const matches = authorization.match(/bearer\s(.+)$/);
+        if (matches) {
+          const token = matches[1];
+          try {
+            const user = jwt.verify(token, process.env.DEEP_SCHOLAR_TOKEN_SECRET);
+            const sub = JSON.parse(user.sub);
+            userId = sub.id;
+          } catch (error) {
+            console.log(error);
+          }
+        }
+      }
+
+      searchHistory.insert(query, userId);
+      return query;
+    }
   }));
 };
 defineSearchkitRouter("papers");
