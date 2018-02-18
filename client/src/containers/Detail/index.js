@@ -6,6 +6,15 @@ import {requestPaper, receivePaper} from '../../module';
 import './style.css';
 
 class Detail extends Component {
+
+  componentWillMount(){
+    document.body.classList.add("detail");
+  }
+
+  componentWillUnmount(){
+    document.body.classList.remove("detail");
+  }
+
   componentDidMount() {
     this.search(this.props.match.params.paperId);
   }

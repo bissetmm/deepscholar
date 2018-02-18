@@ -42,3 +42,7 @@
 		margin-left: auto;
 		margin-right: auto;
 	} 
+
+	.detail .paper .checkbox {
+		display: none;
+	}
