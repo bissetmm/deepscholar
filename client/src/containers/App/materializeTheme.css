@@ -258,14 +258,19 @@ input.alpha[type=search]:not(.browser-default):focus {
     vertical-align: top;
 }
 .dropdown.dropdown--alpha .dropdown-content {
-	min-width: 160px;
+	min-width: 240px;
 	border: 1px solid #e1e4e8;
 }
 .dropdown.dropdown--alpha .dropdown-content li {
+	overflow: hidden;
 	display: block;
-	padding: 0 30px !important;
+	padding: 0 4px 0 30px !important;
+	width: 100%;
 	height: 36px;
 	min-height: auto;
+	word-break: break-all;
+	white-space: nowrap;
+	text-overflow: ellipsis;	
     line-height: 36px;
     border-bottom: 1px solid #e1e4e8;
 }

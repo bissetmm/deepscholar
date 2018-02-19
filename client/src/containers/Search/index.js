@@ -154,7 +154,17 @@ const FilterEdit = connect(mapStateToProps)(class FilterEdit extends Component {
     this.createDone(e);
   }
 
-  handleKeyPress(e) {
+  handleKeyUp(e) {
+
+    const input = e.target;
+    const li = input.parentNode;
+    if( input.value.length >= 20 ){
+      li.classList.add('max');
+      input.value = input.value.slice( 0, 20)
+    } else {
+      li.classList.remove('max');
+    }
+    
     if (e.key === 'Enter') this.createDone(e);
   }
 
@@ -176,7 +186,7 @@ const FilterEdit = connect(mapStateToProps)(class FilterEdit extends Component {
             })}
           </ul>
           <div className="colorListMusk" onClick={this.handleClickcolorListMusk.bind(this)}></div>
-          <input type="text" data-key={labelKey} data-name={labelName} onBlur={this.handleBlurInput.bind(this)} onKeyPress={this.handleKeyPress.bind(this)}/>
+          <input type="text" data-key={labelKey} data-name={labelName} onBlur={this.handleBlurInput.bind(this)} onKeyUp={this.handleKeyUp.bind(this)}/>
           <i className="material-icons create" onClick={this.handleClickCreate.bind(this)}>create</i>
           <i className="material-icons delete" onClick={this.handleClickRemoveLabel.bind(this)}>delete</i>
         </li>

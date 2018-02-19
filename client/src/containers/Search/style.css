@@ -206,9 +206,13 @@
 	border: none;
 }
 .filterEditModal .modal-content ul li {
+	overflow: hidden;
 	position: relative;
 	font-size: 20px;
-	padding: 8px 32px 9px;
+	padding: 8px 52px 9px 32px;
+	word-break: break-all;
+	/*white-space: nowrap;*/
+	/*text-overflow: ellipsis;	*/
 	border-bottom: 1px solid #e1e4e8;
 }
 .filterEditModal .modal-content ul li:hover {
@@ -233,6 +237,15 @@
     height: 26px;
     margin-bottom: 0;
 }
+.filterEditModal .modal-content ul li.edit.max:after {
+	content: "maximum length: 20";
+	position: absolute;
+	left: 50%;
+	top: 4px;
+	color: #F44336;
+	font-size: 0.75rem;
+}
+
 .filterEditModal .modal-content ul li .color {
 	cursor: pointer;
 }
