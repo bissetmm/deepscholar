@@ -9,11 +9,13 @@
     "es:initializeIndexes": "node script/initializeIndexes.js",
     "es:insertIndexes": "node script/insertIndexes.js",
     "es:deleteIndexes": "node script/deleteIndexes.js",
+    "es:dump:searchHistories": "elasticdump --input=http://localhost:9200/search_histories --output=$ --type=data | node script/convert.js",
     "db:dropDatabase": "node script/dropDatabase.js"
   },
   "devDependencies": {
     "camelcase": "^4.1.0",
     "concurrently": "^3.5.0",
+    "elasticdump": "^3.3.4",
     "eslint": "^4.1.1",
     "eslint-plugin-react": "^7.1.0",
     "fast-xml2js": "^1.0.7",

@@ -142,6 +142,11 @@ $ npm -s run db:dropDatabase
 All databases have been deleted.
 ```
 
+### Export search histories to tsv
+```
+$ npm run es:dump:searchHistories > searchHistories.tsv 
+```
+
 ### Development Tools
 
 |        Name        |                      URL                       |
