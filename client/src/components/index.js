@@ -140,11 +140,11 @@ export const Paper = withRouter(connect(mapStateToProps)(class Paper extends Com
     const articleTitle = {__html: highlightedArticleTitle || rawArticleTitle};
     const journalTitle = {__html: `${highlightedJournalTitle || rawJournalTitle} ${year}`};
 
-    let abstract = highlightedAbstract ? highlightedAbstract[0] : rawAbstract;
+    let abstract = (highlightedAbstract ? highlightedAbstract[0] : rawAbstract) || "";
     if (!this.props.asFull) {
       abstract = this.props.state.enabledFullTextPaperIds.has(id) ? abstract : abstract.substr(0, 400);
     }
-    abstract = {__html: abstract};
+    const abstractHtml = {__html: abstract};
 
     return (
       <article className={'paper ' + 'paper'+id}>
@@ -158,7 +158,8 @@ export const Paper = withRouter(connect(mapStateToProps)(class Paper extends Com
           {authors}
           <h6 dangerouslySetInnerHTML={journalTitle}></h6>
         </header>
-        <div className="abstract" dangerouslySetInnerHTML={abstract}></div>{!this.props.asFull && <FullTextToggle paperId={id}/>}
+        <div className="abstract"
+             dangerouslySetInnerHTML={abstractHtml}></div>{abstract !== "" && !this.props.asFull && <FullTextToggle paperId={id}/>}
         <footer>
           <ul className="meta links valign-wrapper blue-text">
             <li>
