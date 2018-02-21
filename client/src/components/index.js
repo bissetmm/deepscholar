@@ -111,7 +111,7 @@ const FilterLabels = connect(mapStateToProps)(class FilterLabels extends Compone
       const labelName = key;
       return <span key={key} className={key + ' ' + labelList[labelName][1]}></span>
     })
-    
+
     return (
       <span className="filterLabels">
         {labels}
@@ -140,11 +140,11 @@ export const Paper = withRouter(connect(mapStateToProps)(class Paper extends Com
     const articleTitle = {__html: highlightedArticleTitle || rawArticleTitle};
     const journalTitle = {__html: `${highlightedJournalTitle || rawJournalTitle} ${year}`};
 
-    let abstract = highlightedAbstract ? highlightedAbstract[0] : rawAbstract;
+    let abstract = (highlightedAbstract ? highlightedAbstract[0] : rawAbstract) || "";
     if (!this.props.asFull) {
       abstract = this.props.state.enabledFullTextPaperIds.has(id) ? abstract : abstract.substr(0, 400);
     }
-    abstract = {__html: abstract};
+    const abstractHtml = {__html: abstract};
 
     return (
       <article className={'paper ' + 'paper'+id}>
@@ -158,7 +158,8 @@ export const Paper = withRouter(connect(mapStateToProps)(class Paper extends Com
           {authors}
           <h6 dangerouslySetInnerHTML={journalTitle}></h6>
         </header>
-        <div className="abstract" dangerouslySetInnerHTML={abstract}></div>{!this.props.asFull && <FullTextToggle paperId={id}/>}
+        <div className="abstract"
+             dangerouslySetInnerHTML={abstractHtml}></div>{abstract !== "" && !this.props.asFull && <FullTextToggle paperId={id}/>}
         <footer>
           <ul className="meta links valign-wrapper blue-text">
             <li>
@@ -254,7 +255,7 @@ export const Table = withRouter(connect(mapStateToProps)(class Table extends Com
     const paperUrl = `/papers/${paperId}`;
     const html = {__html: `<table class="striped responsive-table">${table}<table>`};
     const footer = ( typeof label !== 'undefined' ? label : '' ) + ' '
-                    + ( typeof caption.title !== 'undefined' ? caption.title : '' ) + ' ' 
+                    + ( typeof caption.title !== 'undefined' ? caption.title : '' ) + ' '
                     + ( typeof caption.p !== 'undefined' ? caption.p.join(' ') : '' );
 
     return (
