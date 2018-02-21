@@ -39,7 +39,11 @@ const defineSearchkitRouter = (index) => {
         }
       }
 
-      searchHistory.insert(query, userId);
+      //Save search history only for index page
+      if (query.query.bool) {
+        searchHistory.insert(query, userId);
+      }
+
       return query;
     }
   }));
