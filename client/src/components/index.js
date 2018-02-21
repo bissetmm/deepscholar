@@ -111,7 +111,7 @@ const FilterLabels = connect(mapStateToProps)(class FilterLabels extends Compone
       const labelName = key;
       return <span key={key} className={key + ' ' + labelList[labelName][0]}></span>
     })
-    
+
     return (
       <span className="filterLabels">
         {labels}
@@ -255,7 +255,7 @@ export const Table = withRouter(connect(mapStateToProps)(class Table extends Com
     const paperUrl = `/papers/${paperId}`;
     const html = {__html: `<table class="striped responsive-table">${table}<table>`};
     const footer = ( typeof label !== 'undefined' ? label : '' ) + ' '
-                    + ( typeof caption.title !== 'undefined' ? caption.title : '' ) + ' ' 
+                    + ( typeof caption.title !== 'undefined' ? caption.title : '' ) + ' '
                     + ( typeof caption.p !== 'undefined' ? caption.p.join(' ') : '' );
 
     return (
