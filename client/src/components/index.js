@@ -290,6 +290,168 @@ export class Tables extends Component {
   }
 }
 
+export class PlotToolBar extends Component {
+
+  componentDidMount() {          
+    window.jQuery('select').material_select();
+  }
+
+  render() {
+    return (
+      <div className="plotToolBar">
+        <div className="param param1 col s3">
+          <div className="input-field input-field--alpha">
+            <select>
+              <option value="">Choose your option</option>
+              <option value="1">Option 1</option>
+              <option value="2">Option 2</option>
+              <option value="3">Option 3</option>
+            </select>
+            <label>X axis parameter</label>
+          </div>
+        </div>
+        <div className="param param2 col s3">
+          <div className="input-field input-field--alpha">
+            <select>
+              <option value="">Choose your option</option>
+              <option value="1">Option 1</option>
+              <option value="2">Option 2</option>
+              <option value="3">Option 3</option>
+            </select>
+            <label>Y axis parameter</label>
+          </div>
+        </div>
+        <div className="param param3 col s3">
+          <div className="input-field input-field--alpha">
+            <select>
+              <option value="">Choose your option</option>
+              <option value="1">Option 1</option>
+              <option value="2">Option 2</option>
+              <option value="3">Option 3</option>
+            </select>
+            <label>marker size parameter</label>
+          </div>
+        </div>
+        <div className="param param4 col s3">
+          <div className="input-field input-field--alpha">
+            <select>
+              <option value="">Choose your option</option>
+              <option value="1">Option 1</option>
+              <option value="2">Option 2</option>
+              <option value="3">Option 3</option>
+            </select>
+            <label>sort data by...</label>
+          </div>
+        </div>
+      </div>
+    );
+  }
+}
+
+export class Plot extends Component {
+
+  componentDidMount() {  
+    this.drawPlot();
+    this.onResize();
+    window.jQuery('.plotSidebar').resizable({ containment: "parent", minWidth: 150, maxWidth: 750, handles: "e",
+                                    resize: function(event,ui) { 
+                                              const parent = ui.element.context.parentElement;
+                                              const anotherWidth = parent.offsetWidth - ui.size.width - 1;
+                                              parent.childNodes[1].style.width = anotherWidth + "px";
+                                            }
+                                  });  
+    window.addEventListener("resize", this.onResize.bind(this));
+  }
+
+  componentWillUnmount() {
+    const tgt = document.querySelector('.sidebar');
+    tgt.classList.remove('on');
+    tgt.childNodes[0].style.width = "";
+    window.removeEventListener("resize", this.onResize.bind(this));
+  } 
+
+  onResize(){
+    // Add sidebar & main width
+    const elem = document.querySelector('.plotSidebar');
+    const parent = elem.parentElement;
+    const anotherWidth = parent.offsetWidth - elem.offsetWidth - 1;
+    parent.childNodes[1].style.width = anotherWidth + "px";
+    // Add sidebar height
+    const height = document.querySelector('.plotMain').offsetHeight;
+    elem.style.height = height + "px";
+  }
+
+  drawPlot(){
+    const Plotly = window.Plotly;
+
+    const target = Plotly.d3.select('#plotly');
+    const targetNode = target.node();
+
+    //////
+    // sample data
+    const trace1 = {
+      x: [], y: [],
+      mode: 'markers',
+      marker: { color: 'rgba(244, 67, 54, 0.9)',
+                size: 12}
+    };
+    for (let i = 0; i < 50; i++) {
+      trace1.x[i] = Math.random() * 6;
+      trace1.y[i] = Math.random() * 101 + 40;
+    }
+    const trace2 = {
+      x: [], y: [],
+      mode: 'markers',
+      marker: {
+        color: 'rgba(33, 150, 243, 0.9)',
+        size: 9}
+    };    
+    for (let i = 0; i < 100; i++) {
+      trace2.x[i] = i/10 + Math.random() * 2;
+      trace2.y[i] = Math.random() * 25;
+    }
+    const trace3 = {
+      x: [], y: [],
+      mode: 'markers',
+      marker: {
+        color: 'rgba(255, 152, 0, 0.9)',
+        size: 6}
+    };
+    for (let i = 0; i < 100; i++) {
+      trace3.x[i] = i/10 + Math.random() * 2;
+      trace3.y[i] = i + Math.random() * 35;
+    }    
+    const data = [ trace1, trace2, trace3 ];
+    // sample data
+    //////
+    const layout = {  width: document.querySelector('#plotly').offsetWidth,
+                      title: 'A Data Plot'};
+
+    Plotly.plot(targetNode, data, layout);
+
+    window.onresize = function() {
+      Plotly.Plots.resize(targetNode);
+    };
+  }
+
+  handleClick(e){
+    const tgt = document.querySelector('.sidebar');
+    const width = document.querySelector('.plotSidebar').offsetWidth;
+    tgt.classList.toggle('on');
+    tgt.childNodes[0].style.width = width + "px";
+  }
+
+  render() {
+    return (
+      <div className="plotMain">
+        <div className="toggleFilter" onClick={this.handleClick.bind(this)}><i className="material-icons">find_in_page</i></div>        
+        <div id="plotly"></div>
+      </div>
+    );
+  }
+}
+
+
 export class ScrollToTop extends Component {
   componentDidUpdate(prevProps) {
     if (this.props.location !== prevProps.location) {

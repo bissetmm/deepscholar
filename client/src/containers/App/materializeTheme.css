@@ -323,3 +323,31 @@ input.alpha[type=search]:not(.browser-default):focus {
     cursor: default;
 }
 
+
+
+
+.input-field--alpha .dropdown-content {
+	box-shadow: none;
+	border: 1px solid #e1e4e8;
+	transform: translateY(-4px) !important;
+}
+.input-field--alpha .dropdown-content li {
+	/*height: 36px !important;*/
+	/*min-height: 36px;	*/
+	color: rgb(10, 25, 51);
+}
+.input-field--alpha .dropdown-content li span{
+	font-size: 15px !important;
+	color: #0a1933 !important;
+}
+
+.input-field--alpha .dropdown-content li:hover, 
+.input-field--alpha .dropdown-content li.active, 
+.input-field--alpha .dropdown-content li.selected {
+    background-color: #f6f8fa;
+}
+.input-field--alpha .dropdown-content li:hover span, 
+.input-field--alpha .dropdown-content li.active span, 
+.input-field--alpha .dropdown-content li.selected span {
+    color: #26a69a !important;
+}

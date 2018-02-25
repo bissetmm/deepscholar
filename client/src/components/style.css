@@ -124,3 +124,50 @@
     margin: 10px 0;
     font-weight: 400;
 }
+
+
+/****************
+**  Plot
+****************/
+.search.tab-plot .contents .plotToolBar {
+    overflow: visible;
+    padding-top: 16px;
+    width: 100%;
+    min-height: 100px;
+}
+    .search.tab-plot .contents .plotToolBar .param {
+        position: relative;
+    }
+        .search.tab-plot .contents .plotToolBar .param .select-wrapper+label {
+            top: -8px;
+        }
+.search.tab-plot .contents .plotMain {
+    position: relative;
+    width: calc(100% - 30%);
+    float: left;
+}
+    .search.tab-plot .contents .plotMain .toggleFilter {
+        position: absolute;  
+        left: 8px;
+        width: 30px;
+        height: 30px;
+        text-align: center;
+        background-color: #f6f8fa;
+        border: 1px solid #e1e4e8;
+        border-radius: 50%;        
+        cursor: pointer;
+        z-index: 1;
+    }
+        .search.tab-plot .contents .plotMain .toggleFilter i{
+            display: block;
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            width: 18px;
+            height: 18px;
+            font-size: 18px;
+        }
+    .js-plotly-plot .plotly .modebar {
+        z-index: 1 !important;
+    }        

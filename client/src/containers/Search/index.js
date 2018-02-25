@@ -3,7 +3,7 @@ import _ from 'lodash';
 import {connect} from 'react-redux';
 import {withRouter, HashRouter, Switch, Route} from 'react-router-dom';
 import {RangeSliderHistogram} from 'searchkit';
-import {Papers, Figures, Tables} from '../../components/index.js';
+import {Papers, Figures, Tables, Plot, PlotToolBar} from '../../components/index.js';
 import Api from '../../api';
 import { changeQuery, changePage, requestPapers, receivePapers, requestFigures, receiveFigures, requestTables, receiveTables, deleteScrollY, changeYears
   , changeBooktitle, updateLabeledPaper, updateLabelFilter, addLabelFilter, removeLabelFilter, renameLabelFilter, updateLabelColor } from '../../module';
@@ -768,21 +768,21 @@ class Search extends Component {
 
   componentWillMount(){
     document.body.classList.add("search");
+    this.addTabClassToBody(this.props.state.category);
   }
 
   componentWillUnmount(){
     document.body.classList.remove("search");
   }
 
-  componentDidMount() {
-    this.search(this.props.state.category);
+  componentDidMount() {    
     window.jQuery('ul.tabs').tabs();
     window.jQuery('.dropdown-button').dropdown();
-    window.jQuery('.modal').modal({ dismissible: false });
+    window.jQuery('.modal').modal({ dismissible: false });            
+    this.search(this.props.state.category);    
   }
-
-
-  componentDidUpdate(prevProps) {
+  
+  componentDidUpdate(prevProps) {    
     const {category: oldCategory, query: oldQuery, articleTitle: oldArticleTitle, author: oldAuthor, abstract: oldAbstract, gte: oldGte, lte: oldLte, booktitles: oldBooktitles, page: oldPage, labelFilter: oldlabelFilter} = prevProps.state;
     const {category: newCategory, query: newQuery, articleTitle: newArticleTitle, author: newAuthor, abstract: newAbstract, gte: newGte, lte: newLte, booktitles: newBooktitles, page: newPage, labelFilter: newlabelFilter} = this.props.state;
     
@@ -1058,7 +1058,6 @@ class Search extends Component {
     this.changeQuery(this.props.state.category, null);
   }
 
-
   handleChangeArticleTitle(e) {
     this.articleTitle = e.target.value;
   }
@@ -1076,7 +1075,16 @@ class Search extends Component {
   }
 
   handleClickTab(category) {
-    this.changeQuery(category, this.props.state.query);
+    this.addTabClassToBody(category);
+    this.changeQuery(category, this.props.state.query);    
+  }
+
+  addTabClassToBody(category){
+    const classList = document.body.classList;
+    for (let i = 0; i < classList.length; i++) {
+      if( classList[i].split('-')[0] === "tab" ) classList.remove(classList[i]);
+    }
+    classList.add("tab-"+category);
   }
 
   render() {
@@ -1112,7 +1120,8 @@ class Search extends Component {
     const categories = [
       "texts",
       "figures",
-      "tables"];
+      "tables",
+      "plot"];
 
     return (
         <div>
@@ -1138,24 +1147,23 @@ class Search extends Component {
                     {categories.map((category) => {
                       let icon;
                       switch (category) {
-                        case 'texts' : 
-                          icon = 'font_download'; break;
-                        case 'figures' : 
-                          icon = 'image'; break;
-                        case 'tables' : 
-                          icon = 'grid_on'; break;
-                        default:
-                          icon = '';
+                        case 'texts'  : icon = 'font_download'; break;
+                        case 'figures': icon = 'image';         break;
+                        case 'tables' : icon = 'grid_on';       break;
+                        case 'plot'   : icon = 'blur_linear';   break;
+                        default       : icon = '';
                       }
 
-                      return <li key={category} className="tab" onClick={this.handleClickTab.bind(this, category)}>
-                        <a className={this.props.state.category === category ? 'active' : ''}>
-                          <span className="txt">
-                            <i className="material-icons hide-on-small-only">{icon}</i>
-                            {category}
-                          </span>
-                        </a>
-                      </li>;
+                      return (
+                        <li key={category} className="tab" onClick={this.handleClickTab.bind(this, category)}>
+                          <a className={this.props.state.category === category ? 'active' : ''}>
+                            <span className="txt">
+                              <i className="material-icons hide-on-small-only">{icon}</i>
+                              {category}
+                            </span>
+                          </a>
+                        </li>
+                      );
                     })
                     }
                   </ul>
@@ -1165,6 +1173,7 @@ class Search extends Component {
           </div>
 
           <div className="row">
+
             <div className="col s4 l3 sidebar">            
               <div className="col s4 l3">
                 <h5><i className="material-icons">find_in_page</i>Filter</h5>
@@ -1205,6 +1214,7 @@ class Search extends Component {
                 </div>
               </div>
             </div>
+
             <div className="contents col s8 l9">
 
               <ToolBar/>
@@ -1224,6 +1234,18 @@ class Search extends Component {
                         <Paginator total={tablesTotal} size={tablesFetchSize} page={page}/>
                       </div>
                     )}/>
+                    <Route path="/plot" component={(props) => (
+                      <div className="col s12"> 
+                        <PlotToolBar/>                       
+                        <div className="plotOuter">
+                          <div className="plotSidebar">
+                            <Papers data={papers}/>
+                            <Paginator total={papersTotal} size={papersFetchSize} page={page}/>
+                          </div>
+                          <Plot/>                          
+                        </div>
+                      </div>
+                    )}/>
                     <Route component={(props) => (
                       <div className="col s12">
                         <Papers data={papers}/>
@@ -1233,6 +1255,7 @@ class Search extends Component {
                   </Switch>
               </div>
             </div>
+
           </div>
         </div>
     );
