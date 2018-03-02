@@ -25,7 +25,6 @@ services:
   deepscholar.server:
     volumes:
       - ./server:/root/server
-      - ${DS_DATA_DIR}:/root/server/documents
       - /root/server/node_modules/
     image: node:8.1.2
     working_dir: /root/server
