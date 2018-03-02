@@ -4,8 +4,8 @@
 julia arxix_downloader.jl
 ```
 
-## Systemd Example
-### arxiv.service
+## Systemd
+### deepscholar.service
 ```
 [Unit]
 Description = arxiv downloader
