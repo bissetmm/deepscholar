@@ -5,6 +5,9 @@
         "^.+$": {
             "type": "object",
             "properties": {
+                "pdf": { "type": "string" },
+                "xml": { "type": "string" },
+                "pdftxt": { "type": "string" },
                 "journalTitle": { "type": "string" },
                 "year": { "type": "integer" },
                 "articleTitle": { "type": "string" },
