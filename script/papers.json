@@ -1,48 +1,46 @@
 {
     "title": "deepscholar json-schema for papers",
-    "type": "object",
-    "patternProperties": {
-        "^.+$": {
-            "type": "object",
-            "properties": {
-                "pdf": { "type": "string" },
-                "xml": { "type": "string" },
-                "pdftxt": { "type": "string" },
-                "journalTitle": { "type": "string" },
-                "year": { "type": "integer" },
-                "articleTitle": { "type": "string" },
-                "authors": {
-                    "type": "array",
-                    "items": { "type": "string" }
-                },
-                "abstract": { "type": "string" },
-                "body": { "type": "string" },
-                "tables": {
-                    "type": "array",
-                    "items": {
-                        "type": "object",
-                        "properties": {
-                            "img": { "type": "string" },
-                            "label": { "type": "string" },
-                            "caption": { "type": "string" }
-                        },
-                        "required": ["img", "label", "caption"]
-                    }
-                },
-                "figs": {
-                    "type": "array",
-                    "items": {
-                        "type": "object",
-                        "properties": {
-                            "img": { "type": "string" },
-                            "label": { "type": "string" },
-                            "caption": { "type": "string" }
-                        },
-                        "required": ["img", "label", "caption"]
-                    }
+    "type": "array",
+    "items": {
+        "type": "object",
+        "properties": {
+            "pdf": { "type": "string" },
+            "xml": { "type": "string" },
+            "pdftxt": { "type": "string" },
+            "journalTitle": { "type": "string" },
+            "year": { "type": "integer" },
+            "articleTitle": { "type": "string" },
+            "authors": {
+                "type": "array",
+                "items": { "type": "string" }
+            },
+            "abstract": { "type": "string" },
+            "body": { "type": "string" },
+            "tables": {
+                "type": "array",
+                "items": {
+                    "type": "object",
+                    "properties": {
+                        "img": { "type": "string" },
+                        "label": { "type": "string" },
+                        "caption": { "type": "string" }
+                    },
+                    "required": ["img", "label", "caption"]
                 }
             },
-            "required": ["journalTitle", "year", "articleTitle", "authors", "abstract", "body"]
-        }
+            "figs": {
+                "type": "array",
+                "items": {
+                    "type": "object",
+                    "properties": {
+                        "img": { "type": "string" },
+                        "label": { "type": "string" },
+                        "caption": { "type": "string" }
+                    },
+                    "required": ["img", "label", "caption"]
+                }
+            }
+        },
+        "required": ["journalTitle", "year", "articleTitle", "authors", "abstract", "body"]
     }
 }
