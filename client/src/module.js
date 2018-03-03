@@ -13,6 +13,7 @@ const labelList = {
                     "label4" : ["label4", labelColor[3] , [] ] ,
                     "label5" : ["label5", labelColor[4] , [] ]
                   };
+
 const initialState = {
   user: null,
   category: category || null,
@@ -50,6 +51,49 @@ const initialState = {
   enabledAllAuthorsPaperIds: new Set(),
   scrollYPositions: new Map()
 };
+
+////// ▼ Functions for Getting LabelList from DB ▼
+const _getLabelList = function(user){
+  let labelListSaved;
+  let is_available = false;
+  const getLabelListFromLocalStrage = function(){
+    const labelListInLS = window.localStorage.getItem('labelList'); 
+    return  ( labelListInLS && _validateLabelList( JSON.parse(labelListInLS) ) ) ? JSON.parse(labelListInLS) : labelList;
+  }
+  if ( user !== undefined && user.profile !== undefined ) {    
+    window.jQuery.ajax({ async: false, url: '/api/label/get?profile_id=' + user.profile.id })
+    .done(function(data) { 
+      if( data !== 'error' ) {
+        labelListSaved = JSON.parse(data.label.labelList);
+        if( _validateLabelList(labelListSaved) ) is_available = true;
+      }
+    }).fail(function() { console.log('LabelList Get Error.'); });
+  }
+  labelListSaved = is_available ? labelListSaved : getLabelListFromLocalStrage();
+  return labelListSaved;
+}
+
+const _saveLabelList = function(labelList, user){
+  if ( user && _validateLabelList(labelList) ) { 
+    window.jQuery.ajax({ url: '/api/label/set?profile_id=' + user.profile.id + '&labelList=' + JSON.stringify(labelList) })
+    .done(function(data) { 
+      ( data === 'done' ) ? console.log('LabelList Saved.') : console.log('LabelList Save Failed.');
+    })
+    .fail(function() { console.log('LabelList Save Ajax Error.') });
+  } 
+  window.localStorage.setItem('labelList', JSON.stringify(labelList));
+}
+
+const _validateLabelList = function(labelList){
+  let is_labelList = true;
+  let key;
+  if( typeof labelList !== 'object' ) is_labelList = false;
+  for (key in labelList) {
+    if( typeof key !== 'string' || typeof labelList[key][0] !== 'string' || labelColor.indexOf(labelList[key][1]) == -1 || !Array.isArray(labelList[key][2]) ) is_labelList = false;
+  }
+  return is_labelList;
+}
+////// ▲ Functions for Getting LabelList from DB ▲
 
 export function reducers(state = initialState, action) {
   switch (action.type) {
@@ -94,7 +138,7 @@ export function reducers(state = initialState, action) {
         booktitles: {$set: newBooktitles}
       });
       return newState;
-    }
+      }
     case CHANGE_PAGE:
       return Object.assign({}, state, {
         page: action.page
@@ -170,50 +214,22 @@ export function reducers(state = initialState, action) {
       return Object.assign({}, state, {
         scrollYPositions: new Map()
       });
-    case UPDATE_LABELED_PAPER:
-      const newLabelList = Object.assign({}, state.labelList);
-      const key = action.label;
-      const newPaperList = action.list;
-      newLabelList[key][2] = newPaperList;
+    case GET_LABEL_LIST:
+      const user = Object.assign({}, state.user);
+      const labelListSaved = _getLabelList(user);
       return Object.assign({}, state, {
-        labelList: newLabelList
+        labelList: labelListSaved
       });
-    case ADD_LABEL_FILTER:
-      const labelColor = state.labelColor;
-      const newLabelListForAdd = Object.assign({}, state.labelList);
-      const length = Object.keys(newLabelListForAdd).length;
-      let no = length + 1;
-      while( newLabelListForAdd['label'+no] ){
-        no++;
-      }
-      newLabelListForAdd['label'+no] = ['New label', labelColor[length%8] , [] ];
+    case UPDATE_LABEL_LIST:
+      const labelListUpdated = action.labelList;
+      _saveLabelList(labelListUpdated, state.user);
       return Object.assign({}, state, {
-        labelList: newLabelListForAdd
-      });
-    case REMOVE_LABEL_FILTER:
-      const newLabelListForRemove = Object.assign({}, state.labelList);
-      delete newLabelListForRemove[action.labelName];
-      return Object.assign({}, state, {
-        labelList: newLabelListForRemove
-      });
-    case RENAME_LABEL_FILTER:
-      const renamedLabelFilter = Object.assign({}, state.labelList);
-      renamedLabelFilter[action.labelKey][0] = action.newName;;
-      return Object.assign({}, state, {
-        labelList: renamedLabelFilter
-      });
-    case UPDATE_LABEL_COLOR:
-      const coloredLabelFilter = Object.assign({}, state.labelList);
-      coloredLabelFilter[action.labelKey][1] = action.color;
-      return Object.assign({}, state, {
-        labelList: coloredLabelFilter
+        labelList: labelListUpdated
       });
     case UPDATE_LABEL_FILTER:
-      const LabelFilter = state.labelFilter;
-      const newLabelFilter = action.list;
       return Object.assign({}, state, {
-        labelFilter: newLabelFilter
-      });    
+        labelFilter: action.filterList
+      });      
     default:
       return state;
   }
@@ -405,54 +421,28 @@ export function deleteAllScrollY() {
   };
 }
 
-const UPDATE_LABELED_PAPER = "UPDATE_LABELED_PAPER";
-export function updateLabeledPaper(label, list) {
+const GET_LABEL_LIST = "GET_LABEL_LIST";
+
+export function getLabelList() {
   return {
-    type: UPDATE_LABELED_PAPER,
-    label: label,
-    list: list,
+    type:GET_LABEL_LIST,
   };
 }
 
-const ADD_LABEL_FILTER = "ADD_LABEL_FILTER";
-export function addLabelFilter() {
-  return {
-    type: ADD_LABEL_FILTER,
-  };
-}
+const UPDATE_LABEL_LIST = "UPDATE_LABEL_LIST";
 
-const REMOVE_LABEL_FILTER = "REMOVE_LABEL_FILTER";
-export function removeLabelFilter(labelName) {
+export function updateLabelList(labelList) {
   return {
-    type: REMOVE_LABEL_FILTER,
-    labelName: labelName,
-  };
-}
-
-const RENAME_LABEL_FILTER = "RENAME_LABEL_FILTER";
-export function renameLabelFilter(labelKey, newName) {
-  return {
-    type: RENAME_LABEL_FILTER,
-    labelKey: labelKey,
-    newName: newName
-  };
-}
-
-
-const UPDATE_LABEL_COLOR = "UPDATE_LABEL_COLOR";
-export function updateLabelColor(labelKey, color) {
-  return {
-    type: UPDATE_LABEL_COLOR,
-    labelKey: labelKey,
-    color: color
+    type: UPDATE_LABEL_LIST,
+    labelList: labelList,
   };
 }
 
 const UPDATE_LABEL_FILTER = "UPDATE_LABEL_FILTER";
 
-export function updateLabelFilter(labelList) {
+export function updateLabelFilter(filterList) {
   return {
     type: UPDATE_LABEL_FILTER,
-    list: labelList,
+    filterList: filterList,
   };
 }
