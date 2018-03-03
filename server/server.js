@@ -53,6 +53,7 @@ defineSearchkitRouter("figs");
 defineSearchkitRouter("tables");
 
 app.use("/api/auth", require("./auth.js")(app));
+app.use("/api/label", require("./label.js")(app)); 
 
 app.listen(app.get("port"), () => {
   console.log(`Find the server at: http://localhost:${app.get("port")}/`);

@@ -3,10 +3,10 @@ import _ from 'lodash';
 import {connect} from 'react-redux';
 import {withRouter, HashRouter, Switch, Route} from 'react-router-dom';
 import {RangeSliderHistogram} from 'searchkit';
-import {Papers, Figures, Tables} from '../../components/index.js';
+import {Papers, Figures, Tables, Plot, PlotToolBar} from '../../components/index.js';
 import Api from '../../api';
 import { changeQuery, changePage, requestPapers, receivePapers, requestFigures, receiveFigures, requestTables, receiveTables, deleteScrollY, changeYears
-  , changeBooktitle, updateLabeledPaper, updateLabelFilter, addLabelFilter, removeLabelFilter, renameLabelFilter, updateLabelColor } from '../../module';
+  , changeBooktitle, updateLabelList, updateLabelFilter } from '../../module';
 import './style.css';
 import 'searchkit/release/theme.css';
 import Detail from "../Detail";
@@ -112,19 +112,33 @@ const FilterEdit = connect(mapStateToProps)(class FilterEdit extends Component {
   handleClickChangeColor(e) {
     const classList = e.target.classList;
     if( classList.contains('cell') && !classList.contains('active') ) {
+      const labelList = Object.assign({}, this.props.state.labelList);
       const labelKey = e.target.dataset.key;
-      const color = e.target.dataset.color;
-      this.props.dispatch( updateLabelColor(labelKey, color) );
+      const color = e.target.dataset.color;      
+      labelList[labelKey][1] = color;
+      this.props.dispatch( updateLabelList(labelList) );
       e.target.parentNode.parentNode.classList.remove('editColor');
     }    
   }
+
   handleClickAddLabel(e) {
-    this.props.dispatch( addLabelFilter() );
+    const labelList = Object.assign({}, this.props.state.labelList);
+    const labelColor = this.props.state.labelColor;    
+    const length = Object.keys(labelList).length;
+    let no = length + 1;
+    while( labelList['label'+no] )
+    { 
+      no++; 
+    }
+    labelList['label'+no] = ['New label', labelColor[length%8] , [] ];
+    this.props.dispatch( updateLabelList(labelList) );
   }
 
   handleClickRemoveLabel(e) {
-    const labelName = e.target.parentNode.dataset.name;
-    this.props.dispatch( removeLabelFilter(labelName) );
+    const labelList = Object.assign({}, this.props.state.labelList);
+    const labelName = e.target.parentNode.dataset.name;    
+    delete labelList[labelName];
+    this.props.dispatch( updateLabelList(labelList) );
   }
 
   handleClickCreate(e) {
@@ -147,7 +161,9 @@ const FilterEdit = connect(mapStateToProps)(class FilterEdit extends Component {
     if( newName == '' || newName == oldName ) {
       return false
     } else {
-      this.props.dispatch( renameLabelFilter(labelKey, newName) );
+      const labelList = Object.assign({}, this.props.state.labelList);
+      labelList[labelKey][0] = newName;
+      this.props.dispatch( updateLabelList(labelList) );
     }
   }
   handleBlurInput(e) {
@@ -252,15 +268,15 @@ const FilterNormal = connect(mapStateToProps)(class FilterNormal extends Compone
 
   addFilter(labelName){
     const labelFilter = this.props.state.labelFilter.slice();
-    const newList = labelFilter
+    const newFilter = labelFilter
                       .concat(labelName) // Marge
                       .filter(function (x,i,self) { return self.indexOf(x) === i; }); // Remove overlap
-    this.props.dispatch( updateLabelFilter(newList) );
+    this.props.dispatch( updateLabelFilter(newFilter) );
   }
   removeFilter(labelName){
     const labelFilter = this.props.state.labelFilter.slice();
-    const newList = labelFilter.filter(function(v){ return v != labelName; }); // remove
-    this.props.dispatch( updateLabelFilter(newList) );
+    const newFilter = labelFilter.filter(function(v){ return v != labelName; }); // remove
+    this.props.dispatch( updateLabelFilter(newFilter) );
   }
   removeAllFilter(){
     const newList = [];
@@ -323,26 +339,26 @@ const FilterChoose = connect(mapStateToProps)(class FilterChoose extends Compone
   }
 
   addLabel(target) {
-    const label = target.dataset.name;
-    const chkList = this.getCheckedList();
+    const labelName = target.dataset.name;
+    const checkedList = this.getCheckedList();
     const labelList = Object.assign({}, this.props.state.labelList);
-    const newList = labelList[label][2]
-                      .concat(chkList) // Marge
-                      .filter(function (x,i,self) { return self.indexOf(x) === i; }); // Remove overlap
-
-    this.props.dispatch( updateLabeledPaper(label, newList) );
+    labelList[labelName][2] = labelList[labelName][2].concat(checkedList) // Marge
+                          .filter(function (x,i,self) { return self.indexOf(x) === i; }); // Remove overlap
+    this.props.dispatch( updateLabelList(labelList) );
   }
 
   removeLabel(target) {
-    const label = target.dataset.name;
-    const chkList = this.getCheckedList();
-    const oldList = this.props.state.labelList[label][2].slice();
+    const labelName = target.dataset.name;
+    const checkedList = this.getCheckedList();
+    const labelList = Object.assign({}, this.props.state.labelList);
+    const oldList = this.props.state.labelList[labelName][2].slice();
     let newList = [];
     oldList.map(function(val, i) {
-      const index = chkList.indexOf(val);
+      const index = checkedList.indexOf(val);
       if (index === -1) newList.push(val);
     });
-    this.props.dispatch( updateLabeledPaper(label, newList) );
+    labelList[labelName][2] = newList;
+    this.props.dispatch( updateLabelList(labelList) );
   }
 
   handleClickList(e) {
@@ -768,21 +784,21 @@ class Search extends Component {
 
   componentWillMount(){
     document.body.classList.add("search");
+    this.addTabClassToBody(this.props.state.category);
   }
 
   componentWillUnmount(){
     document.body.classList.remove("search");
   }
 
-  componentDidMount() {
-    this.search(this.props.state.category);
+  componentDidMount() {    
     window.jQuery('ul.tabs').tabs();
     window.jQuery('.dropdown-button').dropdown();
-    window.jQuery('.modal').modal({ dismissible: false });
+    window.jQuery('.modal').modal({ dismissible: false });            
+    this.search(this.props.state.category);    
   }
-
-
-  componentDidUpdate(prevProps) {
+  
+  componentDidUpdate(prevProps) {    
     const {category: oldCategory, query: oldQuery, articleTitle: oldArticleTitle, author: oldAuthor, abstract: oldAbstract, gte: oldGte, lte: oldLte, booktitles: oldBooktitles, page: oldPage, labelFilter: oldlabelFilter} = prevProps.state;
     const {category: newCategory, query: newQuery, articleTitle: newArticleTitle, author: newAuthor, abstract: newAbstract, gte: newGte, lte: newLte, booktitles: newBooktitles, page: newPage, labelFilter: newlabelFilter} = this.props.state;
     
@@ -1058,7 +1074,6 @@ class Search extends Component {
     this.changeQuery(this.props.state.category, null);
   }
 
-
   handleChangeArticleTitle(e) {
     this.articleTitle = e.target.value;
   }
@@ -1076,7 +1091,16 @@ class Search extends Component {
   }
 
   handleClickTab(category) {
-    this.changeQuery(category, this.props.state.query);
+    this.addTabClassToBody(category);
+    this.changeQuery(category, this.props.state.query);    
+  }
+
+  addTabClassToBody(category){
+    const classList = document.body.classList;
+    for (let i = 0; i < classList.length; i++) {
+      if( classList[i].split('-')[0] === "tab" ) classList.remove(classList[i]);
+    }
+    classList.add("tab-"+category);
   }
 
   render() {
@@ -1112,7 +1136,8 @@ class Search extends Component {
     const categories = [
       "texts",
       "figures",
-      "tables"];
+      "tables",
+      "plot"];
 
     return (
         <div>
@@ -1138,24 +1163,23 @@ class Search extends Component {
                     {categories.map((category) => {
                       let icon;
                       switch (category) {
-                        case 'texts' : 
-                          icon = 'font_download'; break;
-                        case 'figures' : 
-                          icon = 'image'; break;
-                        case 'tables' : 
-                          icon = 'grid_on'; break;
-                        default:
-                          icon = '';
+                        case 'texts'  : icon = 'font_download'; break;
+                        case 'figures': icon = 'image';         break;
+                        case 'tables' : icon = 'grid_on';       break;
+                        case 'plot'   : icon = 'blur_linear';   break;
+                        default       : icon = '';
                       }
 
-                      return <li key={category} className="tab" onClick={this.handleClickTab.bind(this, category)}>
-                        <a className={this.props.state.category === category ? 'active' : ''}>
-                          <span className="txt">
-                            <i className="material-icons hide-on-small-only">{icon}</i>
-                            {category}
-                          </span>
-                        </a>
-                      </li>;
+                      return (
+                        <li key={category} className="tab" onClick={this.handleClickTab.bind(this, category)}>
+                          <a className={this.props.state.category === category ? 'active' : ''}>
+                            <span className="txt">
+                              <i className="material-icons hide-on-small-only">{icon}</i>
+                              {category}
+                            </span>
+                          </a>
+                        </li>
+                      );
                     })
                     }
                   </ul>
@@ -1165,6 +1189,7 @@ class Search extends Component {
           </div>
 
           <div className="row">
+
             <div className="col s4 l3 sidebar">            
               <div className="col s4 l3">
                 <h5><i className="material-icons">find_in_page</i>Filter</h5>
@@ -1205,6 +1230,7 @@ class Search extends Component {
                 </div>
               </div>
             </div>
+
             <div className="contents col s8 l9">
 
               <ToolBar/>
@@ -1224,6 +1250,18 @@ class Search extends Component {
                         <Paginator total={tablesTotal} size={tablesFetchSize} page={page}/>
                       </div>
                     )}/>
+                    <Route path="/plot" component={(props) => (
+                      <div className="col s12"> 
+                        <PlotToolBar/>                       
+                        <div className="plotOuter">
+                          <div className="plotSidebar">
+                            <Papers data={papers}/>
+                            <Paginator total={papersTotal} size={papersFetchSize} page={page}/>
+                          </div>
+                          <Plot/>                          
+                        </div>
+                      </div>
+                    )}/>
                     <Route component={(props) => (
                       <div className="col s12">
                         <Papers data={papers}/>
@@ -1233,6 +1271,7 @@ class Search extends Component {
                   </Switch>
               </div>
             </div>
+
           </div>
         </div>
     );

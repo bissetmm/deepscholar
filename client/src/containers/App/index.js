@@ -7,7 +7,7 @@ import Index from '../Index/index.js';
 import Search from '../Search/index.js';
 import Detail from '../Detail/index.js';
 import {ScrollToTop} from '../../components/index.js';
-import {changeQuery, deleteAllScrollY, signedIn, signedOut} from '../../module';
+import {changeQuery, deleteAllScrollY, signedIn, signedOut, getLabelList, updateLabelList} from '../../module';
 import './materializeTheme.css';
 import './style.css';
 
@@ -33,12 +33,15 @@ const NavBar = connect(mapStateToProps)(class NavBar extends Component {
       const user = event.data.user;
       window.localStorage.setItem(NavBar.USER_STORE_KEY, JSON.stringify(user));
       this.props.dispatch(signedIn(user));
+      this.props.dispatch(getLabelList());
     });
 
     const user = window.localStorage.getItem(NavBar.USER_STORE_KEY);
     if (user) {
       this.props.dispatch(signedIn((JSON.parse(user))));
     }
+
+    this.props.dispatch(getLabelList());
   }
 
   componentDidUpdate(prevProps) {
@@ -110,6 +113,10 @@ const NavBar = connect(mapStateToProps)(class NavBar extends Component {
 
   handleClickSignOut(e) {
     e.preventDefault();
+
+    const {labelList} = this.props.state;
+    this.props.dispatch(updateLabelList(labelList));
+    
     window.localStorage.removeItem(NavBar.USER_STORE_KEY);
     this.props.dispatch(signedOut());
   }
