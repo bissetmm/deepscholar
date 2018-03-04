@@ -3,7 +3,7 @@ import _ from 'lodash';
 import {connect} from 'react-redux';
 import {withRouter, HashRouter, Switch, Route} from 'react-router-dom';
 import {RangeSliderHistogram} from 'searchkit';
-import {Papers, Figures, Tables, Plot, PlotToolBar} from '../../components/index.js';
+import {Papers, Figures, Tables} from '../../components/index.js';
 import Api from '../../api';
 import { changeQuery, changePage, requestPapers, receivePapers, requestFigures, receiveFigures, requestTables, receiveTables, deleteScrollY, changeYears
   , changeBooktitle, updateLabelList, updateLabelFilter } from '../../module';
@@ -1136,8 +1136,7 @@ class Search extends Component {
     const categories = [
       "texts",
       "figures",
-      "tables",
-      "plot"];
+      "tables"];
 
     return (
         <div>
@@ -1166,7 +1165,6 @@ class Search extends Component {
                         case 'texts'  : icon = 'font_download'; break;
                         case 'figures': icon = 'image';         break;
                         case 'tables' : icon = 'grid_on';       break;
-                        case 'plot'   : icon = 'blur_linear';   break;
                         default       : icon = '';
                       }
 
@@ -1248,18 +1246,6 @@ class Search extends Component {
                       <div className="col s12">
                         <Tables data={tables}/>
                         <Paginator total={tablesTotal} size={tablesFetchSize} page={page}/>
-                      </div>
-                    )}/>
-                    <Route path="/plot" component={(props) => (
-                      <div className="col s12"> 
-                        <PlotToolBar/>                       
-                        <div className="plotOuter">
-                          <div className="plotSidebar">
-                            <Papers data={papers}/>
-                            <Paginator total={papersTotal} size={papersFetchSize} page={page}/>
-                          </div>
-                          <Plot/>                          
-                        </div>
                       </div>
                     )}/>
                     <Route component={(props) => (
