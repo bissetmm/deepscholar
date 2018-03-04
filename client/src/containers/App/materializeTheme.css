@@ -246,7 +246,7 @@ input.alpha[type=search]:not(.browser-default):focus {
 	z-index: 99;
 }
 .dropdown.dropdown--alpha .dropdown-button {
-	max-width: 90px;
+	max-width: 110px;
     color: #0a1933;
     font-weight: 300;
     text-transform: initial;

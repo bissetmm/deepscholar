@@ -253,7 +253,7 @@ const FilterListCommon = connect(mapStateToProps)(class FilterListCommon extends
 
     return (
       <div className={'dropdown dropdown--alpha ' + name}>
-        <a className='dropdown-button btn z-depth-0' data-beloworigin="true" data-activates={name} onClick={this.props.onClickBtn}>Labels<i className="material-icons">arrow_drop_down</i></a>
+        <a className='dropdown-button btn z-depth-0' data-beloworigin="true" data-activates={name} onClick={this.props.onClickBtn}><i className="material-icons icon">local_offer</i>Labels<i className="material-icons">arrow_drop_down</i></a>
         <ul id={name} className='dropdown-content z-depth-0'>
           <li className='head'>{headTxt}<i className="material-icons close">close</i></li>
           {lists}
@@ -719,7 +719,7 @@ const Download = connect(mapStateToProps)(class Download extends Component {
     const headTxt = 'Download all';
     return (
       <div className={'dropdown dropdown--alpha ' + name}>
-        <a className='dropdown-button btn z-depth-0' data-beloworigin="true" data-activates={name}>{txt}<i className="material-icons">arrow_drop_down</i></a>
+        <a className='dropdown-button btn z-depth-0' data-beloworigin="true" data-activates={name}><i className="material-icons icon">file_download</i>{txt}<i className="material-icons">arrow_drop_down</i></a>
         <ul id={name} className='dropdown-content z-depth-0'>
           <li onClick={this.handleClick.bind(this)} className='head'>{headTxt}<i className="material-icons close">close</i></li>
           <li onClick={this.handleClick.bind(this)} className='pdf'><b>・</b>pdf</li>
