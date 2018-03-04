@@ -30,7 +30,6 @@
 	height: 56px;
 	border-bottom: 1px solid #e1e4e8;
 	background-color: #fafbfc;
-
 	z-index: 3;
 }
 
@@ -107,6 +106,9 @@
 .toolBar .tools div{
 	display: inline-block;
 }
+.toolBar .tools .download.dropdown {
+	/*padding-right: 8px;*/
+}
 .toolBar .tools .download ul li:not(.head){
 	padding-left: 16px !important;
 }
@@ -167,6 +169,22 @@
 .toolBar.choosing .download > a{
 	opacity: 1;
 	pointer-events : initial;
+}
+
+.toolBar .normalFilter, 
+.toolBar .chooseFilter {
+	padding-right: 8px !important;
+}
+.toolBar .normalFilter .dropdown-button i.material-icons.icon,
+.toolBar .chooseFilter .dropdown-button i.material-icons.icon {
+	top: 1px;
+    font-size: 13px !important;
+    margin-right: 3px;
+}
+.toolBar .download .dropdown-button i.material-icons.icon {
+	top: 1px;
+    font-size: 17px !important;
+    margin-right: 3px;
 }
 
 
