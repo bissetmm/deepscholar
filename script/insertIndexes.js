@@ -44,9 +44,8 @@ function processPaper(s, filePath) {
         throw error;
       }
 
-      let count = 0;
-      papers.forEach(paper => {
-        const id = ++count;
+      Object.keys(papers).forEach(id => {
+        const paper = papers[id];
         const {tables, figs} = paper;
         delete paper.tables;
         delete paper.figs;
