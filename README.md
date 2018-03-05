@@ -86,10 +86,8 @@ Index(search_histories) created.
 1. Import json files to ES and create symlink to figs
     ```
     $ npm -s run es:insertIndexes ~/sample.json
-    PMC5000011.xml may be invalid format.
-    PMC5000131.xml may be invalid format.
     StatusCode: 200
-    {"took":1641,"errors":false,"items":[{"index":{"_index":"papers","_type":"lang","_id":"AWHnZx6g9qiBtXMZ1d1_","_version":1,"result":"created","_shards":{"total":2,"successful":1,"failed":0},"created":true,"status":201}},{"index":{"_index":"papers","_type":"lang","_id":"AWHnZx6g9qiBtXMZ1d2A","_version":1,"result":"created","_shards":{"total":2,"successful":1,"failed":0},"created":true,"status":201}},
+    {"took":1246,"errors":false,"items":[{"index":{"_index":"papers","_type":"text","_id":"PMC5000735.xml","_version":1,"result":"created","_shards":{"total":2,"successful":1,"failed":0},"created":true,"status":201}},{"index":{"_index":"papers","_type":"tables","_id":"AWH2uDQT9UPK3S_DA7v4","_version":1,"result":"created","_shards":{"total":2,"successful":1,"failed":0},"created":true,"status":201}},{"index":{"_index":"papers","_type":"tables","_id":"AWH2uDQT9UPK3S_DA7v5","_version":1,"result":"created","_shards":{"total":2,"successful":1,"failed":0},"created":true,"status":201}},{"index":{"_index":"papers","_type":"tables","_id":"AWH2uDQT9UPK3S_DA7v6","_version":1,"result":"created","_shards":{"total":2,"successful":1,"failed":0},"created":true,"status":201}},{"index":{"_index":"papers","_type":"tables","_id":"AWH2uDQT9UPK3S_DA7v7","_version":1,"result":"created","_shards":{"total":2,"successful":1,"failed":0},"created":true,"status":201}},{"index":{"_index":"papers","_type":"tables","_id":"AWH2uDQT9UPK3S_DA7v8","_version":1,"result":"created","_shards":{"total":2,"successful":1,"failed":0},"created":true,"status":201}},{"index":{"_index":"papers","_type":"figs","_id":"AWH2uDQT9UPK3S_DA7v9","_version":1,"result":"created","_shards":{"total":2,"successful":1,"failed":0},"created":true,"status":201}},
     ...
     ```
 
