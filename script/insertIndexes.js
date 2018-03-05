@@ -1,3 +1,4 @@
+const util = require("util");
 const fs = require('fs');
 const {ReadableStream} = require('memory-streams');
 const request = require("request");
@@ -22,56 +23,42 @@ const indexName = "papers";
 
     console.log("");
   }));
+  
+  const readFile = util.promisify(fs.readFile);
+  const jsonFile = await readFile(filePath, {encoding: 'utf8'});
+  const schemaFile = await readFile(`${__dirname}/papers.json`, {encoding: "utf8"});
 
-  processPaper(s, filePath)
-    .then(() => {
-      s.push(null);
-    })
-})();
+  const schema = JSON.parse(schemaFile);
+  const ajv = new Ajv();
+  const validate = ajv.compile(schema);
 
+  const json = JSON.parse(jsonFile);
+  const valid = validate(json);
+  if (!valid) {
+    console.log(validate.errors);
+    return;
+  }
 
-function processPaper(s, filePath) {
-  return new Promise((resolve) => {
-    fs.readFile(filePath, 'utf8', (error, json) => {
-      if (error) {
-        console.log(error);
-        throw error;
-      }
+  const papers = json;
+  Object.keys(papers).forEach(id => {
+    const paper = papers[id];
+    const {tables, figs} = paper;
+    delete paper.tables;
+    delete paper.figs;
 
-      const papers = JSON.parse(json);
+    const textMeta = {index: {_index: indexName, _type: "text", _id: id}};
+    s.append(`${JSON.stringify(textMeta)}\n${JSON.stringify(paper)}\n`);
 
-      return fs.readFile(`${__dirname}/papers.json`, "utf8", (error, content) => {
-        const schema = JSON.parse(content);
-        const ajv = new Ajv();
-        const validate = ajv.compile(schema);
+    const tablesMeta = {index: {_index: indexName, _type: "tables", _parent: id}};
+    tables && tables.forEach(table => {
+      s.append(`${JSON.stringify(tablesMeta)}\n${JSON.stringify(table)}\n`);
+    });
 
-        const valid = validate(papers);
-        if (!valid) {
-          console.log(validate.errors);
-          return;
-        }
-
-        Object.keys(papers).forEach(id => {
-          const paper = papers[id];
-          const {tables, figs} = paper;
-          delete paper.tables;
-          delete paper.figs;
-
-          const textMeta = {index: {_index: indexName, _type: "text", _id: id}};
-          s.append(`${JSON.stringify(textMeta)}\n${JSON.stringify(paper)}\n`);
-
-          const tablesMeta = {index: {_index: indexName, _type: "tables", _parent: id}};
-          tables && tables.forEach(table => {
-            s.append(`${JSON.stringify(tablesMeta)}\n${JSON.stringify(table)}\n`);
-          });
-
-          const figsMeta = {index: {_index: indexName, _type: "figs", _parent: id}};
-          figs && figs.forEach(fig => {
-            s.append(`${JSON.stringify(figsMeta)}\n${JSON.stringify(fig)}\n`);
-          });
-        });
-        resolve();
-      });
+    const figsMeta = {index: {_index: indexName, _type: "figs", _parent: id}};
+    figs && figs.forEach(fig => {
+      s.append(`${JSON.stringify(figsMeta)}\n${JSON.stringify(fig)}\n`);
     });
   });
-}
+
+  s.push(null);
+})();
