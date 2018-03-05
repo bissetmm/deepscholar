@@ -25,8 +25,6 @@ $ npm install
     ```
 
 2. Edit .env  
-You must edit `DS_FIGS_DIR` to define figs dir.
-You can also change port settings.
     ```
     DS_FRONT_PORT=8080
     DS_CLIENT_PORT=3000
@@ -34,7 +32,6 @@ You can also change port settings.
     DS_ES_PORT=9200
     DS_KIBANA_PORT=5601
     DS_ESHEAD_PORT=9100
-    DS_DATA_DIR=/path/to/data/dir
     OAUTH_GITHUB_CLIENT_ID=12345678901234567890
     OAUTH_GITHUB_CLIENT_SECRET=1234567890123456789012345678901234567890
     DEEP_SCHOLAR_URL=http://localhost:8080
@@ -75,59 +72,23 @@ client/src
 └── registerServiceWorker.js # Something made by templates (not used yet)
 ```
 
-### Data Format
-* id
-* title
-* author
-* abstract
-* booktitle
-* year
-* page
-* url
-
 ### Initialize Indexes (Only once)
 
 Create indexes using the following command
 ```
 $ npm -s run es:initializeIndexes
 Index(papers) created.
-Index(figs) created.
-Index(tables) created.
+Index(search_histories) created.
 ```
 
-### Import XML data
+### Import JSON data
 
-1. Put xml files into directory anywhere you want  
+1. Import json files to ES and create symlink to figs
     ```
-    ls -l ~/sample_xml
-    total 8432
-    -rwxr-xr-x@ 1 dataich  staff   2.0K 11  1 04:14 PMC5000010.xml
-    -rwxr-xr-x@ 1 dataich  staff   1.5K 11  1 04:14 PMC5000011.xml
-    -rwxr-xr-x@ 1 dataich  staff   2.0K 11  1 04:14 PMC5000012.xml
-    -rwxr-xr-x@ 1 dataich  staff   1.8K 11  1 04:14 PMC5000013.xml
-    -rwxr-xr-x@ 1 dataich  staff   1.9K 11  1 04:14 PMC5000014.xml
-    -rwxr-xr-x@ 1 dataich  staff   3.0K 11  1 04:14 PMC5000015.xml
-    -rwxr-xr-x@ 1 dataich  staff   2.8K 11  1 04:14 PMC5000080.xml
-    -rwxr-xr-x@ 1 dataich  staff   2.1K 11  1 04:14 PMC5000131.xml
-    ```
-    
-2. Import xml files to ES and create symlink to figs
-    ```
-    $ npm -s run es:insertIndexes ~/sample_xml
-    PMC5000011.xml may be invalid format.
-    PMC5000131.xml may be invalid format.
+    $ npm -s run es:insertIndexes ~/sample.json
     StatusCode: 200
-    {"took":118,"errors":false,"items":[{"index":{"_index":"papers","_type":"lang","_id":"PMC5000013","_version":2,"result":"updated","_shards":{"total":2,"successful":1,"failed":0},"created":false,"status":200}},{"index":{"_index":"figs","_type":"lang","_id":"AWAsKiszG0FqIxQhXoQP","_version":1,"result":"created","_shards":{"total":2,"successful":1,"failed":0},"created":true,"status":201}},
-    ```
-
-    Then figs can be referenced in `server/public/figs`. 
-    ```
-    ls -l server/public/figs/**/*.png
-    -rw-r--r--  1 dataich  staff  105284 11 26 22:01 server/public/figs/PMC5000010/PMC5000010_1.png
-    -rw-r--r--  1 dataich  staff  239564 11 26 22:01 server/public/figs/PMC5000010/PMC5000010_2.png
-    -rw-r--r--  1 dataich  staff  108743 11 26 22:01 server/public/figs/PMC5000010/PMC5000010_3.png
-    -rw-r--r--  1 dataich  staff  722954 11 26 22:01 server/public/figs/PMC5000010/PMC5000010_4.png
-    -rw-r--r--  1 dataich  staff  451885 11 26 22:01 server/public/figs/PMC5000010/PMC5000010_5.png
+    {"took":1246,"errors":false,"items":[{"index":{"_index":"papers","_type":"text","_id":"PMC5000735.xml","_version":1,"result":"created","_shards":{"total":2,"successful":1,"failed":0},"created":true,"status":201}},{"index":{"_index":"papers","_type":"tables","_id":"AWH2uDQT9UPK3S_DA7v4","_version":1,"result":"created","_shards":{"total":2,"successful":1,"failed":0},"created":true,"status":201}},{"index":{"_index":"papers","_type":"tables","_id":"AWH2uDQT9UPK3S_DA7v5","_version":1,"result":"created","_shards":{"total":2,"successful":1,"failed":0},"created":true,"status":201}},{"index":{"_index":"papers","_type":"tables","_id":"AWH2uDQT9UPK3S_DA7v6","_version":1,"result":"created","_shards":{"total":2,"successful":1,"failed":0},"created":true,"status":201}},{"index":{"_index":"papers","_type":"tables","_id":"AWH2uDQT9UPK3S_DA7v7","_version":1,"result":"created","_shards":{"total":2,"successful":1,"failed":0},"created":true,"status":201}},{"index":{"_index":"papers","_type":"tables","_id":"AWH2uDQT9UPK3S_DA7v8","_version":1,"result":"created","_shards":{"total":2,"successful":1,"failed":0},"created":true,"status":201}},{"index":{"_index":"papers","_type":"figs","_id":"AWH2uDQT9UPK3S_DA7v9","_version":1,"result":"created","_shards":{"total":2,"successful":1,"failed":0},"created":true,"status":201}},
+    ...
     ```
 
 ### Delete indexes

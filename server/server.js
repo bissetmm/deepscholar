@@ -18,10 +18,10 @@ if (process.env.NODE_ENV === "production") {
   app.use(express.static("client/build"));
 }
 
-const defineSearchkitRouter = (index) => {
-  app.use(`/api/${index}`, SearchkitExpress.createRouter({
+const defineSearchkitRouter = (typeName) => {
+  app.use(`/api/papers/${typeName}`, SearchkitExpress.createRouter({
     host: "http://deepscholar.elasticsearch:9200",
-    index,
+    index: `papers/${typeName}`,
     queryProcessor: (query, req) => {
       const authorization = req.headers ? req.headers["authorization"] : null;
       let userId = null;
@@ -39,8 +39,8 @@ const defineSearchkitRouter = (index) => {
         }
       }
 
-      //Save search history only for index page
-      if (query.query.bool) {
+      //Save search history only for text
+      if (query.type === "text") {
         searchHistory.insert(query, userId);
       }
 
@@ -48,9 +48,10 @@ const defineSearchkitRouter = (index) => {
     }
   }));
 };
-defineSearchkitRouter("papers");
-defineSearchkitRouter("figs");
+
+defineSearchkitRouter("text");
 defineSearchkitRouter("tables");
+defineSearchkitRouter("figs");
 
 app.use("/api/auth", require("./auth.js")(app));
 app.use("/api/label", require("./label.js")(app)); 

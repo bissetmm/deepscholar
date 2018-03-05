@@ -38,7 +38,7 @@
 .paper span > a {
     font-size: 95%;
     margin-left: 4px;
-    font-weight: normal;    
+    font-weight: normal;
 }
 
 .paper header .authors {
@@ -120,6 +120,10 @@
     font-weight: 400;
 }
 
+.table img {
+    width: 100%;
+    height: auto;
+}
 .table footer p {
     margin: 10px 0;
     font-weight: 400;

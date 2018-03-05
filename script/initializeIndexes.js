@@ -7,7 +7,7 @@ const common = require("./common.js");
   const config = await common.loadDeepScholarConfig();
 
   const indexSchemeDir = path.join(__dirname, "../", "index_schemes");
-  ["papers", "figs", "tables", "search_histories"].forEach((indexSchemeName) => {
+  ["papers", "search_histories"].forEach((indexSchemeName) => {
     fs.createReadStream(path.join(indexSchemeDir, `${indexSchemeName}.json`))
       .pipe(request.put({
         url: `http://localhost:${config.DS_ES_PORT}/${indexSchemeName}`
@@ -19,6 +19,7 @@ const common = require("./common.js");
 
         console.error(`Index(${indexSchemeName}) have not been created.`);
         console.log(`StatusCode: ${response.statusCode}`);
+        console.log(response);
       }));
   });
 })();

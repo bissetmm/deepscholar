@@ -114,21 +114,21 @@ const FilterEdit = connect(mapStateToProps)(class FilterEdit extends Component {
     if( classList.contains('cell') && !classList.contains('active') ) {
       const labelList = Object.assign({}, this.props.state.labelList);
       const labelKey = e.target.dataset.key;
-      const color = e.target.dataset.color;      
+      const color = e.target.dataset.color;
       labelList[labelKey][1] = color;
       this.props.dispatch( updateLabelList(labelList) );
       e.target.parentNode.parentNode.classList.remove('editColor');
-    }    
+    }
   }
 
   handleClickAddLabel(e) {
     const labelList = Object.assign({}, this.props.state.labelList);
-    const labelColor = this.props.state.labelColor;    
+    const labelColor = this.props.state.labelColor;
     const length = Object.keys(labelList).length;
     let no = length + 1;
     while( labelList['label'+no] )
-    { 
-      no++; 
+    {
+      no++;
     }
     labelList['label'+no] = ['New label', labelColor[length%8] , [] ];
     this.props.dispatch( updateLabelList(labelList) );
@@ -136,7 +136,7 @@ const FilterEdit = connect(mapStateToProps)(class FilterEdit extends Component {
 
   handleClickRemoveLabel(e) {
     const labelList = Object.assign({}, this.props.state.labelList);
-    const labelName = e.target.parentNode.dataset.name;    
+    const labelName = e.target.parentNode.dataset.name;
     delete labelList[labelName];
     this.props.dispatch( updateLabelList(labelList) );
   }
@@ -155,7 +155,7 @@ const FilterEdit = connect(mapStateToProps)(class FilterEdit extends Component {
     const input = li.childNodes[4];
     li.classList.remove('edit');
     input.blur();
-    const labelKey = input.dataset.key; 
+    const labelKey = input.dataset.key;
     const oldName = input.dataset.name;
     const newName = input.value;
     if( newName == '' || newName == oldName ) {
@@ -180,7 +180,7 @@ const FilterEdit = connect(mapStateToProps)(class FilterEdit extends Component {
     } else {
       li.classList.remove('max');
     }
-    
+
     if (e.key === 'Enter') this.createDone(e);
   }
 
@@ -191,7 +191,7 @@ const FilterEdit = connect(mapStateToProps)(class FilterEdit extends Component {
       const labelKey = key;
       const labelName = labelList[key][0];
       const color = labelList[key][1];
-      return ( 
+      return (
         <li key={labelKey} className={labelKey} data-name={labelKey} onClick={this.props.onClickList}>
           <span className={'color ' + color} data-color={color} onClick={this.handleClickColor.bind(this)}></span>
           <span className="labelName">{labelName}</span>
@@ -242,7 +242,7 @@ const FilterListCommon = connect(mapStateToProps)(class FilterListCommon extends
       const labelKey = key;
       const labelName = labelList[key][0];
       const color = labelList[key][1];
-      return ( 
+      return (
         <li key={labelKey} className={labelKey} data-name={labelKey} onClick={this.props.onClickList}>
           <i className="material-icons check">check</i>
           <i className="material-icons remove">remove</i>
@@ -293,7 +293,7 @@ const FilterNormal = connect(mapStateToProps)(class FilterNormal extends Compone
         target.classList.add('chkAll');
         self.addFilter(label);
       } else {
-        target.classList.remove('chkAll');  
+        target.classList.remove('chkAll');
         self.removeFilter(label);
       }
     },300);
@@ -306,7 +306,7 @@ const FilterNormal = connect(mapStateToProps)(class FilterNormal extends Compone
       const normalFilter = document.getElementById('normalFilter');
       const li = normalFilter.childNodes;
       for( let i = 0; i < li.length; i++ ) {
-          li[i].classList.remove('chkAll');  
+          li[i].classList.remove('chkAll');
       }
       self.removeAllFilter();
     },300);
@@ -364,23 +364,23 @@ const FilterChoose = connect(mapStateToProps)(class FilterChoose extends Compone
   handleClickList(e) {
     const target = e.currentTarget;
     if( target.classList.contains('chk') || target.classList.contains('chkAll') ) {
-      this.removeLabel(target);  
+      this.removeLabel(target);
     } else {
-      this.addLabel(target);  
+      this.addLabel(target);
     }
 
     const filterLabel = document.querySelector('.toolBar');
     filterLabel.classList.remove('choosing');
 
     const filterChooseAll = document.querySelector('#checkAll');
-    filterChooseAll.checked = false;      
+    filterChooseAll.checked = false;
   }
 
-  handleClickBtn(e) {    
+  handleClickBtn(e) {
     const list = this.getCheckedList();
     const {labelList} = this.props.state;
     Object.keys(labelList).map(key => {
-      const labelName = key;      
+      const labelName = key;
       let result = 0;
       let count = 0;
       list.map(function(val, i) {
@@ -390,7 +390,7 @@ const FilterChoose = connect(mapStateToProps)(class FilterChoose extends Compone
         }
       });
       if( count === list.length ) {
-        result = 2; 
+        result = 2;
       }
       const target = document.querySelector('.toolBar .chooseFilter li.' + labelName);
       target.classList.remove('chkAll', 'chk');
@@ -432,9 +432,9 @@ const FilterChoose = connect(mapStateToProps)(class FilterChoose extends Compone
 const Download = connect(mapStateToProps)(class Download extends Component {
 
   handleClick(e) {
-    const JSZip = window.JSZip;          
+    const JSZip = window.JSZip;
     const JSZipUtils = window.JSZipUtils;
-    const saveAs = window.saveAs;        
+    const saveAs = window.saveAs;
     const TSV = window.TSV;
 
     const zip = new JSZip();
@@ -542,12 +542,12 @@ const Download = connect(mapStateToProps)(class Download extends Component {
       const XLSX = window.XLSX;
       const wb = XLSX.read("", {type:"array"});
       const ws = XLSX.utils.json_to_sheet([
-                { A: 'Relation', 
-                  B: 'Dir', 
-                  C: 'Text1', 
-                  D: 'Label1', 
-                  E: 'Text2', 
-                  F: 'Label2', 
+                { A: 'Relation',
+                  B: 'Dir',
+                  C: 'Text1',
+                  D: 'Label1',
+                  E: 'Text2',
+                  F: 'Label2',
                   G: 'Reference' }
               ], {header: ["A", "B", "C", "D", "E", "F", "G"], skipHeader: true});
 
@@ -563,26 +563,26 @@ const Download = connect(mapStateToProps)(class Download extends Component {
               const id2 = Number(convert[key]['ids'][1]);
               const origin = "A" + row;
               XLSX.utils.sheet_add_json(ws, [
-                { A: convert[key]['label'], 
-                  B: convert[key]['dir'], 
-                  C: convert[id1]['text'], 
-                  D: convert[id1]['label'], 
-                  E: convert[id2]['text'], 
-                  F: convert[id2]['label'], 
+                { A: convert[key]['label'],
+                  B: convert[key]['dir'],
+                  C: convert[id1]['text'],
+                  D: convert[id1]['label'],
+                  E: convert[id2]['text'],
+                  F: convert[id2]['label'],
                   G: data[i]['id'] }
                 ],{skipHeader: true, origin: origin});
-              
+
               row++;
             }
-          } 
+          }
         }
       }
-      
+
       const sheetTitle = 'Paper';
       wb.SheetNames.push(sheetTitle);
       wb.Sheets[sheetTitle] = ws;
       wb.SheetNames.shift();
-      
+
       return XLSX.write(wb, { bookType:'xlsx', bookSST:false, type:'array' });
     }
 
@@ -649,12 +649,12 @@ const Download = connect(mapStateToProps)(class Download extends Component {
     if( ext == 'head' || ext.indexOf('close') != -1 ) return false;
 
     const list = getCheckedList();
-    if ( list.length === 0 ) return false; 
+    if ( list.length === 0 ) return false;
 
 
     cancelChecked();
 
-    
+
     let DownloadFlag = new Array(list.length);
 
     for (let i = 0; i < list.length; i++) {
@@ -675,7 +675,7 @@ const Download = connect(mapStateToProps)(class Download extends Component {
         JSZipUtils.getBinaryContent(url, function (err, data) {
           if(err) {
             DownloadFlag[i] = false;
-          } else {            
+          } else {
             dir.file(list[i] + '.' + ext, data, {binary:true});
             DownloadFlag[i] = true;
           }
@@ -683,18 +683,18 @@ const Download = connect(mapStateToProps)(class Download extends Component {
       }
     }
 
-    
+
     const id = setInterval( function(){ // wait until all paper downloaded
       let count = 0;
 
-      for (let j = 0; j < DownloadFlag.length; j++) { 
+      for (let j = 0; j < DownloadFlag.length; j++) {
         if( DownloadFlag[j] !== undefined ) count++;
       }
 
       if( count === DownloadFlag.length ){　
 
         clearInterval(id);
-                
+
         DownloadFlag = uniqueArray(DownloadFlag);
 
         if( DownloadFlag.length !== 1 || DownloadFlag[0] !== false) {
@@ -703,7 +703,7 @@ const Download = connect(mapStateToProps)(class Download extends Component {
             const d = ( ext === 'xlsx' ) ? tomlToXlsx(DownloadFlag) : tomlToTsv(DownloadFlag); // for TOML
             downloadBlob(d, ext);
           } else {
-            downloadZip();  
+            downloadZip();
           }
         }
 
@@ -740,7 +740,7 @@ const CheckAll = connect(mapStateToProps)(class CheckAll extends Component {
     const chks = document.querySelectorAll('.paper input[type="checkbox"]');
 
     for( let i = 0; i < chks.length; i++ ) chks[i].checked = e.target.checked;
-            
+
     ( e.target.checked === true ) ? filterLabel.classList.add('choosing') : filterLabel.classList.remove('choosing');
   }
 
@@ -754,14 +754,14 @@ const CheckAll = connect(mapStateToProps)(class CheckAll extends Component {
   }
 });
 
-const ToolBar = connect(mapStateToProps)(class ToolBar extends Component {  
+const ToolBar = connect(mapStateToProps)(class ToolBar extends Component {
 
   render() {
     return (
       <div className="toolBar">
 
         <CheckAll />
-  
+
         <div className="tools">
           <FilterNormal />
           <FilterChoose />
@@ -770,7 +770,7 @@ const ToolBar = connect(mapStateToProps)(class ToolBar extends Component {
 
       </div>
     );
-  } 
+  }
 });
 
 class Search extends Component {
@@ -791,17 +791,17 @@ class Search extends Component {
     document.body.classList.remove("search");
   }
 
-  componentDidMount() {    
+  componentDidMount() {
     window.jQuery('ul.tabs').tabs();
     window.jQuery('.dropdown-button').dropdown();
-    window.jQuery('.modal').modal({ dismissible: false });            
-    this.search(this.props.state.category);    
+    window.jQuery('.modal').modal({ dismissible: false });
+    this.search(this.props.state.category);
   }
-  
-  componentDidUpdate(prevProps) {    
+
+  componentDidUpdate(prevProps) {
     const {category: oldCategory, query: oldQuery, articleTitle: oldArticleTitle, author: oldAuthor, abstract: oldAbstract, gte: oldGte, lte: oldLte, booktitles: oldBooktitles, page: oldPage, labelFilter: oldlabelFilter} = prevProps.state;
     const {category: newCategory, query: newQuery, articleTitle: newArticleTitle, author: newAuthor, abstract: newAbstract, gte: newGte, lte: newLte, booktitles: newBooktitles, page: newPage, labelFilter: newlabelFilter} = this.props.state;
-    
+
     if (oldCategory !== newCategory || oldQuery !== newQuery || oldArticleTitle !== newArticleTitle || oldAuthor !== newAuthor || oldAbstract !== newAbstract || oldPage !== newPage || oldGte !== newGte || oldLte !== newLte || Array.from(oldBooktitles).join("") !== Array.from(newBooktitles).join("") || oldlabelFilter !== newlabelFilter) {
       this.search(newCategory);
     }
@@ -845,25 +845,12 @@ class Search extends Component {
                 multi_match: {
                   query,
                   fields: [
-                    "id",
                     "articleTitle",
                     "journalTitle",
                     "abstract",
-                    "url"
+                    "url",
+                    "authors"
                   ]
-                }
-              },
-              {
-                nested: {
-                  path: "author",
-                  query: {
-                    multi_match: {
-                      query,
-                      fields: [
-                        "author.*"
-                      ]
-                    }
-                  }
                 }
               }
             ]
@@ -878,17 +865,7 @@ class Search extends Component {
     }
     if (author) {
       queryMust.push({
-        nested: {
-          path: "author",
-          query: {
-            multi_match: {
-              query: author,
-              fields: [
-                "author.*"
-              ]
-            }
-          }
-        }
+        match: {authors: author}
       });
     }
     if (abstract) {
@@ -925,7 +902,7 @@ class Search extends Component {
     })
     const labelFilterList = filterdList.length > 0 ? { terms: { _id: filterdList } } : null;
 
-    const body = JSON.stringify({
+    const body = {
       query: {
         bool: {
           must: queryMust
@@ -944,7 +921,7 @@ class Search extends Component {
           articleTitle: {number_of_fragments: 0},
           journalTitle: {number_of_fragments: 0},
           abstract: {number_of_fragments: 0},
-          "author.*": {number_of_fragments: 0}
+          authors: {number_of_fragments: 0}
         }
       },
       aggs: {
@@ -959,14 +936,14 @@ class Search extends Component {
             field: "booktitle.keyword",
             size: 10
           }
-        },
+        }
       }
-    });
+    };
 
     const {user} = this.props.state;
     const token = user ? user.token : null;
 
-    Api.searchPapers({body}, token).then((json) => {
+    Api.searchText({body}, token).then((json) => {
       this.props.dispatch(receivePapers(json));
     });
   }
@@ -975,32 +952,41 @@ class Search extends Component {
     const {query, page} = this.props.state;
     this.props.dispatch(requestFigures(query, page));
 
-    const bodyParams = {
-      size: this.props.state.figuresFetchSize
-    };
-
-    if (query) {
-      bodyParams.query = {
+    const body = {
+      size: this.props.state.figuresFetchSize,
+      query: {
         bool: {
-          must: {
-            nested: {
-              path: "caption",
-              query: {
-                multi_match: {
-                  query,
-                  fields: [
-                    "caption.p",
-                    "caption.title"
-                  ]
+          must: [
+            {
+              has_parent: {
+                parent_type: "text",
+                query: {
+                  match_all: {}
+                },
+                inner_hits: {
+                  _source: {
+                    includes: ["articleTitle"]
+                  }
                 }
               }
             }
-          }
+          ]
         }
-      };
+      }
+    };
+
+    if (query) {
+      body.query.bool.must.push({
+        multi_match: {
+          query,
+          fields: [
+            "label",
+            "caption"
+          ]
+        }
+      });
     }
 
-    const body = JSON.stringify(bodyParams);
     Api.searchFigs({body}).then((json) => {
       this.props.dispatch(receiveFigures(json));
     });
@@ -1012,43 +998,42 @@ class Search extends Component {
 
     const from = page * this.props.state.papersFetchSize;
 
-    const bodyParams = {
+    const body = {
       from,
       size: this.props.state.tablesFetchSize,
-    };
-
-    if (query) {
-      bodyParams.query = {
+      query: {
         bool: {
-          should: [
+          must: [
             {
-              multi_match: {
-                query,
-                fields: [
-                  "articleTitle",
-                ]
-              }
-            },
-            {
-              nested: {
-                path: "caption",
+              has_parent: {
+                parent_type: "text",
                 query: {
-                  multi_match: {
-                    query,
-                    fields: [
-                      "caption.p",
-                      "caption.title"
-                    ]
+                  match_all: {}
+                },
+                inner_hits: {
+                  _source: {
+                    includes: ["articleTitle"]
                   }
                 }
               }
             }
           ]
         }
-      };
+      }
+    };
+
+    if (query) {
+      body.query.bool.must.push({
+        multi_match: {
+          query,
+          fields: [
+            "label",
+            "caption"
+          ]
+        }
+      });
     }
 
-    const body = JSON.stringify(bodyParams);
     Api.searchTables({body}).then((json) => {
       this.props.dispatch(receiveTables(json));
     });
@@ -1092,7 +1077,7 @@ class Search extends Component {
 
   handleClickTab(category) {
     this.addTabClassToBody(category);
-    this.changeQuery(category, this.props.state.query);    
+    this.changeQuery(category, this.props.state.query);
   }
 
   addTabClassToBody(category){
@@ -1166,7 +1151,7 @@ class Search extends Component {
                         case 'texts'       : icon = 'font_download'; break;
                         case 'figures'     : icon = 'image';         break;
                         case 'tables'      : icon = 'grid_on';       break;
-                        case 'collocations': icon = 'format_shapes'; break;                        
+                        case 'collocations': icon = 'format_shapes'; break;
                         default       : icon = '';
                       }
 
@@ -1190,10 +1175,10 @@ class Search extends Component {
 
           <div className="row">
 
-            <div className="col s4 l3 sidebar">            
+            <div className="col s4 l3 sidebar">
               <div className="col s4 l3">
                 <h5><i className="material-icons">find_in_page</i>Filter</h5>
-                <div>                
+                <div>
 
                 <Switch>
                   <Route path="/figures" component={(props) => (
