@@ -1136,7 +1136,8 @@ class Search extends Component {
     const categories = [
       "texts",
       "figures",
-      "tables"];
+      "tables",
+      "collocations"];
 
     return (
         <div>
@@ -1162,14 +1163,15 @@ class Search extends Component {
                     {categories.map((category) => {
                       let icon;
                       switch (category) {
-                        case 'texts'  : icon = 'font_download'; break;
-                        case 'figures': icon = 'image';         break;
-                        case 'tables' : icon = 'grid_on';       break;
+                        case 'texts'       : icon = 'font_download'; break;
+                        case 'figures'     : icon = 'image';         break;
+                        case 'tables'      : icon = 'grid_on';       break;
+                        case 'collocations': icon = 'format_shapes'; break;                        
                         default       : icon = '';
                       }
 
                       return (
-                        <li key={category} className="tab" onClick={this.handleClickTab.bind(this, category)}>
+                        <li key={category} className={'tab ' + category} onClick={this.handleClickTab.bind(this, category)}>
                           <a className={this.props.state.category === category ? 'active' : ''}>
                             <span className="txt">
                               <i className="material-icons hide-on-small-only">{icon}</i>

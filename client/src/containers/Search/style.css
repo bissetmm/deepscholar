@@ -17,6 +17,9 @@
 	padding-top: 32px;
 }
 
+.search .tab.collocations a .txt {
+	letter-spacing: 0.05em;
+}
 /****************
 **
 **  Sub Navigation
