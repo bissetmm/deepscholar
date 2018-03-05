@@ -32,27 +32,18 @@ const Authors = connect(mapStateToProps)(class Authors extends Component {
     if (!this.props.asFull && !this.props.state.enabledAllAuthorsPaperIds.has(this.props.paperId)) {
       data = this.props.data.slice(0, 2);
     }
-    const highlightedSurnameList = this.props.highlight["author.surname"] || [];
-    const highlightedGivenNamesList = this.props.highlight["author.givenNames"] || [];
+    const highlightedAuthors = this.props.highlight["authors"] || [];
 
     const authors = data.map((author) => {
-      let surname = author.surname;
-      for (const highlightedSurname of highlightedSurnameList) {
-        if (highlightedSurname === `<em>${surname}</em>`){
-          surname = highlightedSurname;
+      let name = author;
+      for (const highlightedAuthor of highlightedAuthors) {
+        if (highlightedAuthor.replace(/\<\/?em>/g, "") === author) {
+          name = highlightedAuthor;
           break;
         }
       }
-
-      let givenNames = author.givenNames;
-      for (const highlightedGivenNames of highlightedGivenNamesList) {
-        if (highlightedGivenNames === `<em>${givenNames}</em>`){
-          givenNames = highlightedGivenNames;
-          break;
-        }
-      }
-      const label = {__html: `${surname} ${givenNames}`};
-      return <li key={author.surname + author.givenNames} dangerouslySetInnerHTML={label}></li>;
+      const label = {__html: `${name}`};
+      return <li key={author} dangerouslySetInnerHTML={label}></li>;
     });
     const haveMore = this.props.data.length > 2;
 
@@ -128,14 +119,13 @@ export const Paper = withRouter(connect(mapStateToProps)(class Paper extends Com
   }
 
   render() {
-    const {id, year, abstract: rawAbstract, articleTitle: rawArticleTitle, journalTitle: rawJournalTitle, author} = this.props.data._source;
+    const id = this.props.data._id;
+    const {year, abstract: rawAbstract, articleTitle: rawArticleTitle, journalTitle: rawJournalTitle, authors, pdf, xml, pdftxt} = this.props.data._source;
     const highlight = this.props.data.highlight || {};
     const {abstract: highlightedAbstract, articleTitle: highlightedArticleTitle, journalTitle: highlightedJournalTitle} = highlight;
     const paperUrl = `/papers/${id}`;
-    const authors = <Authors data={author} highlight={highlight} paperId={id} asFull={this.props.asFull}/>;
-    const attachmentBaseUrl = `/api/documents/${id}/${id}`;
-    const pdfUrl = `${window.location.origin}${attachmentBaseUrl}.pdf`;
-    const pdfannoUrl = `https://paperai.github.io/pdfanno/latest/?pdf=${pdfUrl}`;
+    const authorComponents = <Authors data={authors} highlight={highlight} paperId={id} asFull={this.props.asFull}/>;
+    const pdfannoUrl = `https://paperai.github.io/pdfanno/latest/?pdf=${pdf}`;
 
     const articleTitle = {__html: highlightedArticleTitle || rawArticleTitle};
     const journalTitle = {__html: `${highlightedJournalTitle || rawJournalTitle} ${year}`};
@@ -155,7 +145,7 @@ export const Paper = withRouter(connect(mapStateToProps)(class Paper extends Com
             <a href="javascript:void(0)" onClick={this.handleClick.bind(this, paperUrl)} dangerouslySetInnerHTML={articleTitle}></a>
             <FilterLabels paperId={id} />
           </h5>
-          {authors}
+          {authorComponents}
           <h6 dangerouslySetInnerHTML={journalTitle}></h6>
         </header>
         <div className="abstract"
@@ -163,13 +153,13 @@ export const Paper = withRouter(connect(mapStateToProps)(class Paper extends Com
         <footer>
           <ul className="meta links valign-wrapper blue-text">
             <li>
-              <a href={pdfUrl} target="_blank">pdf</a>
+              <a href={pdf} target="_blank">pdf</a>
             </li>
             <li>
-              <a href={`${attachmentBaseUrl}.xml`} target="_blank">xml</a>
+              <a href={xml} target="_blank">xml</a>
             </li>
             <li>
-              <a href={`${attachmentBaseUrl}.pdf.txt`} target="_blank">pdf.txt</a>
+              <a href={pdftxt} target="_blank">pdf.txt</a>
             </li>
             <li><a href={pdfannoUrl} target="_blank">pdfanno</a></li>
           </ul>
@@ -182,7 +172,7 @@ export const Paper = withRouter(connect(mapStateToProps)(class Paper extends Com
 export class Papers extends Component {
   render() {
     const papers = this.props.data.map((paper) =>
-      <Paper data={paper} key={paper._source.id} asFull={false}/>
+      <Paper data={paper} key={paper._id} asFull={false}/>
     );
 
     return (
@@ -200,13 +190,11 @@ class Figure extends Component {
   }
 
   render() {
-    const {img, url, caption, label} = this.props.data;
-    const title = (caption && caption.title) || label;
-    const p = (caption && caption.p) || "";
-    const subHtml = `<h4>${title}</h4><p>${p}</p>`;
+    const {img, caption, label} = this.props.data;
+    const subHtml = `<h4>${label}</h4><p>${caption}</p>`;
     return (
-      <a key={img} href={url} data-sub-html={subHtml} >
-        <img src={url} onError={this.loadAlternativeImage.bind(this)}/>
+      <a key={img} href={img} data-sub-html={subHtml} >
+        <img src={img} onError={this.loadAlternativeImage.bind(this)}/>
       </a>
     );
   }
@@ -229,11 +217,11 @@ export class Figures extends Component {
 
   render() {
     const figures = this.props.data.map((figure) => {
-      const {paperId, img, caption, label} = figure;
-      const url = (/^https?:\/\//).test(img) ? img : `/api/documents/${paperId}/${img}`;
-      const data = {img, url, caption, label};
+      const key = figure._id;
+      const {img, caption, label} = figure._source;
+      const data = {img, caption, label};
 
-      return <Figure key={figure.img} data={data} />;
+      return <Figure key={key} data={data} />;
     });
 
     return (
@@ -251,12 +239,12 @@ export const Table = withRouter(connect(mapStateToProps)(class Table extends Com
   }
 
   render() {
-    const {paperId, table, label, caption, articleTitle} = this.props.data;
+    const {img: url, label, caption} = this.props.data._source;
+    const paper = this.props.data.inner_hits.text.hits.hits[0];
+    const paperId = paper._id;
+    const {articleTitle} = paper._source;
     const paperUrl = `/papers/${paperId}`;
-    const html = {__html: `<table class="striped responsive-table">${table}<table>`};
-    const footer = ( typeof label !== 'undefined' ? label : '' ) + ' '
-                    + ( typeof caption.title !== 'undefined' ? caption.title : '' ) + ' '
-                    + ( typeof caption.p !== 'undefined' ? caption.p.join(' ') : '' );
+    const footer = `${label} ${caption}`;
 
     return (
       <article className="table">
@@ -264,7 +252,7 @@ export const Table = withRouter(connect(mapStateToProps)(class Table extends Com
         <header>
           <h5><a href="javascript:void(0)" onClick={this.handleClick.bind(this, paperUrl)}>{articleTitle}</a></h5>
         </header>
-        <div dangerouslySetInnerHTML={html}></div>
+        <img src={url}/>
         <footer>
           <h6>{footer}</h6>
         </footer>
@@ -276,10 +264,7 @@ export const Table = withRouter(connect(mapStateToProps)(class Table extends Com
 export class Tables extends Component {
   render() {
     const tables = this.props.data.map((value, i) => {
-      const {paperId, table, label, caption, articleTitle} = value;
-      const data = {paperId, table, label, caption, articleTitle};
-
-      return <Table key={i} data={data} />;
+      return <Table key={i} data={value} />;
     });
 
     return (

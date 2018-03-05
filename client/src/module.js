@@ -57,12 +57,12 @@ const _getLabelList = function(user){
   let labelListSaved;
   let is_available = false;
   const getLabelListFromLocalStrage = function(){
-    const labelListInLS = window.localStorage.getItem('labelList'); 
+    const labelListInLS = window.localStorage.getItem('labelList');
     return  ( labelListInLS && _validateLabelList( JSON.parse(labelListInLS) ) ) ? JSON.parse(labelListInLS) : labelList;
   }
-  if ( user !== undefined && user.profile !== undefined ) {    
+  if ( user !== undefined && user.profile !== undefined ) {
     window.jQuery.ajax({ async: false, url: '/api/label/get?profile_id=' + user.profile.id })
-    .done(function(data) { 
+    .done(function(data) {
       if( data !== 'error' ) {
         labelListSaved = JSON.parse(data.label.labelList);
         if( _validateLabelList(labelListSaved) ) is_available = true;
@@ -74,13 +74,13 @@ const _getLabelList = function(user){
 }
 
 const _saveLabelList = function(labelList, user){
-  if ( user && _validateLabelList(labelList) ) { 
+  if ( user && _validateLabelList(labelList) ) {
     window.jQuery.ajax({ url: '/api/label/set?profile_id=' + user.profile.id + '&labelList=' + JSON.stringify(labelList) })
-    .done(function(data) { 
+    .done(function(data) {
       ( data === 'done' ) ? console.log('LabelList Saved.') : console.log('LabelList Save Failed.');
     })
     .fail(function() { console.log('LabelList Save Ajax Error.') });
-  } 
+  }
   window.localStorage.setItem('labelList', JSON.stringify(labelList));
 }
 
@@ -229,7 +229,7 @@ export function reducers(state = initialState, action) {
     case UPDATE_LABEL_FILTER:
       return Object.assign({}, state, {
         labelFilter: action.filterList
-      });      
+      });
     default:
       return state;
   }
@@ -351,7 +351,7 @@ const RECEIVE_FIGURES = "RECEIVE_FIGURES";
 export function receiveFigures(json) {
   return {
     type: RECEIVE_FIGURES,
-    figures: json.hits.hits.map((item) => item._source),
+    figures: json.hits.hits,
     figuresTotal: json.hits.total
   };
 }
@@ -371,7 +371,7 @@ const RECEIVE_TABLES = "RECEIVE_TABLES";
 export function receiveTables(json) {
   return {
     type: RECEIVE_TABLES,
-    tables: json.hits.hits.map((item) => item._source),
+    tables: json.hits.hits,
     tablesTotal: json.hits.total
   };
 }

@@ -1,6 +1,6 @@
 {
   "mappings": {
-    "lang": {
+    "text": {
       "properties": {
         "articleTitle": {
           "type": "text",
@@ -13,62 +13,66 @@
         },
         "year": {
           "type": "short"
-        },
-        "tables": {
-          "type": "nested",
-          "properties": {
-            "img": {
-              "type": "text",
-              "fields": {
-                "keyword": {
-                  "type": "keyword"
-                }
-              }
-            },
-            "label": {
-              "type": "text",
-              "fields": {
-                "keyword": {
-                  "type": "keyword"
-                }
-              }
-            },
-            "caption": {
-              "type": "text",
-              "fields": {
-                "keyword": {
-                  "type": "keyword"
-                }
-              }
+        }
+      }
+    },
+    "tables": {
+      "_parent": {
+        "type": "text"
+      },
+      "properties": {
+        "img": {
+          "type": "text",
+          "fields": {
+            "keyword": {
+              "type": "keyword"
             }
           }
         },
-        "figs": {
-          "type": "nested",
-          "properties": {
-            "img": {
-              "type": "text",
-              "fields": {
-                "keyword": {
-                  "type": "keyword"
-                }
-              }
-            },
-            "label": {
-              "type": "text",
-              "fields": {
-                "keyword": {
-                  "type": "keyword"
-                }
-              }
-            },
-            "caption": {
-              "type": "text",
-              "fields": {
-                "keyword": {
-                  "type": "keyword"
-                }
-              }
+        "label": {
+          "type": "text",
+          "fields": {
+            "keyword": {
+              "type": "keyword"
+            }
+          }
+        },
+        "caption": {
+          "type": "text",
+          "fields": {
+            "keyword": {
+              "type": "keyword"
+            }
+          }
+        }
+      }
+    },
+    "figs": {
+      "_parent": {
+        "type": "text"
+      },
+      "properties": {
+        "img": {
+          "type": "text",
+          "fields": {
+            "keyword": {
+              "type": "keyword"
+            }
+          }
+        },
+        "label": {
+          "type": "text",
+          "fields": {
+            "keyword": {
+              "type": "keyword"
+            }
+          }
+        },
+        "caption": {
+          "type": "text",
+          "fields": {
+            "keyword": {
+              "type": "keyword"
             }
           }
         }

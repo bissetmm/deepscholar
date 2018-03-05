@@ -1,6 +1,6 @@
 class Api {
-  static fetchApi(indexName, options) {
-    return fetch(`/api/${indexName}/_search`, options)
+  static fetchApi(typeName, options) {
+    return fetch(`/api/papers/${typeName}/_search`, options)
       .then((response) => {
         if (response.status >= 200 && response.status < 300) {
           return response;
@@ -11,7 +11,7 @@ class Api {
       .catch(console.log);
   }
 
-  static search(indexName, options, token) {
+  static search(typeName, options, token) {
     const headers = new Headers();
     headers.append("Content-Type", "application/json");
 
@@ -19,17 +19,18 @@ class Api {
       headers.append("authorization", `bearer ${token}`);
     }
 
+    options.body = JSON.stringify(options.body);
     const o = Object.assign({
       accept: "application/json",
       headers,
       method: "post",
       body: null
     }, options);
-    return Api.fetchApi(indexName, o);
+    return Api.fetchApi(typeName, o);
   }
 
-  static searchPapers(options, token) {
-    return Api.search("papers", options, token);
+  static searchText(options, token) {
+    return Api.search("text", options, token);
   }
 
   static searchFigs(options) {

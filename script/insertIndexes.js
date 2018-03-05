@@ -5,12 +5,7 @@ const common = require("./common.js");
 
 const filePath = process.argv[2];
 
-const meta = {
-  index: {
-    _index: "papers",
-    _type: "lang"
-  }
-};
+const indexName = "papers";
 
 (async () => {
   const config = await common.loadDeepScholarConfig();
@@ -49,8 +44,25 @@ function processPaper(s, filePath) {
         throw error;
       }
 
-      papers.forEach(item => {
-        s.append(`${JSON.stringify(meta)}\n${JSON.stringify(item)}\n`);
+      let count = 0;
+      papers.forEach(paper => {
+        const id = ++count;
+        const {tables, figs} = paper;
+        delete paper.tables;
+        delete paper.figs;
+
+        const textMeta = {index: {_index: indexName, _type: "text", _id: id}};
+        s.append(`${JSON.stringify(textMeta)}\n${JSON.stringify(paper)}\n`);
+
+        const tablesMeta = {index: {_index: indexName, _type: "tables", _parent: id}};
+        tables && tables.forEach(table => {
+          s.append(`${JSON.stringify(tablesMeta)}\n${JSON.stringify(table)}\n`);
+        });
+
+        const figsMeta = {index: {_index: indexName, _type: "figs", _parent: id}};
+        figs && figs.forEach(fig => {
+          s.append(`${JSON.stringify(figsMeta)}\n${JSON.stringify(fig)}\n`);
+        });
       });
       resolve();
     });

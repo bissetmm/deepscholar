@@ -19,6 +19,7 @@ const common = require("./common.js");
 
         console.error(`Index(${indexSchemeName}) have not been created.`);
         console.log(`StatusCode: ${response.statusCode}`);
+        console.log(response);
       }));
   });
 })();

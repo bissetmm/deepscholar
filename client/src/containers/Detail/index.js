@@ -21,14 +21,14 @@ class Detail extends Component {
 
   search(paperId) {
     this.props.dispatch(requestPaper(paperId));
-    const body = JSON.stringify({
+    const body = {
       query: {
         match: {
-          id: paperId
+          _id: paperId
         }
       }
-    });
-    Api.searchPapers({body}).then((json) => {
+    };
+    Api.searchText({body}).then((json) => {
       this.props.dispatch(receivePaper(json));
     });
   }
