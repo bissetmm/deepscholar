@@ -13,6 +13,7 @@
     "db:dropDatabase": "node script/dropDatabase.js"
   },
   "devDependencies": {
+    "ajv": "^6.2.1",
     "camelcase": "^4.1.0",
     "concurrently": "^3.5.0",
     "elasticdump": "^3.3.4",
