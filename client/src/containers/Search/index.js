@@ -415,8 +415,9 @@ const FilterChoose = connect(mapStateToProps)(class FilterChoose extends Compone
       const color = labelList[labelKey][1];
       const list = labelList[labelKey][2];
       list.map(function(val, i) {
-        style += '.paper' + val + ' h5 .' + labelKey + ' { margin: 0 4px; }';
-        style += '.paper' + val + ' h5 .' + labelKey + ':after { content: "' + labelName + '"; }';
+        const valDotEscaped = val.replace(/\./i, '\\\.'); // class name may include dot
+        style += '.paper' + valDotEscaped + ' h5 .' + labelKey + ' { margin: 0 4px; }';
+        style += '.paper' + valDotEscaped + ' h5 .' + labelKey + ':after { content: "' + labelName + '"; }';
       })
     })
 
