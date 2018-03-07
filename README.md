@@ -83,13 +83,17 @@ Index(search_histories) created.
 
 ### Import JSON data
 
-1. Import json files to ES and create symlink to figs
-    ```
-    $ npm -s run es:insertIndexes ~/sample.json
-    StatusCode: 200
-    {"took":1246,"errors":false,"items":[{"index":{"_index":"papers","_type":"text","_id":"PMC5000735.xml","_version":1,"result":"created","_shards":{"total":2,"successful":1,"failed":0},"created":true,"status":201}},{"index":{"_index":"papers","_type":"tables","_id":"AWH2uDQT9UPK3S_DA7v4","_version":1,"result":"created","_shards":{"total":2,"successful":1,"failed":0},"created":true,"status":201}},{"index":{"_index":"papers","_type":"tables","_id":"AWH2uDQT9UPK3S_DA7v5","_version":1,"result":"created","_shards":{"total":2,"successful":1,"failed":0},"created":true,"status":201}},{"index":{"_index":"papers","_type":"tables","_id":"AWH2uDQT9UPK3S_DA7v6","_version":1,"result":"created","_shards":{"total":2,"successful":1,"failed":0},"created":true,"status":201}},{"index":{"_index":"papers","_type":"tables","_id":"AWH2uDQT9UPK3S_DA7v7","_version":1,"result":"created","_shards":{"total":2,"successful":1,"failed":0},"created":true,"status":201}},{"index":{"_index":"papers","_type":"tables","_id":"AWH2uDQT9UPK3S_DA7v8","_version":1,"result":"created","_shards":{"total":2,"successful":1,"failed":0},"created":true,"status":201}},{"index":{"_index":"papers","_type":"figs","_id":"AWH2uDQT9UPK3S_DA7v9","_version":1,"result":"created","_shards":{"total":2,"successful":1,"failed":0},"created":true,"status":201}},
-    ...
-    ```
+Import json files to ES
+```
+$ npm -s run es:insertIndexes ~/sample.json
+Inserted 482 papers.
+Inserted 475 papers.
+Inserted 514 papers.
+...
+```
+    
+Please define limit bytes to import Elasticsearch's Bulk API using `DS_BULK_LIMIT_BYTE_PER_REQUEST` in .env file.
+
 
 ### Delete indexes
 ```
