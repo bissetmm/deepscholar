@@ -3,7 +3,7 @@ import React, {Component} from 'react';
 import {connect} from 'react-redux';
 import {withRouter} from 'react-router-dom';
 import './style.css';
-import {saveScrollY, toggleAllAuthors, toggleFullText} from "../module";
+import {saveScrollY, toggleAllAuthors, toggleFullText, updateLabelList, favoriteKey} from "../module";
 
 function mapStateToProps(state) {
   return {state};
@@ -94,13 +94,38 @@ const CheckForFilter = connect(mapStateToProps)(class CheckBoxForFilter extends 
   }
 });
 
+const Favorite = connect(mapStateToProps)(class CheckBoxForFilter extends Component {
+
+  handleClick(e) {
+    let labelList = Object.assign({}, this.props.state.labelList);
+    let favList = labelList[favoriteKey];
+    const id = e.currentTarget.dataset.id;
+    const index = labelList[favoriteKey].indexOf(id);
+    // exist ? remove : add;
+    ( index !== -1 ) ? favList.splice(index, 1) : favList.push(id);
+    this.props.dispatch( updateLabelList(labelList) );
+  }
+
+  render() {
+    const paperId = this.props.paperId;
+    return (
+      <div className="favorite" data-id={paperId} onClick={this.handleClick.bind(this)}>
+        <i className="material-icons on">star</i>
+        <i className="material-icons off">star_border</i>
+      </div>
+    );
+  }
+});
+
 const FilterLabels = connect(mapStateToProps)(class FilterLabels extends Component {
 
   render() {
     const {labelList} = this.props.state;
     const labels = Object.keys(labelList).map(key => {
-      const labelName = key;
-      return <span key={key} className={key + ' ' + labelList[labelName][1]}></span>
+      const labelKey = key;
+      if( labelKey !== favoriteKey ){
+        return <span key={key} className={key + ' ' + labelList[labelKey][1]}></span>
+      }
     })
 
     return (
@@ -140,6 +165,7 @@ export const Paper = withRouter(connect(mapStateToProps)(class Paper extends Com
       <article className={'paper ' + 'paper'+id}>
         <div className="divider"></div>
         <CheckForFilter paperId={id} />
+        <Favorite paperId={id} />
         <header>
           <h5>
             <a href="javascript:void(0)" onClick={this.handleClick.bind(this, paperUrl)} dangerouslySetInnerHTML={articleTitle}></a>

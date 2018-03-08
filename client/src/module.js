@@ -5,14 +5,18 @@ const matches = window.location.hash.match(/#\/([a-zA-Z]+).*\?(.+)/);
 const queries = matches ? matches[2] : "";
 const parsed = queryString.parse(queries);
 const category = matches ? matches[1] : null;
+const favoriteKey = "favorite_____________";
 const labelColor = ["red", "blue", "green", "grey", "yellow", "orange", "pink", "purple" ];
 const labelList = {
                     "label1" : ["label1", labelColor[0] , [] ] , // labelName : [name, color, paperList]
                     "label2" : ["label2", labelColor[1] , [] ] ,
                     "label3" : ["label3", labelColor[2] , [] ] ,
                     "label4" : ["label4", labelColor[3] , [] ] ,
-                    "label5" : ["label5", labelColor[4] , [] ]
+                    "label5" : ["label5", labelColor[4] , [] ] ,
+                    [favoriteKey] : [], // Only for favorite func
                   };
+
+export {favoriteKey}; // To use favoriteKey on another page.
 
 const initialState = {
   user: null,
@@ -52,7 +56,7 @@ const initialState = {
   scrollYPositions: new Map()
 };
 
-////// ▼ Functions for Getting LabelList from DB ▼
+////// ▼ Functions for Get/Set LabelList from DB ▼
 const _getLabelList = function(user){
   let labelListSaved;
   let is_available = false;
@@ -88,12 +92,15 @@ const _validateLabelList = function(labelList){
   let is_labelList = true;
   let key;
   if( typeof labelList !== 'object' ) is_labelList = false;
+  if( !(favoriteKey in labelList) ) is_labelList = false;
   for (key in labelList) {
-    if( typeof key !== 'string' || typeof labelList[key][0] !== 'string' || labelColor.indexOf(labelList[key][1]) == -1 || !Array.isArray(labelList[key][2]) ) is_labelList = false;
+    if( key !== favoriteKey ) {
+      if( typeof key !== 'string' || typeof labelList[key][0] !== 'string' || labelColor.indexOf(labelList[key][1]) == -1 || !Array.isArray(labelList[key][2]) ) is_labelList = false;
+    }
   }
   return is_labelList;
 }
-////// ▲ Functions for Getting LabelList from DB ▲
+////// ▲ Functions for Get/Set LabelList from DB ▲
 
 export function reducers(state = initialState, action) {
   switch (action.type) {

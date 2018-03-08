@@ -6,7 +6,7 @@ import {RangeSliderHistogram} from 'searchkit';
 import {Papers, Figures, Tables} from '../../components/index.js';
 import Api from '../../api';
 import { changeQuery, changePage, requestPapers, receivePapers, requestFigures, receiveFigures, requestTables, receiveTables, deleteScrollY, changeYears
-  , changeBooktitle, updateLabelList, updateLabelFilter } from '../../module';
+  , changeBooktitle, updateLabelList, updateLabelFilter, favoriteKey } from '../../module';
 import './style.css';
 import 'searchkit/release/theme.css';
 import Detail from "../Detail";
@@ -95,338 +95,6 @@ const PublicationFilter = connect(mapStateToProps)(class PublicationFilter exten
                                  maxValue={this.maxValue || this.props.maxValue}
                                  onChange={this.handleOnChange.bind(this)}
                                  onFinished={this.handleOnFinished.bind(this)}/>;
-  }
-});
-
-const FilterEdit = connect(mapStateToProps)(class FilterEdit extends Component {
-
-  handleClickColor(e) {
-    const li = e.target.parentNode;
-    li.classList.add('editColor');
-    e.target.focus();
-  }
-  handleClickcolorListMusk(e) {
-    const li = e.target.parentNode;
-    li.classList.remove('editColor');
-  }
-  handleClickChangeColor(e) {
-    const classList = e.target.classList;
-    if( classList.contains('cell') && !classList.contains('active') ) {
-      const labelList = Object.assign({}, this.props.state.labelList);
-      const labelKey = e.target.dataset.key;
-      const color = e.target.dataset.color;
-      labelList[labelKey][1] = color;
-      this.props.dispatch( updateLabelList(labelList) );
-      e.target.parentNode.parentNode.classList.remove('editColor');
-    }
-  }
-
-  handleClickAddLabel(e) {
-    const labelList = Object.assign({}, this.props.state.labelList);
-    const labelColor = this.props.state.labelColor;
-    const length = Object.keys(labelList).length;
-    let no = length + 1;
-    while( labelList['label'+no] )
-    {
-      no++;
-    }
-    labelList['label'+no] = ['New label', labelColor[length%8] , [] ];
-    this.props.dispatch( updateLabelList(labelList) );
-  }
-
-  handleClickRemoveLabel(e) {
-    const labelList = Object.assign({}, this.props.state.labelList);
-    const labelName = e.target.parentNode.dataset.name;
-    delete labelList[labelName];
-    this.props.dispatch( updateLabelList(labelList) );
-  }
-
-  handleClickCreate(e) {
-    const li = e.target.parentNode;
-    const input = li.childNodes[4];
-    li.classList.add('edit');
-    input.focus();
-    input.setSelectionRange(input.value.length, input.value.length);
-    input.value = input.dataset.name;
-  }
-
-  createDone(e){
-    const li = e.target.parentNode;
-    const input = li.childNodes[4];
-    li.classList.remove('edit');
-    input.blur();
-    const labelKey = input.dataset.key;
-    const oldName = input.dataset.name;
-    const newName = input.value;
-    if( newName == '' || newName == oldName ) {
-      return false
-    } else {
-      const labelList = Object.assign({}, this.props.state.labelList);
-      labelList[labelKey][0] = newName;
-      this.props.dispatch( updateLabelList(labelList) );
-    }
-  }
-  handleBlurInput(e) {
-    this.createDone(e);
-  }
-
-  handleKeyUp(e) {
-
-    const input = e.target;
-    const li = input.parentNode;
-    if( input.value.length >= 20 ){
-      li.classList.add('max');
-      input.value = input.value.slice( 0, 20)
-    } else {
-      li.classList.remove('max');
-    }
-
-    if (e.key === 'Enter') this.createDone(e);
-  }
-
-  render() {
-    const {labelColor, labelList} = this.props.state;
-
-    const lists = Object.keys(labelList).map(key => {
-      const labelKey = key;
-      const labelName = labelList[key][0];
-      const color = labelList[key][1];
-      return (
-        <li key={labelKey} className={labelKey} data-name={labelKey} onClick={this.props.onClickList}>
-          <span className={'color ' + color} data-color={color} onClick={this.handleClickColor.bind(this)}></span>
-          <span className="labelName">{labelName}</span>
-          <ul className="colorList" onClick={this.handleClickChangeColor.bind(this)}>
-            { labelColor.map(function(e, i) {
-              const className = 'cell ' + e + ( ( e === color  ) ? ' active' : '' );
-              return ( <li key={i} data-key={labelKey} data-color={e} className={className}></li> )
-            })}
-          </ul>
-          <div className="colorListMusk" onClick={this.handleClickcolorListMusk.bind(this)}></div>
-          <input type="text" data-key={labelKey} data-name={labelName} onBlur={this.handleBlurInput.bind(this)} onKeyUp={this.handleKeyUp.bind(this)}/>
-          <i className="material-icons create" onClick={this.handleClickCreate.bind(this)}>create</i>
-          <i className="material-icons delete" onClick={this.handleClickRemoveLabel.bind(this)}>delete</i>
-        </li>
-      )
-    });
-
-    return (
-      <div id="filterEditModal" className="filterEditModal modal modal-fixed-footer">
-        <div className="modal-content">
-          <h4>Edit label</h4>
-          <div>
-            <ul>
-              {lists}
-            </ul>
-            <div className="right-align">
-              <span className="addLabel" onClick={this.handleClickAddLabel.bind(this)}><i className="material-icons add">add</i>Add label</span>
-            </div>
-          </div>
-        </div>
-        <div className="modal-footer">
-          <a className="modal-action modal-close waves-effect waves-green btn-flat ">OK</a>
-        </div>
-      </div>
-    )
-  }
-});
-
-const FilterListCommon = connect(mapStateToProps)(class FilterListCommon extends Component {
-
-  render() {
-    const {labelList} = this.props.state;
-    const {name} = this.props;
-
-    const headTxt = name == 'chooseFilter' ? 'Apply labels' : 'Filter by label';
-
-    const lists = Object.keys(labelList).map(key => {
-      const labelKey = key;
-      const labelName = labelList[key][0];
-      const color = labelList[key][1];
-      return (
-        <li key={labelKey} className={labelKey} data-name={labelKey} onClick={this.props.onClickList}>
-          <i className="material-icons check">check</i>
-          <i className="material-icons remove">remove</i>
-          <span className={'color ' + color}></span>{labelName}
-        </li>
-      )
-    });
-
-    return (
-      <div className={'dropdown dropdown--alpha ' + name}>
-        <a className='dropdown-button btn z-depth-0' data-beloworigin="true" data-activates={name} onClick={this.props.onClickBtn}><i className="material-icons icon">local_offer</i>Labels<i className="material-icons">arrow_drop_down</i></a>
-        <ul id={name} className='dropdown-content z-depth-0'>
-          <li className='head'>{headTxt}<i className="material-icons close">close</i></li>
-          {lists}
-          <li data-target="filterEditModal" className='foot modal-trigger'>Edit label<i className="material-icons create">create</i></li>
-        </ul>
-      </div>
-    )
-  }
-});
-
-const FilterNormal = connect(mapStateToProps)(class FilterNormal extends Component {
-
-  addFilter(labelName){
-    const labelFilter = this.props.state.labelFilter.slice();
-    const newFilter = labelFilter
-                      .concat(labelName) // Marge
-                      .filter(function (x,i,self) { return self.indexOf(x) === i; }); // Remove overlap
-    this.props.dispatch( updateLabelFilter(newFilter) );
-  }
-  removeFilter(labelName){
-    const labelFilter = this.props.state.labelFilter.slice();
-    const newFilter = labelFilter.filter(function(v){ return v != labelName; }); // remove
-    this.props.dispatch( updateLabelFilter(newFilter) );
-  }
-  removeAllFilter(){
-    const newList = [];
-    this.props.dispatch( updateLabelFilter(newList) );
-  }
-
-  handleClickList(e) {
-    const target = e.currentTarget;
-    const label = target.dataset.name;
-
-    const self = this;
-    setTimeout(function(){ // Do after animation
-      if( !target.classList.contains('chkAll') ) {
-        target.classList.add('chkAll');
-        self.addFilter(label);
-      } else {
-        target.classList.remove('chkAll');
-        self.removeFilter(label);
-      }
-    },300);
-  }
-
-  handleClick(e) {
-    const target = e.currentTarget;
-    const self = this;
-    setTimeout(function(){ // Do after animation
-      const normalFilter = document.getElementById('normalFilter');
-      const li = normalFilter.childNodes;
-      for( let i = 0; i < li.length; i++ ) {
-          li[i].classList.remove('chkAll');
-      }
-      self.removeAllFilter();
-    },300);
-  }
-
-  render() {
-    const labelFilter = this.props.state.labelFilter.slice();
-    let closeBtn;
-    if( labelFilter.length > 0 ) {
-      closeBtn = <a className="isFilter" onClick={this.handleClick.bind(this)}><i className="material-icons">close</i>Clear current filters</a>;
-    }
-    return (
-      <div>
-        {closeBtn}
-        <FilterListCommon name="normalFilter" onClickList={this.handleClickList.bind(this)} />
-      </div>
-    )
-  }
-});
-
-const FilterChoose = connect(mapStateToProps)(class FilterChoose extends Component {
-
-  getCheckedList(){
-    const target = document.querySelectorAll('.paper input:checked');
-    const list = [];
-    [].forEach.call(target, function(e) {
-      list.push(e.id)
-    });
-    return list;
-  }
-
-  addLabel(target) {
-    const labelName = target.dataset.name;
-    const checkedList = this.getCheckedList();
-    const labelList = Object.assign({}, this.props.state.labelList);
-    labelList[labelName][2] = labelList[labelName][2].concat(checkedList) // Marge
-                          .filter(function (x,i,self) { return self.indexOf(x) === i; }); // Remove overlap
-    this.props.dispatch( updateLabelList(labelList) );
-  }
-
-  removeLabel(target) {
-    const labelName = target.dataset.name;
-    const checkedList = this.getCheckedList();
-    const labelList = Object.assign({}, this.props.state.labelList);
-    const oldList = this.props.state.labelList[labelName][2].slice();
-    let newList = [];
-    oldList.map(function(val, i) {
-      const index = checkedList.indexOf(val);
-      if (index === -1) newList.push(val);
-    });
-    labelList[labelName][2] = newList;
-    this.props.dispatch( updateLabelList(labelList) );
-  }
-
-  handleClickList(e) {
-    const target = e.currentTarget;
-    if( target.classList.contains('chk') || target.classList.contains('chkAll') ) {
-      this.removeLabel(target);
-    } else {
-      this.addLabel(target);
-    }
-
-    const filterLabel = document.querySelector('.toolBar');
-    filterLabel.classList.remove('choosing');
-
-    const filterChooseAll = document.querySelector('#checkAll');
-    filterChooseAll.checked = false;
-  }
-
-  handleClickBtn(e) {
-    const list = this.getCheckedList();
-    const {labelList} = this.props.state;
-    Object.keys(labelList).map(key => {
-      const labelName = key;
-      let result = 0;
-      let count = 0;
-      list.map(function(val, i) {
-        if( labelList[labelName][2].includes(list[i]) ) {
-          result = 1;
-          count++;
-        }
-      });
-      if( count === list.length ) {
-        result = 2;
-      }
-      const target = document.querySelector('.toolBar .chooseFilter li.' + labelName);
-      target.classList.remove('chkAll', 'chk');
-      switch (result) {
-        case 2:
-          target.classList.add('chkAll');
-          break;
-        case 1:
-          target.classList.add('chk');
-          break;
-      }
-    })
-  }
-
-  render() {
-    const {labelList} = this.props.state;
-    let style = '';
-
-    Object.keys(labelList).map(key => {
-      const labelKey = key;
-      const labelName = labelList[labelKey][0];
-      const color = labelList[labelKey][1];
-      const list = labelList[labelKey][2];
-      list.map(function(val, i) {
-        const valDotEscaped = val.replace(/\./i, '\\\.'); // class name may include dot
-        style += '.paper' + valDotEscaped + ' h5 .' + labelKey + ' { margin: 0 4px; }';
-        style += '.paper' + valDotEscaped + ' h5 .' + labelKey + ':after { content: "' + labelName + '"; }';
-      })
-    })
-
-    return (
-      <div>
-        <FilterListCommon name="chooseFilter" onClickBtn={this.handleClickBtn.bind(this)} onClickList={this.handleClickList.bind(this)} />
-        <style>{style}</style>
-      </div>
-    );
   }
 });
 
@@ -734,6 +402,385 @@ const Download = connect(mapStateToProps)(class Download extends Component {
   }
 });
 
+const FilterEdit = connect(mapStateToProps)(class FilterEdit extends Component {
+
+  handleClickColor(e) {
+    const li = e.target.parentNode;
+    li.classList.add('editColor');
+    e.target.focus();
+  }
+  handleClickcolorListMusk(e) {
+    const li = e.target.parentNode;
+    li.classList.remove('editColor');
+  }
+  handleClickChangeColor(e) {
+    const classList = e.target.classList;
+    if( classList.contains('cell') && !classList.contains('active') ) {
+      const labelList = Object.assign({}, this.props.state.labelList);
+      const labelKey = e.target.dataset.key;
+      const color = e.target.dataset.color;
+      labelList[labelKey][1] = color;
+      this.props.dispatch( updateLabelList(labelList) );
+      e.target.parentNode.parentNode.classList.remove('editColor');
+    }
+  }
+
+  handleClickAddLabel(e) {
+    const labelList = Object.assign({}, this.props.state.labelList);
+    const labelColor = this.props.state.labelColor;
+    const length = Object.keys(labelList).length - 1; // minus 1 as favList
+    let no = length + 1;
+    while( labelList['label'+no] )
+    {
+      no++;
+    }
+    labelList['label'+no] = ['New label', labelColor[length%8] , [] ];
+    this.props.dispatch( updateLabelList(labelList) );
+  }
+
+  handleClickRemoveLabel(e) {
+    const labelList = Object.assign({}, this.props.state.labelList);
+    const labelName = e.target.parentNode.dataset.name;
+    delete labelList[labelName];
+    this.props.dispatch( updateLabelList(labelList) );
+  }
+
+  handleClickCreate(e) {
+    const li = e.target.parentNode;
+    const input = li.childNodes[4];
+    li.classList.add('edit');
+    input.focus();
+    input.setSelectionRange(input.value.length, input.value.length);
+    input.value = input.dataset.name;
+  }
+
+  createDone(e){
+    const li = e.target.parentNode;
+    const input = li.childNodes[4];
+    li.classList.remove('edit');
+    input.blur();
+    const labelKey = input.dataset.key;
+    const oldName = input.dataset.name;
+    const newName = input.value;
+    if( newName == '' || newName == oldName ) {
+      return false
+    } else {
+      const labelList = Object.assign({}, this.props.state.labelList);
+      labelList[labelKey][0] = newName;
+      this.props.dispatch( updateLabelList(labelList) );
+    }
+  }
+  handleBlurInput(e) {
+    this.createDone(e);
+  }
+
+  handleKeyUp(e) {
+
+    const input = e.target;
+    const li = input.parentNode;
+    if( input.value.length >= 20 ){
+      li.classList.add('max');
+      input.value = input.value.slice( 0, 20)
+    } else {
+      li.classList.remove('max');
+    }
+
+    if (e.key === 'Enter') this.createDone(e);
+  }
+
+  render() {
+    const {labelColor, labelList} = this.props.state;
+
+    const lists = Object.keys(labelList).map(key => {
+      const labelKey = key;
+      if( labelKey !== favoriteKey ){
+        const labelName = labelList[key][0];
+        const color = labelList[key][1];
+        return (
+          <li key={labelKey} className={labelKey} data-name={labelKey} onClick={this.props.onClickList}>
+            <span className={'color ' + color} data-color={color} onClick={this.handleClickColor.bind(this)}></span>
+            <span className="labelName">{labelName}</span>
+            <ul className="colorList" onClick={this.handleClickChangeColor.bind(this)}>
+              { labelColor.map(function(e, i) {
+                const className = 'cell ' + e + ( ( e === color  ) ? ' active' : '' );
+                return ( <li key={i} data-key={labelKey} data-color={e} className={className}></li> )
+              })}
+            </ul>
+            <div className="colorListMusk" onClick={this.handleClickcolorListMusk.bind(this)}></div>
+            <input type="text" data-key={labelKey} data-name={labelName} onBlur={this.handleBlurInput.bind(this)} onKeyUp={this.handleKeyUp.bind(this)}/>
+            <i className="material-icons create" onClick={this.handleClickCreate.bind(this)}>create</i>
+            <i className="material-icons delete" onClick={this.handleClickRemoveLabel.bind(this)}>delete</i>
+          </li>
+        )
+      }
+    });
+
+    return (
+      <div id="filterEditModal" className="filterEditModal modal modal-fixed-footer">
+        <div className="modal-content">
+          <h4>Edit label</h4>
+          <div>
+            <ul>
+              {lists}
+            </ul>
+            <div className="right-align">
+              <span className="addLabel" onClick={this.handleClickAddLabel.bind(this)}><i className="material-icons add">add</i>Add label</span>
+            </div>
+          </div>
+        </div>
+        <div className="modal-footer">
+          <a className="modal-action modal-close waves-effect waves-green btn-flat ">OK</a>
+        </div>
+      </div>
+    )
+  }
+});
+
+const FilterListCommon = connect(mapStateToProps)(class FilterListCommon extends Component {
+
+  render() {
+    const {labelList} = this.props.state;
+    const {name} = this.props;
+
+    const headTxt = name == 'chooseFilter' ? 'Apply labels' : 'Filter by label';
+
+    const lists = Object.keys(labelList).map(key => {
+      const labelKey = key;
+      if( labelKey !== favoriteKey ){
+        const labelName = labelList[key][0];
+        const color = labelList[key][1];
+        return (
+          <li key={labelKey} className={labelKey} data-name={labelKey} onClick={this.props.onClickList}>
+            <i className="material-icons check">check</i>
+            <i className="material-icons remove">remove</i>
+            <span className={'color ' + color}></span>{labelName}
+          </li>
+        )
+      }
+    });
+
+    return (
+      <div className={'dropdown dropdown--alpha ' + name}>
+        <a className='dropdown-button btn z-depth-0' data-beloworigin="true" data-activates={name} onClick={this.props.onClickBtn}><i className="material-icons icon">local_offer</i>Labels<i className="material-icons">arrow_drop_down</i></a>
+        <ul id={name} className='dropdown-content z-depth-0'>
+          <li className='head'>{headTxt}<i className="material-icons close">close</i></li>
+          {lists}
+          <li data-target="filterEditModal" className='foot modal-trigger'>Edit label<i className="material-icons create">create</i></li>
+        </ul>
+      </div>
+    )
+  }
+});
+
+const FilterNormal = connect(mapStateToProps)(class FilterNormal extends Component {
+
+  addFilter(labelName){
+    const labelFilter = this.props.state.labelFilter.slice();
+    const newFilter = labelFilter
+                      .concat(labelName) // Marge
+                      .filter(function (x,i,self) { return self.indexOf(x) === i; }); // Remove overlap
+    this.props.dispatch( updateLabelFilter(newFilter) );
+  }
+  removeFilter(labelName){
+    const labelFilter = this.props.state.labelFilter.slice();
+    const newFilter = labelFilter.filter(function(v){ return v != labelName; }); // remove
+    this.props.dispatch( updateLabelFilter(newFilter) );
+  }
+  removeAllFilter(){
+    const newList = [];
+    this.props.dispatch( updateLabelFilter(newList) );
+  }
+
+  handleClickList(e) {
+    const target = e.currentTarget;
+    const label = target.dataset.name;
+
+    const self = this;
+    setTimeout(function(){ // Do after animation
+      if( !target.classList.contains('chkAll') ) {
+        target.classList.add('chkAll');
+        self.addFilter(label);
+      } else {
+        target.classList.remove('chkAll');
+        self.removeFilter(label);
+      }
+    },300);
+  }
+
+  handleClick(e) {
+    const target = e.currentTarget;
+    const self = this;
+    setTimeout(function(){ // Do after animation
+      const normalFilter = document.getElementById('normalFilter');
+      const li = normalFilter.childNodes;
+      for( let i = 0; i < li.length; i++ ) {
+          li[i].classList.remove('chkAll');
+      }      
+      self.removeAllFilter();
+      document.querySelector('.filterFav').classList.remove('active');
+    },300);
+  }
+
+  render() {
+    const labelFilter = this.props.state.labelFilter.slice();
+    let closeBtn;
+    if( labelFilter.length > 0 ) {
+      closeBtn = <a className="isFilter" onClick={this.handleClick.bind(this)}><i className="material-icons">close</i>Clear current filters</a>;
+    }
+    return (
+      <div>
+        {closeBtn}
+        <FilterListCommon name="normalFilter" onClickList={this.handleClickList.bind(this)} />
+      </div>
+    )
+  }
+});
+
+const FilterChoose = connect(mapStateToProps)(class FilterChoose extends Component {
+
+  getCheckedList(){
+    const target = document.querySelectorAll('.paper input:checked');
+    const list = [];
+    [].forEach.call(target, function(e) {
+      list.push(e.id)
+    });
+    return list;
+  }
+
+  addLabel(target) {
+    const labelName = target.dataset.name;
+    const checkedList = this.getCheckedList();
+    const labelList = Object.assign({}, this.props.state.labelList);
+    labelList[labelName][2] = labelList[labelName][2].concat(checkedList) // Marge
+                          .filter(function (x,i,self) { return self.indexOf(x) === i; }); // Remove overlap
+    this.props.dispatch( updateLabelList(labelList) );
+  }
+
+  removeLabel(target) {
+    const labelName = target.dataset.name;
+    const checkedList = this.getCheckedList();
+    const labelList = Object.assign({}, this.props.state.labelList);
+    const oldList = this.props.state.labelList[labelName][2].slice();
+    let newList = [];
+    oldList.map(function(val, i) {
+      const index = checkedList.indexOf(val);
+      if (index === -1) newList.push(val);
+    });
+    labelList[labelName][2] = newList;
+    this.props.dispatch( updateLabelList(labelList) );
+  }
+
+  handleClickList(e) {
+    const target = e.currentTarget;
+    if( target.classList.contains('chk') || target.classList.contains('chkAll') ) {
+      this.removeLabel(target);
+    } else {
+      this.addLabel(target);
+    }
+
+    const filterLabel = document.querySelector('.toolBar');
+    filterLabel.classList.remove('choosing');
+
+    const filterChooseAll = document.querySelector('#checkAll');
+    filterChooseAll.checked = false;
+  }
+
+  handleClickBtn(e) {
+    const list = this.getCheckedList();
+    const {labelList} = this.props.state;
+    Object.keys(labelList).map(key => {
+
+      const labelKey = key;
+
+      if( labelKey !== favoriteKey ){
+        let result = 0;
+        let c = 0;
+        list.map(function(val, i) {
+          if( labelList[labelKey][2].includes(list[i]) ) {
+            result = 1;
+            c++;
+          }
+        });
+        if( c === list.length ) result = 2;
+
+        const target = document.querySelector('.toolBar .chooseFilter li.' + labelKey);
+        target.classList.remove('chkAll', 'chk');
+        switch (result) {
+          case 2:
+            target.classList.add('chkAll');
+            break;
+          case 1:
+            target.classList.add('chk');
+            break;
+        }
+      }
+    })
+  }
+
+  render() {
+    const {labelList} = this.props.state;
+    let style = '';
+
+    Object.keys(labelList).map(key => {
+      const labelKey = key;
+      if( labelKey !== favoriteKey ){
+        const labelName = labelList[labelKey][0];
+        const color = labelList[labelKey][1];
+        const list = labelList[labelKey][2];
+        list.map(function(val, i) {
+          const valDotEscaped = val.replace(/\./i, '\\\.'); // class name may include dot
+          style += '.paper' + valDotEscaped + ' h5 .' + labelKey + ' { margin: 0 4px; }';
+          style += '.paper' + valDotEscaped + ' h5 .' + labelKey + ':after { content: "' + labelName + '"; }';
+        })
+      } else {
+        const list = labelList[favoriteKey];
+        list.map(function(val, i) {
+          const valDotEscaped = val.replace(/\./i, '\\\.'); // class name may include dot
+          style += '.paper' + valDotEscaped + ' .favorite i.on { z-index: 1; }';
+        })
+      }
+    })
+
+    return (
+      <div>
+        <FilterListCommon name="chooseFilter" onClickBtn={this.handleClickBtn.bind(this)} onClickList={this.handleClickList.bind(this)} />
+        <style>{style}</style>
+      </div>
+    );
+  }
+});
+
+const FilterFav = connect(mapStateToProps)(class CheckAll extends Component {
+
+  addFilter(labelName){
+    const labelFilter = this.props.state.labelFilter.slice();
+    const newFilter = labelFilter
+                      .concat(labelName) // Marge
+                      .filter(function (x,i,self) { return self.indexOf(x) === i; }); // Remove overlap
+    this.props.dispatch( updateLabelFilter(newFilter) );
+  }
+  removeFilter(labelName){
+    const labelFilter = this.props.state.labelFilter.slice();
+    const newFilter = labelFilter.filter(function(v){ return v != labelName; }); // remove
+    this.props.dispatch( updateLabelFilter(newFilter) );
+  }
+
+  handleClick(e) {
+    const tgt = e.currentTarget;
+    tgt.classList.toggle('active');
+    tgt.classList.contains('active') ? this.addFilter(favoriteKey) : this.removeFilter(favoriteKey);
+  }
+
+  render() {
+    return (
+      <div className="filterFav" onClick={this.handleClick.bind(this)}>
+        <i className="material-icons on">star</i>
+        <i className="material-icons off">star_border</i>
+      </div>
+    );
+  }
+});
+
 const CheckAll = connect(mapStateToProps)(class CheckAll extends Component {
 
   handleChange(e) {
@@ -762,6 +809,7 @@ const ToolBar = connect(mapStateToProps)(class ToolBar extends Component {
       <div className="toolBar">
 
         <CheckAll />
+        <FilterFav />
 
         <div className="tools">
           <FilterNormal />
@@ -894,8 +942,9 @@ class Search extends Component {
 
     let filterdList = [];
     labelFilter.map(function(e, i) {
+      const tgtList = ( e !== favoriteKey ) ? labelList[e][2] : labelList[e];
       filterdList = filterdList
-                      .concat(labelList[e][2])
+                      .concat(tgtList)
                       .filter(function (x, i, self) {
                         return self.indexOf(x) === i;
                       });
