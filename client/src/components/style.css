@@ -1,6 +1,9 @@
 /****************
 **  Paper
 ****************/
+.paper {
+    padding-left: 23px;
+}
 
 .paper h5 {
     font-size: 1.3em;
@@ -84,6 +87,34 @@
     font-style: normal;
     font-weight: 900;
 }
+
+    /* Favorite */
+    .paper .favorite {
+        position: absolute;
+        left: -4px;
+        top: 22px;
+        width: 23px;
+        height: 23px;
+        text-align: center;
+        cursor: pointer;
+    }
+    .paper:first-child .favorite {
+        top: 1px;
+    }
+    .paper .favorite i { 
+        position: absolute;
+        top: 0;
+        left: 0;
+        font-size: 23px; 
+        background-color: white;
+    }
+    .paper .favorite i.on { 
+        color: /*#ffeb3b*/#ffe403;
+    }        
+    .paper .favorite i.off{ 
+        color: #b9c0cc;      
+    }
+
 
 #figures {
     display: flex;
