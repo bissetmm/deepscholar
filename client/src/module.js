@@ -56,7 +56,7 @@ const initialState = {
   scrollYPositions: new Map()
 };
 
-////// ▼ Functions for Get/Set LabelList from DB ▼
+////// ▼ Functions for Get/Set LabelList from/to DB ▼
 const _getLabelList = function(user){
   let labelListSaved;
   let is_available = false;
@@ -65,7 +65,7 @@ const _getLabelList = function(user){
     return  ( labelListInLS && _validateLabelList( JSON.parse(labelListInLS) ) ) ? JSON.parse(labelListInLS) : labelList;
   }
   if ( user !== undefined && user.profile !== undefined ) {
-    window.jQuery.ajax({ async: false, url: '/api/label/get?profile_id=' + user.profile.id })
+    window.jQuery.ajax({ async: false, method: 'POST', url: '/api/label/get', data: { profile_id: user.profile.id } })
     .done(function(data) {
       if( data !== 'error' ) {
         labelListSaved = JSON.parse(data.label.labelList);
@@ -79,7 +79,7 @@ const _getLabelList = function(user){
 
 const _saveLabelList = function(labelList, user){
   if ( user && _validateLabelList(labelList) ) {
-    window.jQuery.ajax({ url: '/api/label/set?profile_id=' + user.profile.id + '&labelList=' + JSON.stringify(labelList) })
+    window.jQuery.ajax({ method: 'POST', url: '/api/label/set', data: { profile_id: user.profile.id, labelList: JSON.stringify(labelList) } })
     .done(function(data) {
       ( data === 'done' ) ? console.log('LabelList Saved.') : console.log('LabelList Save Failed.');
     })
@@ -100,7 +100,7 @@ const _validateLabelList = function(labelList){
   }
   return is_labelList;
 }
-////// ▲ Functions for Get/Set LabelList from DB ▲
+////// ▲ Functions for Get/Set LabelList from/to DB ▲
 
 export function reducers(state = initialState, action) {
   switch (action.type) {
