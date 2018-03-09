@@ -1,5 +1,11 @@
 import React, {Component} from 'react';
 import _ from 'lodash';
+import XLSX from 'xlsx';
+import JSZip from 'jszip';
+import JSZipUtils from 'jszip-utils';
+import saveAs from 'file-saver';
+import TSV from 'tsv';
+import toml from 'toml-js';
 import {connect} from 'react-redux';
 import {withRouter, HashRouter, Switch, Route} from 'react-router-dom';
 import {RangeSliderHistogram} from 'searchkit';
@@ -101,10 +107,6 @@ const PublicationFilter = connect(mapStateToProps)(class PublicationFilter exten
 const Download = connect(mapStateToProps)(class Download extends Component {
 
   handleClick(e) {
-    const JSZip = window.JSZip;
-    const JSZipUtils = window.JSZipUtils;
-    const saveAs = window.saveAs;
-    const TSV = window.TSV;
 
     const zip = new JSZip();
     const dir = zip.folder("paper");
@@ -169,7 +171,6 @@ const Download = connect(mapStateToProps)(class Download extends Component {
     // }
 
     // function jsonToXlsx(data, paperId){
-    //   const XLSX = window.XLSX;
     //   const dataId = data["glossary"]["GlossDiv"]["GlossList"]["GlossEntry"]["ID"];
     //   const dataTerm = data["glossary"]["GlossDiv"]["GlossList"]["GlossEntry"]["GlossTerm"];
     //   const wb = XLSX.read("", {type:"array"});
@@ -207,8 +208,7 @@ const Download = connect(mapStateToProps)(class Download extends Component {
     // }
 
     function tomlToXlsx(data){
-      const toml = window.toml;
-      const XLSX = window.XLSX;
+
       const wb = XLSX.read("", {type:"array"});
       const ws = XLSX.utils.json_to_sheet([
                 { A: 'Relation',
@@ -256,7 +256,7 @@ const Download = connect(mapStateToProps)(class Download extends Component {
     }
 
     function tomlToTsv(data){
-      const toml = window.toml;
+
       const d = [];
 
       for (let i = 0; i < data.length; i++) {
