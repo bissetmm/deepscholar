@@ -6,6 +6,7 @@ const engines = require('consolidate');
 const searchHistory = require("./models/search_history");
 const passport = require("passport");
 const jwt = require("jsonwebtoken");
+const auth = require("./auth.js");
 
 app.set('views', `${__dirname}/views`);
 app.engine('html', engines.mustache);
@@ -23,25 +24,10 @@ const defineSearchkitRouter = (typeName) => {
     host: "http://deepscholar.elasticsearch:9200",
     index: `papers/${typeName}`,
     queryProcessor: (query, req) => {
-      const authorization = req.headers ? req.headers["authorization"] : null;
-      let userId = null;
-      if (authorization) {
-        const matches = authorization.match(/bearer\s(.+)$/);
-        if (matches) {
-          const token = matches[1];
-          try {
-            const user = jwt.verify(token, process.env.DEEP_SCHOLAR_TOKEN_SECRET);
-            const sub = JSON.parse(user.sub);
-            userId = sub.id;
-          } catch (error) {
-            console.log(error);
-          }
-        }
-      }
-
-      //Save search history only for text
-      if (query.type === "text") {
-        searchHistory.insert(query, userId);
+      if (/.+\/text$/.test(req.baseUrl)) {
+        auth.getVerifiedUserId(req.headers).then(userId => {
+          searchHistory.insert(query, userId);
+        }).catch(console.log);
       }
 
       return query;
@@ -53,8 +39,8 @@ defineSearchkitRouter("text");
 defineSearchkitRouter("tables");
 defineSearchkitRouter("figs");
 
-app.use("/api/auth", require("./auth.js")(app));
-app.use("/api/label", require("./label.js")(app)); 
+app.use("/api/auth", auth.router(app));
+app.use("/api/label", require("./label.js")(app));
 
 app.listen(app.get("port"), () => {
   console.log(`Find the server at: http://localhost:${app.get("port")}/`);
