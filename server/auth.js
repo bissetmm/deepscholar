@@ -35,8 +35,8 @@ passport.use('github', new GithubStrategy({
 
 const jwt = require("jsonwebtoken");
 
-function generateAccessToken(type, id) {
-  const expiresIn = "1 hour";
+function generateAccessToken(id) {
+  const expiresIn = "1 day";
   const issuer = process.env.DEEP_SCHOLAR_TOKEN_ISSUER;
   const audience = process.env.DEEP_SCHOLAR_TOKEN_AUDIENCE;
   const secret = process.env.DEEP_SCHOLAR_TOKEN_SECRET;
@@ -53,10 +53,29 @@ function generateAccessToken(type, id) {
 }
 
 function generateUserToken(req, res) {
-  const accessToken = generateAccessToken("github", req.user._id);
+  const accessToken = generateAccessToken(req.user._id);
   res.render('authenticated.html', {
     token: accessToken,
     profile: JSON.stringify(req.user.profile)
+  });
+}
+
+function getVerifiedUserId(headers) {
+  return new Promise((resolve, reject) => {
+    const authorization = headers ? headers["authorization"] : null;
+    if (authorization) {
+      const matches = authorization.match(/bearer\s(.+)$/);
+      if (matches) {
+        const token = matches[1];
+        try {
+          const user = jwt.verify(token, process.env.DEEP_SCHOLAR_TOKEN_SECRET);
+          const sub = JSON.parse(user.sub);
+          resolve(sub.id);
+        } catch (error) {
+          reject(error);
+        }
+      }
+    }
   });
 }
 
@@ -64,18 +83,50 @@ const providers = [
   {type: "github", scope: ['read:user']}
 ];
 
-module.exports = (app) => {
-  app.use(passport.initialize());
+module.exports = {
+  getVerifiedUserId: (headers) => {
+    return new Promise((resolve, reject) => {
+      const authorization = headers ? headers["authorization"] : null;
+      if (authorization) {
+        const matches = authorization.match(/bearer\s(.+)$/);
+        if (matches) {
+          const token = matches[1];
+          try {
+            const user = jwt.verify(token, process.env.DEEP_SCHOLAR_TOKEN_SECRET);
+            const sub = JSON.parse(user.sub);
+            resolve(sub.id);
+          } catch (error) {
+            reject(error);
+          }
+        }
+      }
+    });
+  },
+  router: (app) => {
+    app.use(passport.initialize());
 
-  const router = express.Router();
+    const router = express.Router();
 
-  providers.forEach(provider => {
-    router.get(`/${provider.type}`, passport.authenticate(provider.type, {session: false, scope: provider.scope}));
-    router.get(`/${provider.type}/callback`,
-      passport.authenticate(provider.type, {session: false}),
-      generateUserToken);
+    router.get(`/verify`, (req, res) => {
+      return getVerifiedUserId(req.headers).then(userId => {
+        return User.findByObjectId(userId).then(user => {
+          const token = generateAccessToken(userId);
+          const {profile} = user;
+          res.send(JSON.stringify({token, profile}));
+        });
+      }).catch(() => {
+        res.status(403).end();
+      });
+    });
 
-  });
+    providers.forEach(provider => {
+      router.get(`/${provider.type}`, passport.authenticate(provider.type, {session: false, scope: provider.scope}));
+      router.get(`/${provider.type}/callback`,
+        passport.authenticate(provider.type, {session: false}),
+        generateUserToken);
 
-  return router;
+    });
+
+    return router;
+  }
 };
