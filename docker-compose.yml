@@ -17,6 +17,7 @@ services:
     working_dir: /root/client
     environment:
       - NODE_ENV=development
+      - CHOKIDAR_USEPOLLING=true
     depends_on:
       - deepscholar.server
     ports:
