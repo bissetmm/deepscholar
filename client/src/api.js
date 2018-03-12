@@ -1,17 +1,5 @@
 class Api {
-  static fetchApi(typeName, options) {
-    return fetch(`/api/papers/${typeName}/_search`, options)
-      .then((response) => {
-        if (response.status >= 200 && response.status < 300) {
-          return response;
-        }
-      })
-      .then((response) => response.json())
-      .then((json) => json)
-      .catch(console.log);
-  }
-
-  static search(typeName, options, token) {
+  static fetchApi(path, options, token) {
     const headers = new Headers();
     headers.append("Content-Type", "application/json");
 
@@ -19,14 +7,31 @@ class Api {
       headers.append("authorization", `bearer ${token}`);
     }
 
-    options.body = JSON.stringify(options.body);
     const o = Object.assign({
       accept: "application/json",
-      headers,
+      headers
+    }, options);
+
+    return fetch(path, o)
+      .then((response) => {
+        if (!response.ok) {
+          throw Error(response.statusText);
+        }
+        return response;
+      })
+      .then((response) => response.json())
+      .then((json) => json)
+      .catch(console.log);
+  }
+
+  static search(typeName, options, token) {
+    options.body = JSON.stringify(options.body);
+    const o = Object.assign({
       method: "post",
       body: null
     }, options);
-    return Api.fetchApi(typeName, o);
+    const path = `/api/papers/${typeName}/_search`;
+    return Api.fetchApi(path, o, token);
   }
 
   static searchText(options, token) {
@@ -39,6 +44,10 @@ class Api {
 
   static searchTables(options) {
     return Api.search("tables", options);
+  }
+
+  static verify(token) {
+    return Api.fetchApi("/api/auth/verify", {}, token);
   }
 }
 

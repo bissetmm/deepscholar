@@ -10,13 +10,14 @@ import {ScrollToTop} from '../../components/index.js';
 import {changeQuery, deleteAllScrollY, signedIn, signedOut, getLabelList, updateLabelList, updateLabelFilter, searchOnSearchBar} from '../../module';
 import './materializeTheme.css';
 import './style.css';
+import Api from '../../api';
 
 function mapStateToProps(state) {
   return {state};
 }
 
 const NavBar = connect(mapStateToProps)(class NavBar extends Component {
-  static USER_STORE_KEY = "user";
+  static TOKEN_STORE_KEY = "token";
 
   constructor(props) {
     super(props);
@@ -31,17 +32,26 @@ const NavBar = connect(mapStateToProps)(class NavBar extends Component {
       }
 
       const user = event.data.user;
-      window.localStorage.setItem(NavBar.USER_STORE_KEY, JSON.stringify(user));
-      this.props.dispatch(signedIn(user));
+      this.signIn(user);
       this.props.dispatch(getLabelList());
     });
 
-    const user = window.localStorage.getItem(NavBar.USER_STORE_KEY);
-    if (user) {
-      this.props.dispatch(signedIn((JSON.parse(user))));
+    const token = window.localStorage.getItem(NavBar.TOKEN_STORE_KEY);
+    if (token) {
+      Api.verify(token).then(user => {
+        this.signIn(user);
+      }).catch(() => {
+        window.localStorage.removeItem(NavBar.TOKEN_STORE_KEY);
+        this.props.dispatch(signedOut());
+      })
     }
 
     this.props.dispatch(getLabelList());
+  }
+
+  signIn(user) {
+    window.localStorage.setItem(NavBar.TOKEN_STORE_KEY, user.token);
+    this.props.dispatch(signedIn(user));
   }
 
   componentDidUpdate(prevProps) {
@@ -120,8 +130,8 @@ const NavBar = connect(mapStateToProps)(class NavBar extends Component {
 
     const {labelList} = this.props.state;
     this.props.dispatch(updateLabelList(labelList));
-    
-    window.localStorage.removeItem(NavBar.USER_STORE_KEY);
+
+    window.localStorage.removeItem(NavBar.TOKEN_STORE_KEY);
     this.props.dispatch(signedOut());
   }
 
