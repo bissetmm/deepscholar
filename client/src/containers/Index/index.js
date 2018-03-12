@@ -26,19 +26,14 @@ class Index extends Component {
   handleSubmit(e) {
     e.preventDefault();
 
-    if( this.query == this.props.state.query && this.props.state.page == 0) { // 検索ページから戻り、同じ文字列を検索する場合、遷移がトリガーしない為、ここで強制遷移（検索はしないで前回の画面をそのまま表示）
-      this.props.history.push("/texts?q=" + this.query + "&page=1");
-      return false;
+    this.props.dispatch(changeQuery("texts", this.query, null, null, null, []));
+
+    if( this.query === this.props.state.query && this.props.state.page === 0 ) { 
+      // In case, back to top page from search page & search same word(s). Otherwise, search was not detected.
+      const q = ( this.query === null ) ? "?page=1" : "?q=" + this.query + "&page=1";
+      this.props.history.push("/texts" + q);
     }
 
-    if (this.searchTimer !== null) {
-      clearTimeout(this.searchTimer);
-      this.searchTimer = null;
-    }
-
-    this.searchTimer = setTimeout(() => {
-      this.props.dispatch(changeQuery("texts", this.query));
-    }, 0);
   }
 
   handleChange(e) {

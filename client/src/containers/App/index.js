@@ -7,7 +7,7 @@ import Index from '../Index/index.js';
 import Search from '../Search/index.js';
 import Detail from '../Detail/index.js';
 import {ScrollToTop} from '../../components/index.js';
-import {changeQuery, deleteAllScrollY, signedIn, signedOut, getLabelList, updateLabelList} from '../../module';
+import {changeQuery, deleteAllScrollY, signedIn, signedOut, getLabelList, updateLabelList, updateLabelFilter, searchOnSearchBar} from '../../module';
 import './materializeTheme.css';
 import './style.css';
 
@@ -45,8 +45,12 @@ const NavBar = connect(mapStateToProps)(class NavBar extends Component {
   }
 
   componentDidUpdate(prevProps) {
+
     const {category: oldCategory, query: oldQuery, articleTitle: oldArticleTitle, author: oldAuthor, abstract: oldAbstract, gte: oldGte, lte: oldLte, booktitles: oldBooktitles, page: oldPage} = prevProps.state;
     const {category: newCategory, query: newQuery, articleTitle: newArticleTitle, author: newAuthor, abstract: newAbstract, gte: newGte, lte: newLte, booktitles: newBooktitles, page: newPage} = this.props.state;
+    
+    this.query = newQuery;
+
     if (oldCategory === newCategory && oldQuery === newQuery && oldArticleTitle === newArticleTitle && oldAuthor === newAuthor && oldAbstract === newAbstract && oldPage === newPage && oldGte === newGte && oldLte === newLte && Array.from(oldBooktitles).join("") === Array.from(newBooktitles).join("")) {
       return;
     }
@@ -89,7 +93,7 @@ const NavBar = connect(mapStateToProps)(class NavBar extends Component {
   }
 
   handleSubmit(e) {
-    e.preventDefault();
+    e.preventDefault();    
 
     if (this.searchTimer !== null) {
       clearTimeout(this.searchTimer);
