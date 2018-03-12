@@ -6,7 +6,7 @@ const engines = require('consolidate');
 const searchHistory = require("./models/search_history");
 const passport = require("passport");
 const jwt = require("jsonwebtoken");
-const auth = require("./auth.js");
+const Auth = require("./auth.js");
 
 app.set('views', `${__dirname}/views`);
 app.engine('html', engines.mustache);
@@ -25,7 +25,7 @@ const defineSearchkitRouter = (typeName) => {
     index: `papers/${typeName}`,
     queryProcessor: (query, req) => {
       if (/.+\/text$/.test(req.baseUrl)) {
-        auth.getVerifiedUserId(req.headers).then(userId => {
+        Auth.getVerifiedUserId(req.headers).then(userId => {
           searchHistory.insert(query, userId);
         }).catch(console.log);
       }
@@ -39,7 +39,7 @@ defineSearchkitRouter("text");
 defineSearchkitRouter("tables");
 defineSearchkitRouter("figs");
 
-app.use("/api/auth", auth.router(app));
+app.use("/api/auth", Auth.router(app));
 app.use("/api/label", require("./label.js")(app));
 
 app.listen(app.get("port"), () => {
