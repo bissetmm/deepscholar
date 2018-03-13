@@ -60,31 +60,12 @@ function generateUserToken(req, res) {
   });
 }
 
-function getVerifiedUserId(headers) {
-  return new Promise((resolve, reject) => {
-    const authorization = headers ? headers["authorization"] : null;
-    if (authorization) {
-      const matches = authorization.match(/bearer\s(.+)$/);
-      if (matches) {
-        const token = matches[1];
-        try {
-          const user = jwt.verify(token, process.env.DEEP_SCHOLAR_TOKEN_SECRET);
-          const sub = JSON.parse(user.sub);
-          resolve(sub.id);
-        } catch (error) {
-          reject(error);
-        }
-      }
-    }
-  });
-}
-
 const providers = [
   {type: "github", scope: ['read:user']}
 ];
 
-module.exports = {
-  getVerifiedUserId: (headers) => {
+module.exports = class {
+  static getVerifiedUserId() {
     return new Promise((resolve, reject) => {
       const authorization = headers ? headers["authorization"] : null;
       if (authorization) {
@@ -101,14 +82,15 @@ module.exports = {
         }
       }
     });
-  },
-  router: (app) => {
+  }
+
+  static router(app) {
     app.use(passport.initialize());
 
     const router = express.Router();
 
     router.get(`/verify`, (req, res) => {
-      return getVerifiedUserId(req.headers).then(userId => {
+      return this.constructor.getVerifiedUserId(req.headers).then(userId => {
         return User.findByObjectId(userId).then(user => {
           const token = generateAccessToken(userId);
           const {profile} = user;
@@ -129,4 +111,4 @@ module.exports = {
 
     return router;
   }
-};
+}
