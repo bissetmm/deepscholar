@@ -65,7 +65,7 @@ const providers = [
 ];
 
 module.exports = class {
-  static getVerifiedUserId() {
+  static getVerifiedUserId(headers) {
     return new Promise((resolve, reject) => {
       const authorization = headers ? headers["authorization"] : null;
       if (authorization) {
