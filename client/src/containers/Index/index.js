@@ -26,23 +26,26 @@ class Index extends Component {
   handleSubmit(e) {
     e.preventDefault();
 
-    this.props.dispatch(changeQuery("texts", this.query, null, null, null, []));
-
-    if( this.query === this.props.state.query && this.props.state.page === 0 ) { 
-      // In case, back to top page from search page & search same word(s). Otherwise, search was not detected.
-      const q = ( this.query === null ) ? "?page=1" : "?q=" + this.query + "&page=1";
-      this.props.history.push("/texts" + q);
+    if (this.searchTimer !== null) {
+      clearTimeout(this.searchTimer);
+      this.searchTimer = null;
     }
+
+    this.searchTimer = setTimeout(() => {
+      const q = ( this.query === null ) ? "?page=1" : "?q=" + this.query + "&page=1";  
+      this.props.dispatch(changeQuery("texts", this.query, null, null, null, []));
+      this.props.history.push("/texts" + q);      
+    }, 0);
 
   }
 
   handleChange(e) {
-    this.query = e.target.value;
+    this.query = e.target.value || '' ;
   }
 
   handleClick(e) {
-    this.query = encodeURIComponent(e.target.innerText);
-    this.handleSubmit(e)
+    this.query = e.target.innerText;
+    this.handleSubmit(e);
   }
 
   render() {

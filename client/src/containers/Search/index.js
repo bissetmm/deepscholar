@@ -48,9 +48,10 @@ const Paginator = withRouter(connect(mapStateToProps)(class Paginator extends Co
   }
 
   render() {    
-    const maxPage = Math.floor(this.props.total / this.props.size) || 0;
-    
-    if (maxPage === 0) return null;
+
+    const maxPage = Math.ceil(this.props.total / this.props.size) - 1 || 0;
+
+    if ( maxPage === -1 ) return false;
 
     const currentPage = this.props.page;
     let start, end;
@@ -66,8 +67,7 @@ const Paginator = withRouter(connect(mapStateToProps)(class Paginator extends Co
     const pages = _.range(start, end+1).map((i) => {
       const className = i === currentPage ? 'active' : 'waves-effect';
 
-      return <li key={i} className={className}><a href="#" onClick={this.handlePageClick.bind(this, i)}>{i + 1}</a>
-      </li>;
+      return <li key={i} className={className}><a href="#" onClick={this.handlePageClick.bind(this, i)}>{i + 1}</a></li>;
     });
 
     const prevClassName = currentPage === 0 ? 'disabled' : 'waves-effect';
@@ -906,9 +906,6 @@ class Search extends Component {
     this.props.dispatch(requestPapers(query, articleTitle, author, abstract, page));
     const from = page * this.props.state.papersFetchSize;
 
-    console.log(query);
-    console.log(labelFilter);
-
     const queryMust = [];
     if (query) {
       queryMust.push(
@@ -966,15 +963,28 @@ class Search extends Component {
     }
 
     let filterdList = [];
-    labelFilter.map(function(e, i) {
-      const tgtList = ( e !== favoriteKey ) ? labelList[e][2] : labelList[e];
-      filterdList = filterdList
-                      .concat(tgtList)
-                      .filter(function (x, i, self) {
-                        return self.indexOf(x) === i;
-                      });
-      if( filterdList.length == 0 ) { filterdList.push("") }; // for empty filter
-    })
+
+    // only Label Filter
+    if( labelFilter.indexOf(favoriteKey) === -1 && labelFilter.length > 0 ){    
+      labelFilter.map(function(e, i) {
+        filterdList = _.union(filterdList, labelList[e][2]);
+      })
+
+    // only Favorite
+    } else if ( labelFilter.indexOf(favoriteKey) !== -1 && labelFilter.length === 1 ) {
+      filterdList = labelList[favoriteKey];
+
+    // both Label Filter & Favorite
+    } else if ( labelFilter.indexOf(favoriteKey) !== -1 && labelFilter.length > 1 ) {
+      labelFilter.map(function(e, i) {
+        if( e !== favoriteKey ) filterdList = _.union(filterdList, labelList[e][2]);
+      })
+      filterdList = _.intersection(filterdList, labelList[favoriteKey]);
+    }
+
+    // for empty filter
+    if( labelFilter.length > 0 && filterdList.length === 0 ) filterdList.push(""); 
+    
     const labelFilterList = filterdList.length > 0 ? { terms: { _id: filterdList } } : null;
 
     const body = {

@@ -450,29 +450,6 @@
 .search .contents .paper {
 	position: relative;
 }
-	/* 不要なパーツは非表示 */
-	.search .contents .paper .abstract,
-	.search .contents .paper > span,
-	.search .contents .paper footer {
-		display: none;
-	}
-	.search .contents .paper h5 {
-	    margin: 14px 0 4px;
-	}
-		.search .contents .paper:first-child h5 {
-			margin-top: 20px;
-		}
-	.search .contents .paper .authors,
-	.search .contents .paper .authors a {
-		margin-top: 0;
-		font-weight: 300;
-	}
-	.search .contents .paper h6 {
-		margin-top: 0;
-	    margin-bottom: 17px;
-	}
-	
-
 
 .contents .row{
 	padding-top: 1.2em;
