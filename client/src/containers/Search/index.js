@@ -25,30 +25,37 @@ const Paginator = withRouter(connect(mapStateToProps)(class Paginator extends Co
   handlePageClick(i, e) {
     e.preventDefault();
     this.changePage(i);
-  }
+  }  
 
   handlePrevClick(e) {
     e.preventDefault();
-    this.changePage(this.props.page - 1);
+    const parent = e.currentTarget.parentNode;
+    if( !( parent.classList.contains('disabled') ) ) {
+      this.changePage(this.props.page - 1);
+    }    
   }
 
   handleNextClick(e) {
     e.preventDefault();
-    this.changePage(this.props.page + 1);
+    const parent = e.currentTarget.parentNode;
+    if( !( parent.classList.contains('disabled') ) ) {
+      this.changePage(this.props.page + 1);
+    }
   }
 
   changePage(page) {
     this.props.dispatch(changePage(page));
   }
 
-  render() {
-    const maxPage = Math.floor(this.props.total / this.props.size) || 0;
-    if (maxPage === 0) {
-      return null;
-    }
+  render() {    
+
+    const maxPage = Math.ceil(this.props.total / this.props.size) - 1 || 0;
+
+    if ( maxPage === -1 ) return false;
 
     const currentPage = this.props.page;
     let start, end;
+
     if (maxPage - currentPage > 5) {
       start = Math.max(currentPage - 4, 0);
       end = Math.min(start + 10, maxPage);
@@ -57,22 +64,27 @@ const Paginator = withRouter(connect(mapStateToProps)(class Paginator extends Co
       start = Math.max(maxPage - 10, 0);
     }
 
-    const pages = _.range(start, end).map((i) => {
+    const pages = _.range(start, end+1).map((i) => {
       const className = i === currentPage ? 'active' : 'waves-effect';
 
-      return <li key={i} className={className}><a href="#" onClick={this.handlePageClick.bind(this, i)}>{i + 1}</a>
-      </li>;
+      return <li key={i} className={className}><a href="#" onClick={this.handlePageClick.bind(this, i)}>{i + 1}</a></li>;
     });
 
     const prevClassName = currentPage === 0 ? 'disabled' : 'waves-effect';
     const nextClassName = currentPage === maxPage ? 'disabled' : 'waves-effect';
     return (
       <ul className="pagination pagination--alpha center-align">
-        <li className={prevClassName}><a href="#" onClick={this.handlePrevClick.bind(this)}><i
+        <li className={'first ' + prevClassName}><a href="#" onClick={this.handlePageClick.bind(this, 0)}><i 
+          className="material-icons">chevron_left</i><i className="material-icons">chevron_left</i></a></li>
+
+        <li className={'prev ' + prevClassName}><a href="#" onClick={this.handlePrevClick.bind(this)}><i 
           className="material-icons">chevron_left</i></a></li>
         {pages}
-        <li className={nextClassName}><a href="#" onClick={this.handleNextClick.bind(this)}><i
+        <li className={'next ' + nextClassName}><a href="#" onClick={this.handleNextClick.bind(this)}><i
           className="material-icons">chevron_right</i></a></li>
+
+        <li className={'last ' + nextClassName}><a href="#" onClick={this.handlePageClick.bind(this, maxPage)}><i 
+          className="material-icons">chevron_right</i><i className="material-icons">chevron_right</i></a></li>
       </ul>
     );
   }
@@ -539,7 +551,7 @@ const FilterEdit = connect(mapStateToProps)(class FilterEdit extends Component {
 const FilterListCommon = connect(mapStateToProps)(class FilterListCommon extends Component {
 
   render() {
-    const {labelList} = this.props.state;
+    const {labelList, labelFilter} = this.props.state;
     const {name} = this.props;
 
     const headTxt = name == 'chooseFilter' ? 'Apply labels' : 'Filter by label';
@@ -549,8 +561,9 @@ const FilterListCommon = connect(mapStateToProps)(class FilterListCommon extends
       if( labelKey !== favoriteKey ){
         const labelName = labelList[key][0];
         const color = labelList[key][1];
+        const className = ( name === 'normalFilter' && labelFilter.indexOf(labelKey) !== -1 ) ? labelKey + ' ' + 'chkAll' : labelKey;
         return (
-          <li key={labelKey} className={labelKey} data-name={labelKey} onClick={this.props.onClickList}>
+          <li key={labelKey} className={className} data-name={labelKey} onClick={this.props.onClickList}>
             <i className="material-icons check">check</i>
             <i className="material-icons remove">remove</i>
             <span className={'color ' + color}></span>{labelName}
@@ -587,7 +600,11 @@ const FilterNormal = connect(mapStateToProps)(class FilterNormal extends Compone
     this.props.dispatch( updateLabelFilter(newFilter) );
   }
   removeAllFilter(){
-    const newList = [];
+    const labelFilter = this.props.state.labelFilter.slice();
+    let newList = [];
+    if( labelFilter.indexOf(favoriteKey) !== -1 ) {
+      newList.push(favoriteKey);
+    }
     this.props.dispatch( updateLabelFilter(newList) );
   }
 
@@ -597,6 +614,7 @@ const FilterNormal = connect(mapStateToProps)(class FilterNormal extends Compone
 
     const self = this;
     setTimeout(function(){ // Do after animation
+      self.props.dispatch( changePage(0) );
       if( !target.classList.contains('chkAll') ) {
         target.classList.add('chkAll');
         self.addFilter(label);
@@ -611,20 +629,21 @@ const FilterNormal = connect(mapStateToProps)(class FilterNormal extends Compone
     const target = e.currentTarget;
     const self = this;
     setTimeout(function(){ // Do after animation
+      self.props.dispatch( changePage(0) );
       const normalFilter = document.getElementById('normalFilter');
       const li = normalFilter.childNodes;
       for( let i = 0; i < li.length; i++ ) {
           li[i].classList.remove('chkAll');
       }      
       self.removeAllFilter();
-      document.querySelector('.filterFav').classList.remove('active');
+      // document.querySelector('.filterFav').classList.remove('active');
     },300);
   }
 
   render() {
     const labelFilter = this.props.state.labelFilter.slice();
     let closeBtn;
-    if( labelFilter.length > 0 ) {
+    if( labelFilter.length > 0 && !( labelFilter.length === 1 && labelFilter[0] === favoriteKey ) ) {
       closeBtn = <a className="isFilter" onClick={this.handleClick.bind(this)}><i className="material-icons">close</i>Clear current filters</a>;
     }
     return (
@@ -767,13 +786,16 @@ const FilterFav = connect(mapStateToProps)(class CheckAll extends Component {
 
   handleClick(e) {
     const tgt = e.currentTarget;
+    this.props.dispatch( changePage(0) );
     tgt.classList.toggle('active');
     tgt.classList.contains('active') ? this.addFilter(favoriteKey) : this.removeFilter(favoriteKey);
   }
 
   render() {
+    const labelFilter = this.props.state.labelFilter;
+    const className = ( labelFilter.indexOf(favoriteKey) !== -1 ) ? 'filterFav active' : 'filterFav';
     return (
-      <div className="filterFav" onClick={this.handleClick.bind(this)}>
+      <div className={className} onClick={this.handleClick.bind(this)}>
         <i className="material-icons on">star</i>
         <i className="material-icons off">star_border</i>
       </div>
@@ -941,15 +963,28 @@ class Search extends Component {
     }
 
     let filterdList = [];
-    labelFilter.map(function(e, i) {
-      const tgtList = ( e !== favoriteKey ) ? labelList[e][2] : labelList[e];
-      filterdList = filterdList
-                      .concat(tgtList)
-                      .filter(function (x, i, self) {
-                        return self.indexOf(x) === i;
-                      });
-      if( filterdList.length == 0 ) { filterdList.push("") }; // for empty filter
-    })
+
+    // only Label Filter
+    if( labelFilter.indexOf(favoriteKey) === -1 && labelFilter.length > 0 ){    
+      labelFilter.map(function(e, i) {
+        filterdList = _.union(filterdList, labelList[e][2]);
+      })
+
+    // only Favorite
+    } else if ( labelFilter.indexOf(favoriteKey) !== -1 && labelFilter.length === 1 ) {
+      filterdList = labelList[favoriteKey];
+
+    // both Label Filter & Favorite
+    } else if ( labelFilter.indexOf(favoriteKey) !== -1 && labelFilter.length > 1 ) {
+      labelFilter.map(function(e, i) {
+        if( e !== favoriteKey ) filterdList = _.union(filterdList, labelList[e][2]);
+      })
+      filterdList = _.intersection(filterdList, labelList[favoriteKey]);
+    }
+
+    // for empty filter
+    if( labelFilter.length > 0 && filterdList.length === 0 ) filterdList.push(""); 
+    
     const labelFilterList = filterdList.length > 0 ? { terms: { _id: filterdList } } : null;
 
     const body = {
@@ -1095,9 +1130,8 @@ class Search extends Component {
       this.searchTimer = null;
     }
 
-
     this.searchTimer = setTimeout(() => {
-      this.props.dispatch(changeQuery(category, query, this.articleTitle, this.author, this.abstract));
+      this.props.dispatch(changeQuery(category, query, this.articleTitle, this.author, this.abstract, this.props.state.labelFilter));
     }, 0);
   }
 

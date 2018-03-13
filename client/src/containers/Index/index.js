@@ -26,28 +26,26 @@ class Index extends Component {
   handleSubmit(e) {
     e.preventDefault();
 
-    if( this.query == this.props.state.query && this.props.state.page == 0) { // 検索ページから戻り、同じ文字列を検索する場合、遷移がトリガーしない為、ここで強制遷移（検索はしないで前回の画面をそのまま表示）
-      this.props.history.push("/texts?q=" + this.query + "&page=1");
-      return false;
-    }
-
     if (this.searchTimer !== null) {
       clearTimeout(this.searchTimer);
       this.searchTimer = null;
     }
 
     this.searchTimer = setTimeout(() => {
-      this.props.dispatch(changeQuery("texts", this.query));
+      const q = ( this.query === null ) ? "?page=1" : "?q=" + this.query + "&page=1";  
+      this.props.dispatch(changeQuery("texts", this.query, null, null, null, []));
+      this.props.history.push("/texts" + q);      
     }, 0);
+
   }
 
   handleChange(e) {
-    this.query = e.target.value;
+    this.query = e.target.value || '' ;
   }
 
   handleClick(e) {
-    this.query = encodeURIComponent(e.target.innerText);
-    this.handleSubmit(e)
+    this.query = e.target.innerText;
+    this.handleSubmit(e);
   }
 
   render() {

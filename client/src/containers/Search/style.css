@@ -447,50 +447,69 @@
 **
 ****************/
 
-	.contents .row{
-		padding-top: 1.2em;
-	}
+.search .contents .paper {
+	position: relative;
+}
 
-	.contents .paper:first-child .divider,
-	.contents .table:first-child .divider{
-		display: none;
-	}
+.contents .row{
+	padding-top: 1.2em;
+}
 
-	.contents .paper {
-		position: relative;
-	}
+.contents .paper:first-child .divider,
+.contents .table:first-child .divider{
+	display: none;
+}
 
-	.contents .paper .checkbox {
-		position: absolute;
-		left: -28px;
-		top: 24px;
-	}
-	.contents .paper:first-child .checkbox {
-		top: 3px;
-	}
+.contents .paper .checkbox {
+	position: absolute;
+	left: -28px;
+	top: 24px;
+}
+.contents .paper:first-child .checkbox {
+	top: 3px;
+}
 
-	.contents .table .divider {
-		margin: 40px 0;
-	}
+.contents .table .divider {
+	margin: 40px 0;
+}
 
-	.contents .paper .filterLabels > span {
-		position: relative;
-		top: -1px;
-		display: inline-block;
-		/*margin: 4px;*/
-	    font-size: 65%;	    
-	    font-size: 65%;
-    	line-height: 17px;
-    	vertical-align: text-bottom;
+.contents .paper .filterLabels > span {
+	position: relative;
+	top: -1px;
+	display: inline-block;
+	/*margin: 4px;*/
+    font-size: 65%;	    
+    font-size: 65%;
+	line-height: 17px;
+	vertical-align: text-bottom;
 
-    	border-radius: 1px;
-    	opacity: 0.94;
-	}
-	.contents .paper .filterLabels > span:after {
-		padding: 2px 6px;
-	}
+	border-radius: 1px;
+	opacity: 0.94;
+}
+.contents .paper .filterLabels > span:after {
+	padding: 2px 6px;
+}
 
-	[type="checkbox"].filled-in:not(:checked)+label:after {
-		border-width: 1px !important;
-	}
+[type="checkbox"].filled-in:not(:checked)+label:after {
+	border-width: 1px !important;
+}
 
+
+/* Pagination */
+.pagination {
+	margin-top: 4em;
+}
+.pagination li.prev a,
+.pagination li.next a {
+	padding: 0;
+}
+.pagination li.first i,
+.pagination li.last i {
+    letter-spacing: -0.7em;
+    position: relative;
+    left: -0.35em;
+}
+.pagination li.first.disabled,
+.pagination li.last.disabled {
+	display: none;
+}

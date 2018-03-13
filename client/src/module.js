@@ -119,6 +119,7 @@ export function reducers(state = initialState, action) {
         articleTitle: action.articleTitle || null,
         author: action.author || null,
         abstract: action.abstract || null,
+        labelFilter: action.labelFilter || [],
         gte: null,
         lte: null,
         booktitles: new Set(),
@@ -262,14 +263,15 @@ export function signedOut() {
 
 const CHANGE_QUERY = "CHANGE_QUERY";
 
-export function changeQuery(category, query, articleTitle, author, abstract) {
+export function changeQuery(category, query, articleTitle, author, abstract, labelFilter) {
   return {
     type: CHANGE_QUERY,
     category,
     query,
     articleTitle,
     author,
-    abstract
+    abstract,
+    labelFilter
   };
 }
 

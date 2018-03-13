@@ -1,4 +1,5 @@
 import React, {Component} from 'react';
+import _ from 'lodash';
 import {
   HashRouter, Switch, Route, Link
 } from 'react-router-dom';
@@ -7,7 +8,7 @@ import Index from '../Index/index.js';
 import Search from '../Search/index.js';
 import Detail from '../Detail/index.js';
 import {ScrollToTop} from '../../components/index.js';
-import {changeQuery, deleteAllScrollY, signedIn, signedOut, getLabelList, updateLabelList} from '../../module';
+import {changeQuery, deleteAllScrollY, signedIn, signedOut, getLabelList, updateLabelList, updateLabelFilter, favoriteKey} from '../../module';
 import './materializeTheme.css';
 import './style.css';
 import Api from '../../api';
@@ -26,6 +27,7 @@ const NavBar = connect(mapStateToProps)(class NavBar extends Component {
   }
 
   componentDidMount() {
+
     window.addEventListener("message", (event) => {
       if (event.origin !== window.location.origin || event.data.type !== "authenticated") {
         return;
@@ -47,6 +49,8 @@ const NavBar = connect(mapStateToProps)(class NavBar extends Component {
     }
 
     this.props.dispatch(getLabelList());
+
+    this.query = this.props.state.query;
   }
 
   signIn(user) {
@@ -55,11 +59,13 @@ const NavBar = connect(mapStateToProps)(class NavBar extends Component {
   }
 
   componentDidUpdate(prevProps) {
-    const {category: oldCategory, query: oldQuery, articleTitle: oldArticleTitle, author: oldAuthor, abstract: oldAbstract, gte: oldGte, lte: oldLte, booktitles: oldBooktitles, page: oldPage} = prevProps.state;
-    const {category: newCategory, query: newQuery, articleTitle: newArticleTitle, author: newAuthor, abstract: newAbstract, gte: newGte, lte: newLte, booktitles: newBooktitles, page: newPage} = this.props.state;
-    if (oldCategory === newCategory && oldQuery === newQuery && oldArticleTitle === newArticleTitle && oldAuthor === newAuthor && oldAbstract === newAbstract && oldPage === newPage && oldGte === newGte && oldLte === newLte && Array.from(oldBooktitles).join("") === Array.from(newBooktitles).join("")) {
+
+    const {category: oldCategory, query: oldQuery, articleTitle: oldArticleTitle, author: oldAuthor, abstract: oldAbstract, gte: oldGte, lte: oldLte, booktitles: oldBooktitles, page: oldPage, labelFilter:oldlabelFilter} = prevProps.state;
+    const {category: newCategory, query: newQuery, articleTitle: newArticleTitle, author: newAuthor, abstract: newAbstract, gte: newGte, lte: newLte, booktitles: newBooktitles, page: newPage, labelFilter:newlabelFilter} = this.props.state;
+
+    if (oldCategory === newCategory && oldQuery === newQuery && oldArticleTitle === newArticleTitle && oldAuthor === newAuthor && oldAbstract === newAbstract && oldPage === newPage && oldGte === newGte && oldLte === newLte && Array.from(oldBooktitles).join("") === Array.from(newBooktitles).join("") && oldlabelFilter === newlabelFilter ) {
       return;
-    }
+    }    
 
     const queries = [];
     if (newQuery !== null) {
@@ -90,16 +96,22 @@ const NavBar = connect(mapStateToProps)(class NavBar extends Component {
     const queryString = queries.map(query => {
       return `${query[0]}=${query[1]}`;
     }).join("&");
-    const url = `/${newCategory}?${queryString}`;
 
-    this.props.history.push(url);
-    if( this.props.state.query != null ){
-      this.refs.search.value = decodeURIComponent(this.props.state.query);
+    const newUrl = `/${newCategory}?${queryString}`;
+    const oldUrl = this.props.location.pathname + this.props.location.search;
+
+    if( newUrl !== oldUrl ) {
+      this.props.history.push(newUrl);
     }
+
+    this.query = newQuery;
+
+    this.refs.search.value = ( this.props.state.query !== null ) ? decodeURIComponent(this.props.state.query) : '' ;
+    
   }
 
   handleSubmit(e) {
-    e.preventDefault();
+    e.preventDefault();        
 
     if (this.searchTimer !== null) {
       clearTimeout(this.searchTimer);
@@ -108,7 +120,11 @@ const NavBar = connect(mapStateToProps)(class NavBar extends Component {
 
     this.searchTimer = setTimeout(() => {
       this.props.dispatch(deleteAllScrollY());
-      this.props.dispatch(changeQuery(this.props.state.category, this.query));
+
+      const labelFilter = this.props.state.labelFilter.slice();
+            _.remove(labelFilter, function(n) { return n === favoriteKey; });
+
+      this.props.dispatch(changeQuery(this.props.state.category, this.query, null, null, null, labelFilter));
     }, 0);
   }
 
