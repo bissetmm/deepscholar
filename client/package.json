@@ -19,7 +19,7 @@
     "redux": "^3.7.2",
     "searchkit": "^2.2.1-0",
     "strict-uri-encode": "^2.0.0",
-    "toml-js": "0.0.8",
+    "toml": "^2.3.3",
     "tsv": "^0.2.0",
     "xlsx": "^0.12.4"
   },
