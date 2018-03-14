@@ -64,7 +64,7 @@ const providers = [
   {type: "github", scope: ['read:user']}
 ];
 
-module.exports = class {
+module.exports = class Auth {
   static getVerifiedUserId(headers) {
     return new Promise((resolve, reject) => {
       const authorization = headers ? headers["authorization"] : null;
@@ -90,7 +90,7 @@ module.exports = class {
     const router = express.Router();
 
     router.get(`/verify`, (req, res) => {
-      return this.constructor.getVerifiedUserId(req.headers).then(userId => {
+      return Auth.getVerifiedUserId(req.headers).then(userId => {
         return User.findByObjectId(userId).then(user => {
           const token = generateAccessToken(userId);
           const {profile} = user;
@@ -111,4 +111,4 @@ module.exports = class {
 
     return router;
   }
-}
+};
