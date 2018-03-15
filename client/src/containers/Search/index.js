@@ -3,9 +3,9 @@ import _ from 'lodash';
 import XLSX from 'xlsx';
 import JSZip from 'jszip';
 import JSZipUtils from 'jszip-utils';
-import saveAs from 'file-saver';
+import {saveAs} from 'file-saver';
 import TSV from 'tsv';
-import toml from 'toml-js';
+import toml from 'toml';
 import {connect} from 'react-redux';
 import {withRouter, HashRouter, Switch, Route} from 'react-router-dom';
 import {RangeSliderHistogram} from 'searchkit';
@@ -118,10 +118,7 @@ const PublicationFilter = connect(mapStateToProps)(class PublicationFilter exten
 
 const Download = connect(mapStateToProps)(class Download extends Component {
 
-  handleClick(e) {
-
-    const zip = new JSZip();
-    const dir = zip.folder("paper");
+  handleClick(e) {    
 
     function deactivateToolbar() {
       document.querySelector('.toolBar').classList.remove('choosing');
@@ -217,7 +214,7 @@ const Download = connect(mapStateToProps)(class Download extends Component {
     //     }];
     //   var tsv = TSV.stringify(d);
     //   return tsv;
-    // }
+    // }    
 
     function tomlToXlsx(data){
 
@@ -323,6 +320,9 @@ const Download = connect(mapStateToProps)(class Download extends Component {
       const blob = new Blob([data], {type: type});
       saveAs(blob, 'paper.' + ext);
     }
+
+    const zip = new JSZip();
+    const dir = zip.folder("paper");
 
     const apiPath = '/api/documents/';
 
