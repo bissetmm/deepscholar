@@ -106,10 +106,10 @@
         top: 0;
         left: 0;
         font-size: 23px; 
-        background-color: white;
     }
     .paper .favorite i.on { 
-        color: /*#ffeb3b*/#ffe403;
+        color: #ffe403;
+        opacity: 0;
     }        
     .paper .favorite i.off{ 
         color: #b9c0cc;      

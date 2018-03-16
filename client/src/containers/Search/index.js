@@ -758,7 +758,8 @@ const FilterChoose = connect(mapStateToProps)(class FilterChoose extends Compone
         const list = labelList[favoriteKey];
         list.map(function(val, i) {
           const valDotEscaped = val.replace(/\./i, '\\\.'); // class name may include dot
-          style += '.paper' + valDotEscaped + ' .favorite i.on { z-index: 1; }';
+          style += '.paper' + valDotEscaped + ' .favorite i.on { opacity: 1; }';
+          style += '.paper' + valDotEscaped + ' .favorite i.off { color: #1f4fa2; }';
         })
       }
     })
