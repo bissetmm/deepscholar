@@ -53,7 +53,7 @@ const Paginator = withRouter(connect(mapStateToProps)(class Paginator extends Co
 
     if ( maxPage === -1 ) return false;
 
-    const pageLimit = ( 10000 / this.props.state.papersFetchSize ) - 1;
+    const pageLimit = ( 10000 / this.props.size ) - 1;
     if ( maxPage > pageLimit ) maxPage = pageLimit; // ElasticSearch has limitation on searching paper after no.10000
 
     const currentPage = this.props.page;
