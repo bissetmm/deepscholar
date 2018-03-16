@@ -36,7 +36,7 @@ const initialState = {
   papersFetchSize: 20,
   figures: [],
   figuresTotal: 0,
-  figuresFetchSize: 10000,
+  figuresFetchSize: 20,
   labelColor: labelColor,
   labelList: labelList,
   labelFilter: [],

@@ -1040,8 +1040,10 @@ class Search extends Component {
   searchFigures() {
     const {query, page} = this.props.state;
     this.props.dispatch(requestFigures(query, page));
+    const from = page * this.props.state.figuresFetchSize;
 
     const body = {
+      from,
       size: this.props.state.figuresFetchSize,
       query: {
         bool: {
@@ -1177,7 +1179,7 @@ class Search extends Component {
   }
 
   render() {
-    const {page, papers, papersTotal, papersFetchSize, aggregations, booktitles, figures, figuresTotal, tables, tablesTotal, tablesFetchSize} = this.props.state;
+    const {page, papers, papersTotal, papersFetchSize, aggregations, booktitles, figures, figuresTotal, tables, tablesTotal, tablesFetchSize, figuresFetchSize} = this.props.state;
 
     let year;
     if (aggregations.year.buckets.length > 1) {
@@ -1315,6 +1317,7 @@ class Search extends Component {
                     <Route path="/figures" component={(props) => (
                       <div className="col s12">
                         <Figures data={figures}/>
+                        <Paginator total={figuresTotal} size={figuresFetchSize} page={page}/>
                       </div>
                     )}/>
                     <Route path="/tables" component={(props) => (
