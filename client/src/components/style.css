@@ -116,16 +116,34 @@
     }
 
 
+/****************
+**  Figure
+****************/
 #figures {
     display: flex;
     flex-wrap: wrap;
+    width: 100%;
 }
 
-#figures img {
-    width: 150px;
+.figure a:hover {
+    text-decoration: underline;
+}
+
+.figure header h5{
+    font-size: 1.3em;
+    margin: 20px 0 10px;
+
+    line-height: 1.4;
+    font-weight: 400;
+}
+
+.figure img {
+    width: 100%;
     height: auto;
-    margin: 5px;
-    border: 1px solid lightgray;
+}
+.figure footer p {
+    margin: 10px 0;
+    font-weight: 400;
 }
 
 

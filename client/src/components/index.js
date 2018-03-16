@@ -209,22 +209,36 @@ export class Papers extends Component {
   }
 }
 
-class Figure extends Component {
-  loadAlternativeImage(e) {
-    this.props.data.url = "/images/logo.png";
-    this.forceUpdate();
+export const Figure = withRouter(connect(mapStateToProps)(class Figure extends Component {
+  handleClick(paperUrl, e) {
+    this.props.dispatch(saveScrollY(this.props.location.key, window.scrollY));
+    this.props.history.push(paperUrl);
   }
 
   render() {
-    const {img, caption, label} = this.props.data;
-    const subHtml = `<h4>${label}</h4><p>${caption}</p>`;
+    const {img: url, label, caption} = this.props.data._source;
+    const paper = this.props.data.inner_hits.text.hits.hits[0];
+    const paperId = paper._id;
+    const {articleTitle} = paper._source;
+    const paperUrl = `/papers/${paperId}`;
+    const footer = `${label} ${caption}`;
+
     return (
-      <a key={img} href={img} data-sub-html={subHtml} >
-        <img src={img} onError={this.loadAlternativeImage.bind(this)}/>
-      </a>
+      <article className="figure">
+        <div className="divider"></div>
+        <header>
+          <h5><a href="javascript:void(0)" onClick={this.handleClick.bind(this, paperUrl)}>{articleTitle}</a></h5>
+        </header>
+        <a className="figure-image" key={url} href={url}>
+          <img src={url}/>
+        </a>
+        <footer>
+          <h6>{footer}</h6>
+        </footer>
+      </article>
     );
   }
-}
+}));
 
 export class Figures extends Component {
   componentDidUpdate () {
@@ -237,17 +251,17 @@ export class Figures extends Component {
         console.error(error);
       }
     }
+  }
 
-    window.lightGallery(document.getElementById('figures'), {thumbnail: true});
+  componentDidMount () {
+    window.lightGallery(document.getElementById('figures'), {
+      selector: ".figure-image"
+    });
   }
 
   render() {
-    const figures = this.props.data.map((figure) => {
-      const key = figure._id;
-      const {img, caption, label} = figure._source;
-      const data = {img, caption, label};
-
-      return <Figure key={key} data={data} />;
+    const figures = this.props.data.map((value, i) => {
+      return <Figure key={i} data={value} />;
     });
 
     return (
