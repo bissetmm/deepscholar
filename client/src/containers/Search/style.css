@@ -213,15 +213,14 @@
         font-size: 23px; 
     }
     .toolBar .filterFav i.on { 
-        color: /*#ffeb3b*/#ffe403;
+        color: #ffe403;
         opacity: 0;
-        z-index: 1;
     }
     	.toolBar .filterFav.active i.on { opacity: 1; }
     .toolBar .filterFav i.off{ 
         color: #bfc7d4;      
     }
-    	.toolBar .filterFav.active i.off { opacity: 0; }
+    	.toolBar .filterFav.active i.off { color: #1f4fa2; }
 
 
 /* filterEditModal */
