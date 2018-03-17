@@ -4,10 +4,9 @@
 **
 ****************/
 
-
 /****************
 **
-**  Header Navi 
+**  Header Navi
 **
 ****************/
 
@@ -15,7 +14,7 @@
     margin-bottom: 36px;
 }
 
-.navbar-fixed .nav-wrapper .row, 
+.navbar-fixed .nav-wrapper .row,
 .navbar-fixed .nav-wrapper .col {
     height: 100%;
 }
@@ -26,52 +25,55 @@
     min-height: 64px;
 }
 
-	/****************
-	**  Logo
-	****************/
+/****************
+**  Logo
+****************/
 
-	.header-navi .brand-logo {
-		position: relative;
-		display: block;
-		max-width: 140px;
-		height: 100%;
-		margin-left: 18px;
-		font-size: 0;
-	}
-	.header-navi .brand-logo img {
-		position: relative;
-		top: 50%;
-		transform: translateY(-50%);
-		width: 100%;
-		max-width: 140px;
-	}
-	.header-navi ul a {
-		color: #1e50a2;
-	}
-	@media only screen and (max-width: 992px) {
-		.header-navi .brand-logo {
-			margin-left: 0;
-		    left: 0;
-		    -webkit-transform: translateX(0); 
-		    transform: translateX(0); 
-		}
-	}
+.header-navi .brand-logo {
+    position: relative;
+    display: block;
+    max-width: 140px;
+    height: 100%;
+    margin-left: 18px;
+    font-size: 0;
+}
 
-	/****************
-	**  Avator
-	****************/
-	.header-navi .avatar {
-		position: relative;
-		vertical-align: middle;
-		width: 30px;
-		height: 30px;
-		margin-right: 6px;
-	}
+.header-navi .brand-logo img {
+    position: relative;
+    top: 50%;
+    transform: translateY(-50%);
+    width: 100%;
+    max-width: 140px;
+}
 
-	/****************
-	**  Search
-	****************/
+.header-navi ul a {
+    color: #1e50a2;
+}
 
-	.header-navi .input-field {
-		margin-top: 10px;
-	}
+@media only screen and (max-width: 992px) {
+    .header-navi .brand-logo {
+        margin-left: 0;
+        left: 0;
+        -webkit-transform: translateX(0);
+        transform: translateX(0);
+    }
+}
+
+/****************
+**  Avator
+****************/
+.header-navi .avatar {
+    position: relative;
+    vertical-align: middle;
+    width: 30px;
+    height: 30px;
+    margin-right: 6px;
+}
+
+/****************
+**  Search
+****************/
+
+.header-navi .input-field {
+    margin-top: 10px;
+}

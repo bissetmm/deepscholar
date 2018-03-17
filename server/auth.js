@@ -60,14 +60,12 @@ function generateUserToken(req, res) {
   });
 }
 
-const providers = [
-  {type: "github", scope: ['read:user']}
-];
+const providers = [{type: "github", scope: ['read:user']}];
 
 module.exports = class Auth {
   static getVerifiedUserId(headers) {
     return new Promise((resolve, reject) => {
-      const authorization = headers ? headers["authorization"] : null;
+      const authorization = headers ? headers.authorization : null;
       if (authorization) {
         const matches = authorization.match(/bearer\s(.+)$/);
         if (matches) {
@@ -87,7 +85,7 @@ module.exports = class Auth {
   static router(app) {
     app.use(passport.initialize());
 
-    const router = express.Router();
+    const router = new express.Router();
 
     router.get(`/verify`, (req, res) => {
       return Auth.getVerifiedUserId(req.headers).then(userId => {
@@ -96,7 +94,8 @@ module.exports = class Auth {
           const {profile} = user;
           res.send(JSON.stringify({token, profile}));
         });
-      }).catch(() => {
+      })
+.catch(() => {
         res.status(403).end();
       });
     });

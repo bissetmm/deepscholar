@@ -1,6 +1,6 @@
 import React, {Component} from 'react';
 import {connect} from 'react-redux';
-import { changeQuery } from '../../module';
+import {changeQuery} from '../../module';
 import './style.css';
 
 function mapStateToProps(state) {
@@ -15,11 +15,11 @@ class Index extends Component {
     this.query = null;
   }
 
-  componentWillMount(){
+  componentWillMount() {
     document.body.classList.add("index");
   }
 
-  componentWillUnmount(){
+  componentWillUnmount() {
     document.body.classList.remove("index");
   }
 
@@ -32,15 +32,15 @@ class Index extends Component {
     }
 
     this.searchTimer = setTimeout(() => {
-      const q = ( this.query === null ) ? "?page=1" : "?q=" + this.query + "&page=1";  
+      const q = this.query === null ? "?page=1" : `?q=${this.query}&page=1`;
       this.props.dispatch(changeQuery("texts", this.query, null, null, null, []));
-      this.props.history.push("/texts" + q);      
+      this.props.history.push(`/texts${q}`);
     }, 0);
 
   }
 
   handleChange(e) {
-    this.query = e.target.value || '' ;
+    this.query = e.target.value || '';
   }
 
   handleClick(e) {
@@ -60,7 +60,7 @@ class Index extends Component {
           <div className="wave wave_4"></div>
           <div className="wave wave_5"></div>
         </div>
-        
+
         <div className="box">
 
           <h1 className="headline">Dive into a sea of knowledge</h1>
@@ -73,12 +73,13 @@ class Index extends Component {
 
               <div className="input-field input-field--search noBorder">
                 <form onSubmit={this.handleSubmit.bind(this)}>
-                  <input type="search" placeholder="Search" onChange={this.handleChange.bind(this)} />
+                  <input type="search" placeholder="Search" onChange={this.handleChange.bind(this)}/>
                 </form>
                 <label className="label-icon" htmlFor="search"><i className="material-icons">search</i></label>
               </div>
 
-              <div className="try">Try<span className="colon">:</span><a href="#" onClick={this.handleClick.bind(this)}>Deep Learning</a></div>
+              <div className="try">Try<span className="colon">:</span><a href="#" onClick={this.handleClick.bind(this)}>Deep
+                Learning</a></div>
             </div>
 
           </div>
@@ -88,7 +89,7 @@ class Index extends Component {
         <p className="note">DeepScholar is a free search engine for scientific papers.</p>
 
 
-      </div> 
+      </div>
     );
   }
 }

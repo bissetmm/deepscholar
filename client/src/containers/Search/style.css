@@ -14,38 +14,39 @@
 }
 
 .search .contents {
-	padding-top: 32px;
+    padding-top: 32px;
 }
 
 .search .tab.collocations a .txt {
-	letter-spacing: 0.05em;
+    letter-spacing: 0.05em;
 }
+
 /****************
 **
 **  Sub Navigation
 **
 ****************/
 .subNavi {
-	position: fixed;
-	left: 0;
-	top: 64px;
-	width: 100%;
-	height: 56px;
-	border-bottom: 1px solid #e1e4e8;
-	background-color: #fafbfc;
-	z-index: 3;
+    position: fixed;
+    left: 0;
+    top: 64px;
+    width: 100%;
+    height: 56px;
+    border-bottom: 1px solid #e1e4e8;
+    background-color: #fafbfc;
+    z-index: 3;
 }
 
 .subNavi .tabs {
-    margin-top: 16px; 
+    margin-top: 16px;
 }
 
 .subNavi .container > .row {
-  	margin-bottom: 0;
+    margin-bottom: 0;
 }
 
-.subNavi:after{
-	content: "";
+.subNavi:after {
+    content: "";
     height: 12px;
     width: 100vw;
     position: fixed;
@@ -53,48 +54,47 @@
     background-color: #fff;
 }
 
-@media only screen and (max-width: 600px) { 
-	.subNavi {
-		height: 50px;
-	}
+@media only screen and (max-width: 600px) {
+    .subNavi {
+        height: 50px;
+    }
 }
-
-
 
 /****************
 **  Results
 ****************/
 
 .subNavi .results {
-	position: relative; 
+    position: relative;
 }
+
 .subNavi .results p {
-	margin: 0;
-	line-height: 56px;
-	padding-right: 2.75rem;
-	text-align: center; 
+    margin: 0;
+    line-height: 56px;
+    padding-right: 2.75rem;
+    text-align: center;
 }
+
 .subNavi .results p .num {
-	font-weight: 500;
+    font-weight: 500;
 }
 
-@media only screen and (max-width: 600px) { 
-	.subNavi .results p {
-		height: 50px;
-		padding-right: 0;
-	}
+@media only screen and (max-width: 600px) {
+    .subNavi .results p {
+        height: 50px;
+        padding-right: 0;
+    }
 }
-
 
 /****************
-**  Tool Bar 
+**  Tool Bar
 ****************/
 .toolBar {
-	position: fixed;
+    position: fixed;
     top: 132px;
     width: 73.5vw !important;
     max-width: 990px;
-	padding-left: 40px;
+    padding-left: 40px;
     background-color: #f6f8fa;
     border: 1px solid #e1e4e8;
     border-radius: 1px;
@@ -103,48 +103,66 @@
 }
 
 .toolBar .tools {
-	text-align: right;
-	height: 36px;
+    text-align: right;
+    height: 36px;
 }
-.toolBar .tools div{
-	display: inline-block;
+
+.toolBar .tools div {
+    display: inline-block;
 }
+
 .toolBar .tools .download.dropdown {
-	/*padding-right: 8px;*/
+    /*padding-right: 8px;*/
 }
-.toolBar .tools .download ul li:not(.head){
-	padding-left: 16px !important;
+
+.toolBar .tools .download ul li:not(.head) {
+    padding-left: 16px !important;
 }
+
 .toolBar .tools .download ul li:not(.head) b {
-	padding-right: 8px;
+    padding-right: 8px;
 }
-.toolBar .checkAll{
+
+.toolBar .checkAll {
     position: absolute;
     left: 8px;
     top: 8px;
     width: 20px;
     height: 20px;
 }
-.toolBar .chooseFilter{ display: none !important; }
-.toolBar.choosing .normalFilter { display: none !important; }
-.toolBar.choosing .chooseFilter { display: block !important; }
+
+.toolBar .chooseFilter {
+    display: none !important;
+}
+
+.toolBar.choosing .normalFilter {
+    display: none !important;
+}
+
+.toolBar.choosing .chooseFilter {
+    display: block !important;
+}
 
 .toolBar .dropdown {
-	float: right;
+    float: right;
 }
+
 .toolBar .dropdown-button {
-	padding: 0;
+    padding: 0;
 }
+
 .toolBar .dropdown-content li .material-icons.check,
 .toolBar .dropdown-content li .material-icons.remove {
-	display: none;
+    display: none;
 }
+
 .toolBar .dropdown-content li.chkAll .material-icons.check,
 .toolBar .dropdown-content li.chk .material-icons.remove {
-	display: inline;
+    display: inline;
 }
+
 .toolBar .dropdown-content .color {
-	display: inline-block;
+    display: inline-block;
     width: 16px;
     height: 16px;
     padding: 0;
@@ -152,182 +170,209 @@
     vertical-align: text-top;
 }
 
-.toolBar .download > a{
-	opacity: 0.4;
-	pointer-events : none;
-}
-.toolBar.choosing .download > a{
-	opacity: 1;
-	pointer-events : initial;
+.toolBar .download > a {
+    opacity: 0.4;
+    pointer-events: none;
 }
 
-.toolBar .normalFilter, 
-.toolBar .chooseFilter {
-	padding-right: 8px !important;
+.toolBar.choosing .download > a {
+    opacity: 1;
+    pointer-events: initial;
 }
+
+.toolBar .normalFilter,
+.toolBar .chooseFilter {
+    padding-right: 8px !important;
+}
+
 .toolBar .normalFilter .dropdown-button i.material-icons.icon,
 .toolBar .chooseFilter .dropdown-button i.material-icons.icon {
-	top: 1px;
+    top: 1px;
     font-size: 13px !important;
     margin-right: 3px;
 }
+
 .toolBar .download .dropdown-button i.material-icons.icon {
-	top: 1px;
+    top: 1px;
     font-size: 17px !important;
     margin-right: 3px;
 }
-	
-	/* isFilter */
 
-	.toolBar .isFilter {
+/* isFilter */
+
+.toolBar .isFilter {
     position: absolute;
     left: 58px;
     top: 6px;
     padding: 0 8px 0 3px;
     border: 1px solid #d6dbe2;
     border-radius: 3px;
-    background: #fff;    
+    background: #fff;
     cursor: pointer;
-	}
-	.toolBar .isFilter i {
-		vertical-align: top;
-	    font-size: 22px;
-	}
+}
 
+.toolBar .isFilter i {
+    vertical-align: top;
+    font-size: 22px;
+}
 
-	/* filterFav */
+/* filterFav */
 
-    .toolBar .filterFav {
-        position: absolute;
-        left: 32px;
-        top: 7px;
-        width: 23px;
-        height: 23px;
-        text-align: center;
-        cursor: pointer;
-    }
-    .toolBar .filterFav i { 
-        position: absolute;
-        top: 0;
-        left: 0px;
-        font-size: 23px; 
-    }
-    .toolBar .filterFav i.on { 
-        color: #ffe403;
-        opacity: 0;
-    }
-    	.toolBar .filterFav.active i.on { opacity: 1; }
-    .toolBar .filterFav i.off{ 
-        color: #bfc7d4;      
-    }
-    	.toolBar .filterFav.active i.off { color: #1f4fa2; }
+.toolBar .filterFav {
+    position: absolute;
+    left: 32px;
+    top: 7px;
+    width: 23px;
+    height: 23px;
+    text-align: center;
+    cursor: pointer;
+}
 
+.toolBar .filterFav i {
+    position: absolute;
+    top: 0;
+    left: 0px;
+    font-size: 23px;
+}
+
+.toolBar .filterFav i.on {
+    color: #ffe403;
+    opacity: 0;
+}
+
+.toolBar .filterFav.active i.on {
+    opacity: 1;
+}
+
+.toolBar .filterFav i.off {
+    color: #bfc7d4;
+}
+
+.toolBar .filterFav.active i.off {
+    color: #1f4fa2;
+}
 
 /* filterEditModal */
 
 .filterEditModal .modal-content {
     padding: 16px 24px;
 }
-.filterEditModal .modal-content h4{
-	font-size: 24px;
-	font-weight: 300;
+
+.filterEditModal .modal-content h4 {
+    font-size: 24px;
+    font-weight: 300;
 }
+
 .filterEditModal .color {
     position: relative;
     top: 5px;
-	display: inline-block;
+    display: inline-block;
     width: 16px;
     height: 16px;
     padding: 0;
     margin-right: 7px;
     vertical-align: text-top;
 }
+
 .filterEditModal .modal-content,
 .filterEditModal .modal-footer {
-	background-color: #f6f8fa;
+    background-color: #f6f8fa;
 }
+
 .filterEditModal .modal-footer {
-	border-top: 1px solid #e1e4e8;	
+    border-top: 1px solid #e1e4e8;
 }
 
 .filterEditModal .modal-content ul {
-	background-color: #fff;
+    background-color: #fff;
     padding: 0;
     margin-bottom: 0;
     border: 1px solid #e1e4e8;
     border-radius: 3px;
 }
+
 .filterEditModal .modal-content ul:empty {
-	border: none;
+    border: none;
 }
+
 .filterEditModal .modal-content ul li {
-	overflow: hidden;
-	position: relative;
-	font-size: 20px;
-	padding: 8px 52px 9px 32px;
-	word-break: break-all;
-	/*white-space: nowrap;*/
-	/*text-overflow: ellipsis;	*/
-	border-bottom: 1px solid #e1e4e8;
+    overflow: hidden;
+    position: relative;
+    font-size: 20px;
+    padding: 8px 52px 9px 32px;
+    word-break: break-all;
+    /*white-space: nowrap;*/
+    /*text-overflow: ellipsis;	*/
+    border-bottom: 1px solid #e1e4e8;
 }
+
 .filterEditModal .modal-content ul li:hover {
-	background-color: #f6f8fa;
+    background-color: #f6f8fa;
 }
+
 .filterEditModal .modal-content ul li:last-child {
-	border-bottom: none;
+    border-bottom: none;
 }
+
 .filterEditModal .modal-content ul li input {
-	display: none;
+    display: none;
 }
+
 .filterEditModal .modal-content ul li.edit .labelName {
-	display: none;
+    display: none;
 }
+
 .filterEditModal .modal-content ul li.edit input {
-	position: absolute;
-	left: 56px;
-	top: 50%;
-	transform: translateY(-50%);
-	display: inline-block;
+    position: absolute;
+    left: 56px;
+    top: 50%;
+    transform: translateY(-50%);
+    display: inline-block;
     width: 50%;
     height: 26px;
     margin-bottom: 0;
 }
+
 .filterEditModal .modal-content ul li.edit.max:after {
-	content: "maximum length: 20";
-	position: absolute;
-	left: 50%;
-	top: 4px;
-	color: #F44336;
-	font-size: 0.75rem;
+    content: "maximum length: 20";
+    position: absolute;
+    left: 50%;
+    top: 4px;
+    color: #F44336;
+    font-size: 0.75rem;
 }
 
 .filterEditModal .modal-content ul li .color {
-	cursor: pointer;
+    cursor: pointer;
 }
+
 .filterEditModal .modal-content ul li ul.colorList {
-	display: none;
-	position: absolute;
+    display: none;
+    position: absolute;
     top: 3px;
     left: 55px;
     width: 98px;
     height: 42px;
     padding: 2px 0px 2px 10px;
 }
+
 .filterEditModal .modal-content ul li.editColor ul.colorList {
-	display: block;
-	z-index: 100;
+    display: block;
+    z-index: 100;
 }
+
 .filterEditModal .modal-content ul li.editColor .colorListMusk {
-	position: fixed;
-	left: 0;
-	top:0;
-	height: 100vh;
-	width: 100vw;
-	z-index: 99;
+    position: fixed;
+    left: 0;
+    top: 0;
+    height: 100vh;
+    width: 100vw;
+    z-index: 99;
 }
+
 .filterEditModal .modal-content ul li ul.colorList li {
-	float: left;
-	box-sizing: border-box;
+    float: left;
+    box-sizing: border-box;
     width: 16px;
     height: 16px;
     padding: 0;
@@ -335,10 +380,12 @@
     border: none;
     cursor: pointer;
 }
+
 .filterEditModal .modal-content ul li ul.colorList li.active {
-	border: 2px solid #475265;
+    border: 2px solid #475265;
 }
-.filterEditModal .modal-content ul li i{
+
+.filterEditModal .modal-content ul li i {
     position: absolute;
     right: 5px;
     top: calc(50% + 1px);
@@ -347,24 +394,28 @@
     opacity: 0.75;
     cursor: pointer;
 }
+
 .filterEditModal .modal-content ul li i.create {
-	right: 30px;	
-	font-size: 19px;
+    right: 30px;
+    font-size: 19px;
 }
+
 .filterEditModal .modal-content ul li i:hover {
-	color: #1e50a2;
-	opacity: 1;
+    color: #1e50a2;
+    opacity: 1;
 }
+
 .filterEditModal .addLabel {
-	display: inline-block;
-	padding-top: 9px;
-	padding-right: 8px;
-	letter-spacing: 0.05em;
-	cursor: pointer;
+    display: inline-block;
+    padding-top: 9px;
+    padding-right: 8px;
+    letter-spacing: 0.05em;
+    cursor: pointer;
 }
+
 .filterEditModal .addLabel i {
-	position: relative;
-	display: inline-block;
+    position: relative;
+    display: inline-block;
     top: 5px;
     font-size: 20px;
     padding-right: 4px;
@@ -377,27 +428,28 @@
 ****************/
 
 .sidebar {
-	position: relative;
+    position: relative;
 }
 
 .sidebar > div {
-	position: fixed;
-	height: calc(100vh - 64px - 60px);
-	overflow-y: scroll;
+    position: fixed;
+    height: calc(100vh - 64px - 60px);
+    overflow-y: scroll;
 
-	padding-right: 3em !important;
+    padding-right: 3em !important;
     padding-left: 0 !important;
     padding-top: 16px !important;
 }
+
 .sidebar > div::-webkit-scrollbar {
-  display: none;
+    display: none;
 }
 
 @media only screen and (min-width: 993px) {
-	.sidebar .col.l3 {
-		width: 23%;
-		max-width: 310px;
-	}
+    .sidebar .col.l3 {
+        width: 23%;
+        max-width: 310px;
+    }
 }
 
 /****************
@@ -405,8 +457,8 @@
 ****************/
 
 .sidebar h5 {
-	position: relative;
-	left: -3px;
+    position: relative;
+    left: -3px;
     font-weight: 500;
     font-size: 20px !important;
     letter-spacing: 0.1em;
@@ -418,27 +470,24 @@
     position: relative;
     top: 2px;
     font-size: 19px;
-	vertical-align: top;
-	margin-right: 4px;
+    vertical-align: top;
+    margin-right: 4px;
 }
 
 .sidebar h6 {
-	font-weight: 500;
+    font-weight: 500;
     font-size: 0.85rem !important;
     letter-spacing: 0.075em;
 }
-
 
 /****************
 **  Publication Year
 ****************/
 .sidebar .publication-year {
-	padding: 0 11px;
+    padding: 0 11px;
     margin-top: 1rem;
     margin-bottom: 1.5rem;
 }
-
-
 
 /****************
 **
@@ -447,68 +496,72 @@
 ****************/
 
 .search .contents .paper {
-	position: relative;
+    position: relative;
 }
 
-.contents .row{
-	padding-top: 1.2em;
+.contents .row {
+    padding-top: 1.2em;
 }
 
 .contents .paper:first-child .divider,
-.contents .table:first-child .divider{
-	display: none;
+.contents .table:first-child .divider {
+    display: none;
 }
 
 .contents .paper .checkbox {
-	position: absolute;
-	left: -28px;
-	top: 24px;
+    position: absolute;
+    left: -28px;
+    top: 24px;
 }
+
 .contents .paper:first-child .checkbox {
-	top: 3px;
+    top: 3px;
 }
 
 .contents .table .divider {
-	margin: 40px 0;
+    margin: 40px 0;
 }
 
 .contents .paper .filterLabels > span {
-	position: relative;
-	top: -1px;
-	display: inline-block;
-	/*margin: 4px;*/
-    font-size: 65%;	    
+    position: relative;
+    top: -1px;
+    display: inline-block;
+    /*margin: 4px;*/
     font-size: 65%;
-	line-height: 17px;
-	vertical-align: text-bottom;
+    font-size: 65%;
+    line-height: 17px;
+    vertical-align: text-bottom;
 
-	border-radius: 1px;
-	opacity: 0.94;
+    border-radius: 1px;
+    opacity: 0.94;
 }
+
 .contents .paper .filterLabels > span:after {
-	padding: 2px 6px;
+    padding: 2px 6px;
 }
 
-[type="checkbox"].filled-in:not(:checked)+label:after {
-	border-width: 1px !important;
+[type="checkbox"].filled-in:not(:checked) + label:after {
+    border-width: 1px !important;
 }
-
 
 /* Pagination */
 .pagination {
-	margin-top: 4em;
+    margin-top: 4em;
 }
+
 .pagination li.prev a,
 .pagination li.next a {
-	padding: 0;
+    padding: 0;
 }
+
 .pagination li.first i,
 .pagination li.last i {
     letter-spacing: -0.7em;
     position: relative;
     left: -0.35em;
 }
+
 .pagination li.first.disabled,
 .pagination li.last.disabled {
-	display: none;
+    display: none;
 }

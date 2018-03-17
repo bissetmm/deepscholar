@@ -39,8 +39,8 @@ const indexName = "papers";
       if (stream === null) {
         stream = createRequest(config);
       }
-      processedByte = processedByte + Buffer.byteLength(line, 'utf8');
-      processedPapers++;
+      processedByte += Buffer.byteLength(line, 'utf8');
+      processedPapers += 1;
 
       const json = JSON.parse(line);
       const valid = validate(json);
@@ -54,19 +54,19 @@ const indexName = "papers";
         .forEach(id => {
           const paper = papers[id];
           const {tables, figs} = paper;
-          delete paper.tables;
-          delete paper.figs;
+          Reflect.deleteProperty(paper, "tables");
+          Reflect.deleteProperty(paper, "figs");
 
           const textMeta = {index: {_index: indexName, _type: "text", _id: id}};
           stream.append(`${JSON.stringify(textMeta)}\n${JSON.stringify(paper)}\n`);
 
           const tablesMeta = {index: {_index: indexName, _type: "tables", _parent: id}};
-          tables && tables.forEach(table => {
+          [tables || []].forEach(table => {
             stream.append(`${JSON.stringify(tablesMeta)}\n${JSON.stringify(table)}\n`);
           });
 
           const figsMeta = {index: {_index: indexName, _type: "figs", _parent: id}};
-          figs && figs.forEach(fig => {
+          [figs || []].forEach(fig => {
             stream.append(`${JSON.stringify(figsMeta)}\n${JSON.stringify(fig)}\n`);
           });
         });
@@ -81,10 +81,10 @@ function createRequest(config) {
 
   stream.pipe(request.post({
     url: `http://localhost:${config.DS_ES_PORT}/_bulk`
-  }, (error, response) => {
+  }, (error) => {
     if (error) {
       console.log(error);
-      return;
+
     }
   }));
 

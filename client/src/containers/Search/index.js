@@ -7,15 +7,29 @@ import {saveAs} from 'file-saver';
 import TSV from 'tsv';
 import toml from 'toml';
 import {connect} from 'react-redux';
-import {withRouter, HashRouter, Switch, Route} from 'react-router-dom';
+import {withRouter, Switch, Route} from 'react-router-dom';
 import {RangeSliderHistogram} from 'searchkit';
 import {Papers, Figures, Tables} from '../../components/index.js';
 import Api from '../../api';
-import { changeQuery, changePage, requestPapers, receivePapers, requestFigures, receiveFigures, requestTables, receiveTables, deleteScrollY, changeYears
-  , changeBooktitle, updateLabelList, updateLabelFilter, favoriteKey } from '../../module';
+import {
+  changeQuery,
+  changePage,
+  requestPapers,
+  receivePapers,
+  requestFigures,
+  receiveFigures,
+  requestTables,
+  receiveTables,
+  deleteScrollY,
+  changeYears
+  ,
+  changeBooktitle,
+  updateLabelList,
+  updateLabelFilter,
+  favoriteKey
+} from '../../module';
 import './style.css';
 import 'searchkit/release/theme.css';
-import Detail from "../Detail";
 
 function mapStateToProps(state) {
   return {state};
@@ -25,20 +39,20 @@ const Paginator = withRouter(connect(mapStateToProps)(class Paginator extends Co
   handlePageClick(i, e) {
     e.preventDefault();
     this.changePage(i);
-  }  
+  }
 
   handlePrevClick(e) {
     e.preventDefault();
     const parent = e.currentTarget.parentNode;
-    if( !( parent.classList.contains('disabled') ) ) {
+    if (!parent.classList.contains('disabled')) {
       this.changePage(this.props.page - 1);
-    }    
+    }
   }
 
   handleNextClick(e) {
     e.preventDefault();
     const parent = e.currentTarget.parentNode;
-    if( !( parent.classList.contains('disabled') ) ) {
+    if (!parent.classList.contains('disabled')) {
       this.changePage(this.props.page + 1);
     }
   }
@@ -47,17 +61,22 @@ const Paginator = withRouter(connect(mapStateToProps)(class Paginator extends Co
     this.props.dispatch(changePage(page));
   }
 
-  render() {    
+  render() {
 
     let maxPage = Math.ceil(this.props.total / this.props.size) - 1 || 0;
 
-    if ( maxPage === -1 ) return false;
+    if (maxPage === -1) {
+      return false;
+    }
 
-    const pageLimit = ( 10000 / this.props.size ) - 1;
-    if ( maxPage > pageLimit ) maxPage = pageLimit; // ElasticSearch has limitation on searching paper after no.10000
+    const pageLimit = (10000 / this.props.size) - 1;
+    if (maxPage > pageLimit) {
+      maxPage = pageLimit;
+    } // ElasticSearch has limitation on searching paper after no.10000
 
     const currentPage = this.props.page;
-    let start, end;
+    let start,
+      end;
 
     if (maxPage - currentPage > 5) {
       start = Math.max(currentPage - 4, 0);
@@ -67,26 +86,28 @@ const Paginator = withRouter(connect(mapStateToProps)(class Paginator extends Co
       start = Math.max(maxPage - 10, 0);
     }
 
-    const pages = _.range(start, end+1).map((i) => {
-      const className = i === currentPage ? 'active' : 'waves-effect';
+    const pages = _.range(start, end + 1)
+      .map((i) => {
+        const className = i === currentPage ? 'active' : 'waves-effect';
 
-      return <li key={i} className={className}><a href="#" onClick={this.handlePageClick.bind(this, i)}>{i + 1}</a></li>;
-    });
+        return <li key={i} className={className}><a href="#" onClick={this.handlePageClick.bind(this, i)}>{i + 1}</a>
+        </li>;
+      });
 
     const prevClassName = currentPage === 0 ? 'disabled' : 'waves-effect';
     const nextClassName = currentPage === maxPage ? 'disabled' : 'waves-effect';
     return (
       <ul className="pagination pagination--alpha center-align">
-        <li className={'first ' + prevClassName}><a href="#" onClick={this.handlePageClick.bind(this, 0)}><i 
+        <li className={`first ${prevClassName}`}><a href="#" onClick={this.handlePageClick.bind(this, 0)}><i
           className="material-icons">chevron_left</i><i className="material-icons">chevron_left</i></a></li>
 
-        <li className={'prev ' + prevClassName}><a href="#" onClick={this.handlePrevClick.bind(this)}><i 
+        <li className={`prev ${prevClassName}`}><a href="#" onClick={this.handlePrevClick.bind(this)}><i
           className="material-icons">chevron_left</i></a></li>
         {pages}
-        <li className={'next ' + nextClassName}><a href="#" onClick={this.handleNextClick.bind(this)}><i
+        <li className={`next ${nextClassName}`}><a href="#" onClick={this.handleNextClick.bind(this)}><i
           className="material-icons">chevron_right</i></a></li>
 
-        <li className={'last ' + nextClassName}><a href="#" onClick={this.handlePageClick.bind(this, maxPage)}><i 
+        <li className={`last ${nextClassName}`}><a href="#" onClick={this.handlePageClick.bind(this, maxPage)}><i
           className="material-icons">chevron_right</i><i className="material-icons">chevron_right</i></a></li>
       </ul>
     );
@@ -95,7 +116,8 @@ const Paginator = withRouter(connect(mapStateToProps)(class Paginator extends Co
 
 const PublicationFilter = connect(mapStateToProps)(class PublicationFilter extends Component {
   componentDidUpdate() {
-    this.minValue = this.maxValue = null;
+    this.minValue = null;
+    this.maxValue = null;
   }
 
   handleOnChange(range) {
@@ -121,38 +143,50 @@ const PublicationFilter = connect(mapStateToProps)(class PublicationFilter exten
 
 const Download = connect(mapStateToProps)(class Download extends Component {
 
-  handleClick(e) {    
+  handleClick(event) {
 
     function deactivateToolbar() {
-      document.querySelector('.toolBar').classList.remove('choosing');
+      document.querySelector('.toolBar')
+        .classList
+        .remove('choosing');
     }
 
     function cancelChecked() {
       const filterChooseAll = document.querySelector('#checkAll');
       filterChooseAll.checked = false;
       const target = document.querySelectorAll('.paper input:checked');
-      [].forEach.call(target, function(e) {
-        e.checked = false;
-      });
+      Reflect.apply([].forEach, target, [
+          e => {
+            e.checked = false;
+          }
+        ]
+      );
+      // [].forEach.call(target, (e) => {
+      //   e.checked = false;
+      // });
     }
 
     function uniqueArray(array) {
-      const uniqueArray = array.filter(function (x, i, self) { return self.indexOf(x) === i; });
-      return uniqueArray;
+      return array.filter((x, i, self) => {
+        return self.indexOf(x) === i;
+      });
     }
 
     function getCheckedList() {
       const target = document.querySelectorAll('.paper input:checked');
       const list = [];
-      [].forEach.call(target, function(e) {
-        list.push(e.id);
-      });
+      Reflect.apply([].forEach, target, [
+          e => {
+            list.push(e.id);
+          }
+        ]
+      );
       return list;
     }
 
     function getExtention(e) {
       let ext = e.target.className;
-      switch (ext){
+      switch (ext) {
         case 'pdftxt':
           ext = 'pdf.txt';
           break;
@@ -161,6 +195,8 @@ const Download = connect(mapStateToProps)(class Download extends Component {
           break;
         case 'annotsv':
           ext = 'tsv';
+          break;
+        default:
           break;
       }
       return ext;
@@ -217,43 +253,58 @@ const Download = connect(mapStateToProps)(class Download extends Component {
     //     }];
     //   var tsv = TSV.stringify(d);
     //   return tsv;
-    // }    
+    // }
 
-    function tomlToXlsx(data){
+    function tomlToXlsx(data) {
 
-      const wb = XLSX.read("", {type:"array"});
+      const wb = XLSX.read("", {type: "array"});
       const ws = XLSX.utils.json_to_sheet([
-                { A: 'Relation',
-                  B: 'Dir',
-                  C: 'Text1',
-                  D: 'Label1',
-                  E: 'Text2',
-                  F: 'Label2',
-                  G: 'Reference' }
-              ], {header: ["A", "B", "C", "D", "E", "F", "G"], skipHeader: true});
+        {
+          A: 'Relation',
+          B: 'Dir',
+          C: 'Text1',
+          D: 'Label1',
+          E: 'Text2',
+          F: 'Label2',
+          G: 'Reference'
+        }
+      ], {
+        header: [
+          "A",
+          "B",
+          "C",
+          "D",
+          "E",
+          "F",
+          "G"
+        ],
+        skipHeader: true
+      });
 
       let row = 2;
-      for (let i = 0; i < data.length; i++) {
+      for (let i = 0; i < data.length; i += 1) {
 
-        let convert = toml.parse(data[i]['data']);
+        const convert = toml.parse(data[i].data);
 
-        for (let key in convert) {
-          if (convert.hasOwnProperty(key)) {
-            if ( convert[key]['type'] === 'relation' || convert[key]['type'] === undefined ) {
-              const id1 = Number(convert[key]['ids'][0]);
-              const id2 = Number(convert[key]['ids'][1]);
-              const origin = "A" + row;
+        for (const key in convert) {
+          if (Reflect.apply(Object.hasOwnProperty, convert, [key])) {
+            if (convert[key].type === 'relation' || typeof convert[key].type === "undefined") {
+              const id1 = Number(convert[key].ids[0]);
+              const id2 = Number(convert[key].ids[1]);
+              const origin = `A${row}`;
               XLSX.utils.sheet_add_json(ws, [
-                { A: convert[key]['label'],
-                  B: convert[key]['dir'],
-                  C: convert[id1]['text'],
-                  D: convert[id1]['label'],
-                  E: convert[id2]['text'],
-                  F: convert[id2]['label'],
-                  G: data[i]['id'] }
-                ],{skipHeader: true, origin: origin});
+                {
+                  A: convert[key].label,
+                  B: convert[key].dir,
+                  C: convert[id1].text,
+                  D: convert[id1].label,
+                  E: convert[id2].text,
+                  F: convert[id2].label,
+                  G: data[i].id
+                }
+              ], {skipHeader: true, origin: origin});
 
-              row++;
+              row += 1;
             }
           }
         }
@@ -264,30 +315,30 @@ const Download = connect(mapStateToProps)(class Download extends Component {
       wb.Sheets[sheetTitle] = ws;
       wb.SheetNames.shift();
 
-      return XLSX.write(wb, { bookType:'xlsx', bookSST:false, type:'array' });
+      return XLSX.write(wb, {bookType: 'xlsx', bookSST: false, type: 'array'});
     }
 
-    function tomlToTsv(data){
+    function tomlToTsv(data) {
 
       const d = [];
 
-      for (let i = 0; i < data.length; i++) {
+      for (let i = 0; i < data.length; i += 1) {
 
-        let convert = toml.parse(data[i]['data']);
+        const convert = toml.parse(data[i].data);
 
-        for (let key in convert) {
-          if (convert.hasOwnProperty(key)) {
-            if ( convert[key]['type'] === 'relation' || convert[key]['type'] === undefined ) {
-              const id1 = Number(convert[key]['ids'][0]);
-              const id2 = Number(convert[key]['ids'][1]);
+        for (const key in convert) {
+          if (Reflect.apply(Object.hasOwnProperty, convert, [key])) {
+            if (convert[key].type === 'relation' || typeof convert[key].type === "undefined") {
+              const id1 = Number(convert[key].ids[0]);
+              const id2 = Number(convert[key].ids[1]);
               const obj = {};
-                    obj['Relation'] = convert[key]['label'];
-                    obj['Dir'] = convert[key]['dir'];
-                    obj['Text1'] = convert[id1]['text'];
-                    obj['Label1'] = convert[id1]['label'];
-                    obj['Text2'] = convert[id2]['text'];
-                    obj['Label2'] = convert[id2]['label'];
-                    obj['Reference'] = data[i]['id'];
+              obj.Relation = convert[key].label;
+              obj.Dir = convert[key].dir;
+              obj.Text1 = convert[id1].text;
+              obj.Label1 = convert[id1].label;
+              obj.Text2 = convert[id2].text;
+              obj.Label2 = convert[id2].label;
+              obj.Reference = data[i].id;
               d.push(obj);
             }
           }
@@ -299,29 +350,29 @@ const Download = connect(mapStateToProps)(class Download extends Component {
       return tsv;
     }
 
-    function downloadZip(){
-      zip.generateAsync({type:"blob"})
-          .then(function(content) {
-              saveAs(content, "paper.zip");
-          });
+    function downloadZip() {
+      zip.generateAsync({type: "blob"})
+        .then((content) => {
+          saveAs(content, "paper.zip");
+        });
     }
 
-    function downloadBlob(data, ext){
+    function downloadBlob(data, ext) {
 
       let type;
       switch (ext) {
-        case 'xlsx' :
+        case 'xlsx':
           type = "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet";
           break;
-        case 'tsv' :
+        case 'tsv':
           type = "text/plain;charset=utf-8";
           break;
-        default :
+        default:
           type = "text/plain;charset=utf-8";
       }
 
       const blob = new Blob([data], {type: type});
-      saveAs(blob, 'paper.' + ext);
+      saveAs(blob, `paper.${ext}`);
     }
 
     const zip = new JSZip();
@@ -329,11 +380,15 @@ const Download = connect(mapStateToProps)(class Download extends Component {
 
     const apiPath = '/api/documents/';
 
-    const ext = getExtention(e);
-    if( ext == 'head' || ext.indexOf('close') != -1 ) return false;
+    const ext = getExtention(event);
+    if (ext === 'head' || ext.indexOf('close') !== -1) {
+      return false;
+    }
 
     const list = getCheckedList();
-    if ( list.length === 0 ) return false;
+    if (list.length === 0) {
+      return false;
+    }
 
 
     cancelChecked();
@@ -341,26 +396,26 @@ const Download = connect(mapStateToProps)(class Download extends Component {
 
     let DownloadFlag = new Array(list.length);
 
-    for (let i = 0; i < list.length; i++) {
+    for (let i = 0; i < list.length; i += 1) {
 
-      const url = apiPath + list[i] + '/' + list[i] + '.' + ( ( ext === 'xlsx' || ext === 'tsv' ) ? 'anno' : ext ) ;
+      const url = `${apiPath + list[i]}/${list[i]}.${ext === 'xlsx' || ext === 'tsv' ? 'anno' : ext}`;
 
-      if ( ext === 'xlsx' || ext === 'tsv' ) {
-          window.jQuery.ajax({ type: 'GET', url: url, dataType: 'text'})
-          .done(function(data) {
+      if (ext === 'xlsx' || ext === 'tsv') {
+        window.jQuery.ajax({type: 'GET', url: url, dataType: 'text'})
+          .done((data) => {
             DownloadFlag[i] = {};
-            DownloadFlag[i]['data'] = data;
-            DownloadFlag[i]['id'] = list[i];
+            DownloadFlag[i].data = data;
+            DownloadFlag[i].id = list[i];
           })
-          .fail(function() {
+          .fail(() => {
             DownloadFlag[i] = false;
           });
       } else {
-        JSZipUtils.getBinaryContent(url, function (err, data) {
-          if(err) {
+        JSZipUtils.getBinaryContent(url, (err, data) => {
+          if (err) {
             DownloadFlag[i] = false;
           } else {
-            dir.file(list[i] + '.' + ext, data, {binary:true});
+            dir.file(`${list[i]}.${ext}`, data, {binary: true});
             DownloadFlag[i] = true;
           }
         });
@@ -368,23 +423,25 @@ const Download = connect(mapStateToProps)(class Download extends Component {
     }
 
 
-    const id = setInterval( function(){ // wait until all paper downloaded
+    const id = setInterval(() => { // wait until all paper downloaded
       let count = 0;
 
-      for (let j = 0; j < DownloadFlag.length; j++) {
-        if( DownloadFlag[j] !== undefined ) count++;
+      for (let j = 0; j < DownloadFlag.length; j += 1) {
+        if (typeof DownloadFlag[j] !== "undefined") {
+          count += 1;
+        }
       }
 
-      if( count === DownloadFlag.length ){　
+      if (count === DownloadFlag.length) {
 
         clearInterval(id);
 
         DownloadFlag = uniqueArray(DownloadFlag);
 
-        if( DownloadFlag.length !== 1 || DownloadFlag[0] !== false) {
-          if ( ext === 'xlsx' || ext === 'tsv' ) {
+        if (DownloadFlag.length !== 1 || DownloadFlag[0] !== false) {
+          if (ext === 'xlsx' || ext === 'tsv') {
             // const d = ( ext === 'xlsx' ) ? jsonToXlsx(data, list[i]) : jsonToTsv(data); // for JSON
-            const d = ( ext === 'xlsx' ) ? tomlToXlsx(DownloadFlag) : tomlToTsv(DownloadFlag); // for TOML
+            const d = ext === 'xlsx' ? tomlToXlsx(DownloadFlag) : tomlToTsv(DownloadFlag); // for TOML
             downloadBlob(d, ext);
           } else {
             downloadZip();
@@ -402,15 +459,17 @@ const Download = connect(mapStateToProps)(class Download extends Component {
     const txt = 'Download';
     const headTxt = 'Download all';
     return (
-      <div className={'dropdown dropdown--alpha ' + name}>
-        <a className='dropdown-button btn z-depth-0' data-beloworigin="true" data-activates={name}><i className="material-icons icon">file_download</i>{txt}<i className="material-icons">arrow_drop_down</i></a>
-        <ul id={name} className='dropdown-content z-depth-0'>
-          <li onClick={this.handleClick.bind(this)} className='head'>{headTxt}<i className="material-icons close">close</i></li>
-          <li onClick={this.handleClick.bind(this)} className='pdf'><b>・</b>pdf</li>
-          <li onClick={this.handleClick.bind(this)} className='xml'><b>・</b>xml</li>
-          <li onClick={this.handleClick.bind(this)} className='pdftxt'><b>・</b>pdf.txt</li>
-          <li onClick={this.handleClick.bind(this)} className='annoxlsx'><b>・</b>anno (.xlsx)</li>
-          <li onClick={this.handleClick.bind(this)} className='annotsv'><b>・</b>anno (.tsv)</li>
+      <div className={`dropdown dropdown--alpha ${name}`}>
+        <a className="dropdown-button btn z-depth-0" data-beloworigin="true" data-activates={name}><i
+          className="material-icons icon">file_download</i>{txt}<i className="material-icons">arrow_drop_down</i></a>
+        <ul id={name} className="dropdown-content z-depth-0">
+          <li onClick={this.handleClick.bind(this)} className="head">{headTxt}<i
+            className="material-icons close">close</i></li>
+          <li onClick={this.handleClick.bind(this)} className="pdf"><b>・</b>pdf</li>
+          <li onClick={this.handleClick.bind(this)} className="xml"><b>・</b>xml</li>
+          <li onClick={this.handleClick.bind(this)} className="pdftxt"><b>・</b>pdf.txt</li>
+          <li onClick={this.handleClick.bind(this)} className="annoxlsx"><b>・</b>anno (.xlsx)</li>
+          <li onClick={this.handleClick.bind(this)} className="annotsv"><b>・</b>anno (.tsv)</li>
         </ul>
       </div>
     );
@@ -424,40 +483,45 @@ const FilterEdit = connect(mapStateToProps)(class FilterEdit extends Component {
     li.classList.add('editColor');
     e.target.focus();
   }
+
   handleClickcolorListMusk(e) {
     const li = e.target.parentNode;
     li.classList.remove('editColor');
   }
+
   handleClickChangeColor(e) {
     const classList = e.target.classList;
-    if( classList.contains('cell') && !classList.contains('active') ) {
+    if (classList.contains('cell') && !classList.contains('active')) {
       const labelList = Object.assign({}, this.props.state.labelList);
       const labelKey = e.target.dataset.key;
       const color = e.target.dataset.color;
       labelList[labelKey][1] = color;
-      this.props.dispatch( updateLabelList(labelList) );
+      this.props.dispatch(updateLabelList(labelList));
       e.target.parentNode.parentNode.classList.remove('editColor');
     }
   }
 
-  handleClickAddLabel(e) {
+  handleClickAddLabel() {
     const labelList = Object.assign({}, this.props.state.labelList);
     const labelColor = this.props.state.labelColor;
     const length = Object.keys(labelList).length - 1; // minus 1 as favList
     let no = length + 1;
-    while( labelList['label'+no] )
-    {
-      no++;
+    while (labelList[`label${no}`]) {
+      no += 1;
     }
-    labelList['label'+no] = ['New label', labelColor[length%8] , [] ];
-    this.props.dispatch( updateLabelList(labelList) );
+    labelList[`label${no}`] = [
+      'New label',
+      labelColor[length % 8],
+      []
+    ];
+    this.props.dispatch(updateLabelList(labelList));
   }
 
   handleClickRemoveLabel(e) {
     const labelList = Object.assign({}, this.props.state.labelList);
     const labelName = e.target.parentNode.dataset.name;
-    delete labelList[labelName];
-    this.props.dispatch( updateLabelList(labelList) );
+    Reflect.deleteProperty(labelList, labelName);
+    this.props.dispatch(updateLabelList(labelList));
   }
 
   handleClickCreate(e) {
@@ -469,7 +533,7 @@ const FilterEdit = connect(mapStateToProps)(class FilterEdit extends Component {
     input.value = input.dataset.name;
   }
 
-  createDone(e){
+  createDone(e) {
     const li = e.target.parentNode;
     const input = li.childNodes[4];
     li.classList.remove('edit');
@@ -477,14 +541,15 @@ const FilterEdit = connect(mapStateToProps)(class FilterEdit extends Component {
     const labelKey = input.dataset.key;
     const oldName = input.dataset.name;
     const newName = input.value;
-    if( newName == '' || newName == oldName ) {
-      return false
-    } else {
-      const labelList = Object.assign({}, this.props.state.labelList);
-      labelList[labelKey][0] = newName;
-      this.props.dispatch( updateLabelList(labelList) );
+    if (newName === '' || newName === oldName) {
+      return false;
     }
+    const labelList = Object.assign({}, this.props.state.labelList);
+    labelList[labelKey][0] = newName;
+    this.props.dispatch(updateLabelList(labelList));
+
   }
+
   handleBlurInput(e) {
     this.createDone(e);
   }
@@ -493,42 +558,48 @@ const FilterEdit = connect(mapStateToProps)(class FilterEdit extends Component {
 
     const input = e.target;
     const li = input.parentNode;
-    if( input.value.length >= 20 ){
+    if (input.value.length >= 20) {
       li.classList.add('max');
-      input.value = input.value.slice( 0, 20)
+      input.value = input.value.slice(0, 20);
     } else {
       li.classList.remove('max');
     }
 
-    if (e.key === 'Enter') this.createDone(e);
+    if (e.key === 'Enter') {
+      this.createDone(e);
+    }
   }
 
   render() {
     const {labelColor, labelList} = this.props.state;
 
-    const lists = Object.keys(labelList).map(key => {
-      const labelKey = key;
-      if( labelKey !== favoriteKey ){
-        const labelName = labelList[key][0];
-        const color = labelList[key][1];
-        return (
-          <li key={labelKey} className={labelKey} data-name={labelKey} onClick={this.props.onClickList}>
-            <span className={'color ' + color} data-color={color} onClick={this.handleClickColor.bind(this)}></span>
-            <span className="labelName">{labelName}</span>
-            <ul className="colorList" onClick={this.handleClickChangeColor.bind(this)}>
-              { labelColor.map(function(e, i) {
-                const className = 'cell ' + e + ( ( e === color  ) ? ' active' : '' );
-                return ( <li key={i} data-key={labelKey} data-color={e} className={className}></li> )
-              })}
-            </ul>
-            <div className="colorListMusk" onClick={this.handleClickcolorListMusk.bind(this)}></div>
-            <input type="text" data-key={labelKey} data-name={labelName} onBlur={this.handleBlurInput.bind(this)} onKeyUp={this.handleKeyUp.bind(this)}/>
-            <i className="material-icons create" onClick={this.handleClickCreate.bind(this)}>create</i>
-            <i className="material-icons delete" onClick={this.handleClickRemoveLabel.bind(this)}>delete</i>
-          </li>
-        )
-      }
-    });
+    const lists = Object.keys(labelList)
+      .map(key => {
+        const labelKey = key;
+        if (labelKey !== favoriteKey) {
+          const labelName = labelList[key][0];
+          const color = labelList[key][1];
+          return (
+            <li key={labelKey} className={labelKey} data-name={labelKey} onClick={this.props.onClickList}>
+              <span className={`color ${color}`} data-color={color} onClick={this.handleClickColor.bind(this)}></span>
+              <span className="labelName">{labelName}</span>
+              <ul className="colorList" onClick={this.handleClickChangeColor.bind(this)}>
+                {labelColor.map((e, i) => {
+                  const className = `cell ${e}${e === color ? ' active' : ''}`;
+                  return <li key={i} data-key={labelKey} data-color={e} className={className}></li>;
+                })}
+              </ul>
+              <div className="colorListMusk" onClick={this.handleClickcolorListMusk.bind(this)}></div>
+              <input type="text" data-key={labelKey} data-name={labelName} onBlur={this.handleBlurInput.bind(this)}
+                     onKeyUp={this.handleKeyUp.bind(this)}/>
+              <i className="material-icons create" onClick={this.handleClickCreate.bind(this)}>create</i>
+              <i className="material-icons delete" onClick={this.handleClickRemoveLabel.bind(this)}>delete</i>
+            </li>
+          );
+        }
+
+        return null;
+      });
 
     return (
       <div id="filterEditModal" className="filterEditModal modal modal-fixed-footer">
@@ -539,7 +610,8 @@ const FilterEdit = connect(mapStateToProps)(class FilterEdit extends Component {
               {lists}
             </ul>
             <div className="right-align">
-              <span className="addLabel" onClick={this.handleClickAddLabel.bind(this)}><i className="material-icons add">add</i>Add label</span>
+              <span className="addLabel" onClick={this.handleClickAddLabel.bind(this)}><i
+                className="material-icons add">add</i>Add label</span>
             </div>
           </div>
         </div>
@@ -547,7 +619,7 @@ const FilterEdit = connect(mapStateToProps)(class FilterEdit extends Component {
           <a className="modal-action modal-close waves-effect waves-green btn-flat ">OK</a>
         </div>
       </div>
-    )
+    );
   }
 });
 
@@ -557,58 +629,70 @@ const FilterListCommon = connect(mapStateToProps)(class FilterListCommon extends
     const {labelList, labelFilter} = this.props.state;
     const {name} = this.props;
 
-    const headTxt = name == 'chooseFilter' ? 'Apply labels' : 'Filter by label';
+    const headTxt = name === 'chooseFilter' ? 'Apply labels' : 'Filter by label';
 
-    const lists = Object.keys(labelList).map(key => {
-      const labelKey = key;
-      if( labelKey !== favoriteKey ){
-        const labelName = labelList[key][0];
-        const color = labelList[key][1];
-        const className = ( name === 'normalFilter' && labelFilter.indexOf(labelKey) !== -1 ) ? labelKey + ' ' + 'chkAll' : labelKey;
-        return (
-          <li key={labelKey} className={className} data-name={labelKey} onClick={this.props.onClickList}>
-            <i className="material-icons check">check</i>
-            <i className="material-icons remove">remove</i>
-            <span className={'color ' + color}></span>{labelName}
-          </li>
-        )
-      }
-    });
+    const lists = Object.keys(labelList)
+      .map(key => {
+        const labelKey = key;
+        if (labelKey !== favoriteKey) {
+          const labelName = labelList[key][0];
+          const color = labelList[key][1];
+          const className = name === 'normalFilter' && labelFilter.indexOf(labelKey) !== -1 ? `${labelKey} chkAll` : labelKey;
+          return (
+            <li key={labelKey} className={className} data-name={labelKey} onClick={this.props.onClickList}>
+              <i className="material-icons check">check</i>
+              <i className="material-icons remove">remove</i>
+              <span className={`color ${color}`}></span>{labelName}
+            </li>
+          );
+        }
+
+        return null;
+      });
 
     return (
-      <div className={'dropdown dropdown--alpha ' + name}>
-        <a className='dropdown-button btn z-depth-0' data-beloworigin="true" data-activates={name} onClick={this.props.onClickBtn}><i className="material-icons icon">local_offer</i>Labels<i className="material-icons">arrow_drop_down</i></a>
-        <ul id={name} className='dropdown-content z-depth-0'>
-          <li className='head'>{headTxt}<i className="material-icons close">close</i></li>
+      <div className={`dropdown dropdown--alpha ${name}`}>
+        <a className="dropdown-button btn z-depth-0" data-beloworigin="true" data-activates={name}
+           onClick={this.props.onClickBtn}><i className="material-icons icon">local_offer</i>Labels<i
+          className="material-icons">arrow_drop_down</i></a>
+        <ul id={name} className="dropdown-content z-depth-0">
+          <li className="head">{headTxt}<i className="material-icons close">close</i></li>
           {lists}
-          <li data-target="filterEditModal" className='foot modal-trigger'>Edit label<i className="material-icons create">create</i></li>
+          <li data-target="filterEditModal" className="foot modal-trigger">Edit label<i
+            className="material-icons create">create</i></li>
         </ul>
       </div>
-    )
+    );
   }
 });
 
 const FilterNormal = connect(mapStateToProps)(class FilterNormal extends Component {
 
-  addFilter(labelName){
+  addFilter(labelName) {
     const labelFilter = this.props.state.labelFilter.slice();
     const newFilter = labelFilter
-                      .concat(labelName) // Marge
-                      .filter(function (x,i,self) { return self.indexOf(x) === i; }); // Remove overlap
-    this.props.dispatch( updateLabelFilter(newFilter) );
+      .concat(labelName) // Marge
+      .filter((x, i, self) => {
+        return self.indexOf(x) === i;
+      }); // Remove overlap
+    this.props.dispatch(updateLabelFilter(newFilter));
   }
-  removeFilter(labelName){
+
+  removeFilter(labelName) {
     const labelFilter = this.props.state.labelFilter.slice();
-    const newFilter = labelFilter.filter(function(v){ return v != labelName; }); // remove
-    this.props.dispatch( updateLabelFilter(newFilter) );
+    const newFilter = labelFilter.filter((v) => {
+      return v !== labelName;
+    }); // remove
+    this.props.dispatch(updateLabelFilter(newFilter));
   }
-  removeAllFilter(){
+
+  removeAllFilter() {
     const labelFilter = this.props.state.labelFilter.slice();
-    let newList = [];
-    if( labelFilter.indexOf(favoriteKey) !== -1 ) {
+    const newList = [];
+    if (labelFilter.indexOf(favoriteKey) !== -1) {
       newList.push(favoriteKey);
     }
-    this.props.dispatch( updateLabelFilter(newList) );
+    this.props.dispatch(updateLabelFilter(newList));
   }
 
   handleClickList(e) {
@@ -616,56 +700,59 @@ const FilterNormal = connect(mapStateToProps)(class FilterNormal extends Compone
     const label = target.dataset.name;
 
     const self = this;
-    setTimeout(function(){ // Do after animation
-      self.props.dispatch( changePage(0) );
-      if( !target.classList.contains('chkAll') ) {
+    setTimeout(() => { // Do after animation
+      self.props.dispatch(changePage(0));
+      if (!target.classList.contains('chkAll')) {
         target.classList.add('chkAll');
         self.addFilter(label);
       } else {
         target.classList.remove('chkAll');
         self.removeFilter(label);
       }
-    },300);
+    }, 300);
   }
 
-  handleClick(e) {
-    const target = e.currentTarget;
+  handleClick() {
     const self = this;
-    setTimeout(function(){ // Do after animation
-      self.props.dispatch( changePage(0) );
+    setTimeout(() => { // Do after animation
+      self.props.dispatch(changePage(0));
       const normalFilter = document.getElementById('normalFilter');
       const li = normalFilter.childNodes;
-      for( let i = 0; i < li.length; i++ ) {
-          li[i].classList.remove('chkAll');
-      }      
+      for (let i = 0; i < li.length; i += 1) {
+        li[i].classList.remove('chkAll');
+      }
       self.removeAllFilter();
       // document.querySelector('.filterFav').classList.remove('active');
-    },300);
+    }, 300);
   }
 
   render() {
     const labelFilter = this.props.state.labelFilter.slice();
     let closeBtn;
-    if( labelFilter.length > 0 && !( labelFilter.length === 1 && labelFilter[0] === favoriteKey ) ) {
-      closeBtn = <a className="isFilter" onClick={this.handleClick.bind(this)}><i className="material-icons">close</i>Clear current filters</a>;
+    if (labelFilter.length > 0 && !(labelFilter.length === 1 && labelFilter[0] === favoriteKey)) {
+      closeBtn = <a className="isFilter" onClick={this.handleClick.bind(this)}><i className="material-icons">close</i>Clear
+        current filters</a>;
     }
     return (
       <div>
-        {closeBtn}
-        <FilterListCommon name="normalFilter" onClickList={this.handleClickList.bind(this)} />
+        {closeBtn}=
+        <FilterListCommon name="normalFilter" onClickList={this.handleClickList.bind(this)}/>
       </div>
-    )
+    );
   }
 });
 
 const FilterChoose = connect(mapStateToProps)(class FilterChoose extends Component {
 
-  getCheckedList(){
+  getCheckedList() {
     const target = document.querySelectorAll('.paper input:checked');
     const list = [];
-    [].forEach.call(target, function(e) {
-      list.push(e.id)
-    });
+    Reflect.apply([].forEach, target, [
+        e => {
+          list.push(e.id);
+        }
+      ]
+    );
     return list;
   }
 
@@ -674,8 +761,10 @@ const FilterChoose = connect(mapStateToProps)(class FilterChoose extends Compone
     const checkedList = this.getCheckedList();
     const labelList = Object.assign({}, this.props.state.labelList);
     labelList[labelName][2] = labelList[labelName][2].concat(checkedList) // Marge
-                          .filter(function (x,i,self) { return self.indexOf(x) === i; }); // Remove overlap
-    this.props.dispatch( updateLabelList(labelList) );
+      .filter((x, i, self) => {
+        return self.indexOf(x) === i;
+      }); // Remove overlap
+    this.props.dispatch(updateLabelList(labelList));
   }
 
   removeLabel(target) {
@@ -683,18 +772,20 @@ const FilterChoose = connect(mapStateToProps)(class FilterChoose extends Compone
     const checkedList = this.getCheckedList();
     const labelList = Object.assign({}, this.props.state.labelList);
     const oldList = this.props.state.labelList[labelName][2].slice();
-    let newList = [];
-    oldList.map(function(val, i) {
+    const newList = [];
+    oldList.forEach((val) => {
       const index = checkedList.indexOf(val);
-      if (index === -1) newList.push(val);
+      if (index === -1) {
+        newList.push(val);
+      }
     });
     labelList[labelName][2] = newList;
-    this.props.dispatch( updateLabelList(labelList) );
+    this.props.dispatch(updateLabelList(labelList));
   }
 
   handleClickList(e) {
     const target = e.currentTarget;
-    if( target.classList.contains('chk') || target.classList.contains('chkAll') ) {
+    if (target.classList.contains('chk') || target.classList.contains('chkAll')) {
       this.removeLabel(target);
     } else {
       this.addLabel(target);
@@ -707,66 +798,72 @@ const FilterChoose = connect(mapStateToProps)(class FilterChoose extends Compone
     filterChooseAll.checked = false;
   }
 
-  handleClickBtn(e) {
+  handleClickBtn() {
     const list = this.getCheckedList();
     const {labelList} = this.props.state;
-    Object.keys(labelList).map(key => {
+    Object.keys(labelList)
+      .forEach(key => {
 
-      const labelKey = key;
+        const labelKey = key;
 
-      if( labelKey !== favoriteKey ){
-        let result = 0;
-        let c = 0;
-        list.map(function(val, i) {
-          if( labelList[labelKey][2].includes(list[i]) ) {
-            result = 1;
-            c++;
+        if (labelKey !== favoriteKey) {
+          let result = 0;
+          let c = 0;
+          list.forEach((val, i) => {
+            if (labelList[labelKey][2].includes(list[i])) {
+              result = 1;
+              c += 1;
+            }
+          });
+          if (c === list.length) {
+            result = 2;
           }
-        });
-        if( c === list.length ) result = 2;
 
-        const target = document.querySelector('.toolBar .chooseFilter li.' + labelKey);
-        target.classList.remove('chkAll', 'chk');
-        switch (result) {
-          case 2:
-            target.classList.add('chkAll');
-            break;
-          case 1:
-            target.classList.add('chk');
-            break;
+          const target = document.querySelector(`.toolBar .chooseFilter li.${labelKey}`);
+          target.classList.remove('chkAll', 'chk');
+          switch (result) {
+            case 2:
+              target.classList.add('chkAll');
+              break;
+            case 1:
+              target.classList.add('chk');
+              break;
+            default:
+              break;
+          }
         }
-      }
-    })
+      });
   }
 
   render() {
     const {labelList} = this.props.state;
     let style = '';
 
-    Object.keys(labelList).map(key => {
-      const labelKey = key;
-      if( labelKey !== favoriteKey ){
-        const labelName = labelList[labelKey][0];
-        const color = labelList[labelKey][1];
-        const list = labelList[labelKey][2];
-        list.map(function(val, i) {
-          const valDotEscaped = val.replace(/\./i, '\\\.'); // class name may include dot
-          style += '.paper' + valDotEscaped + ' h5 .' + labelKey + ' { margin: 0 4px; }';
-          style += '.paper' + valDotEscaped + ' h5 .' + labelKey + ':after { content: "' + labelName + '"; }';
-        })
-      } else {
-        const list = labelList[favoriteKey];
-        list.map(function(val, i) {
-          const valDotEscaped = val.replace(/\./i, '\\\.'); // class name may include dot
-          style += '.paper' + valDotEscaped + ' .favorite i.on { opacity: 1; }';
-          style += '.paper' + valDotEscaped + ' .favorite i.off { color: #1f4fa2; }';
-        })
-      }
-    })
+    Object.keys(labelList)
+      .forEach(key => {
+        const labelKey = key;
+        if (labelKey !== favoriteKey) {
+          const labelName = labelList[labelKey][0];
+          const list = labelList[labelKey][2];
+          list.forEach((val) => {
+            const valDotEscaped = val.replace(/\./i, '\\.'); // class name may include dot
+            style += `.paper${valDotEscaped} h5 .${labelKey} { margin: 0 4px; }`;
+            style += `.paper${valDotEscaped} h5 .${labelKey}:after { content: "${labelName}"; }`;
+          });
+        } else {
+          const list = labelList[favoriteKey];
+          list.forEach((val) => {
+            const valDotEscaped = val.replace(/\./i, '\\.'); // class name may include dot
+            style += `.paper${valDotEscaped} .favorite i.on { opacity: 1; }`;
+            style += `.paper${valDotEscaped} .favorite i.off { color: #1f4fa2; }`;
+          });
+        }
+      });
 
     return (
       <div>
-        <FilterListCommon name="chooseFilter" onClickBtn={this.handleClickBtn.bind(this)} onClickList={this.handleClickList.bind(this)} />
+        <FilterListCommon name="chooseFilter" onClickBtn={this.handleClickBtn.bind(this)}
+                          onClickList={this.handleClickList.bind(this)}/>
         <style>{style}</style>
       </div>
     );
@@ -775,29 +872,38 @@ const FilterChoose = connect(mapStateToProps)(class FilterChoose extends Compone
 
 const FilterFav = connect(mapStateToProps)(class CheckAll extends Component {
 
-  addFilter(labelName){
+  addFilter(labelName) {
     const labelFilter = this.props.state.labelFilter.slice();
     const newFilter = labelFilter
-                      .concat(labelName) // Marge
-                      .filter(function (x,i,self) { return self.indexOf(x) === i; }); // Remove overlap
-    this.props.dispatch( updateLabelFilter(newFilter) );
+      .concat(labelName) // Marge
+      .filter((x, i, self) => {
+        return self.indexOf(x) === i;
+      }); // Remove overlap
+    this.props.dispatch(updateLabelFilter(newFilter));
   }
-  removeFilter(labelName){
+
+  removeFilter(labelName) {
     const labelFilter = this.props.state.labelFilter.slice();
-    const newFilter = labelFilter.filter(function(v){ return v != labelName; }); // remove
-    this.props.dispatch( updateLabelFilter(newFilter) );
+    const newFilter = labelFilter.filter((v) => {
+      return v !== labelName;
+    }); // remove
+    this.props.dispatch(updateLabelFilter(newFilter));
   }
 
   handleClick(e) {
     const tgt = e.currentTarget;
-    this.props.dispatch( changePage(0) );
+    this.props.dispatch(changePage(0));
     tgt.classList.toggle('active');
-    tgt.classList.contains('active') ? this.addFilter(favoriteKey) : this.removeFilter(favoriteKey);
+    if (tgt.classList.contains('active')) {
+      this.addFilter(favoriteKey);
+    } else {
+      this.removeFilter(favoriteKey);
+    }
   }
 
   render() {
     const labelFilter = this.props.state.labelFilter;
-    const className = ( labelFilter.indexOf(favoriteKey) !== -1 ) ? 'filterFav active' : 'filterFav';
+    const className = labelFilter.indexOf(favoriteKey) !== -1 ? 'filterFav active' : 'filterFav';
     return (
       <div className={className} onClick={this.handleClick.bind(this)}>
         <i className="material-icons on">star</i>
@@ -813,15 +919,21 @@ const CheckAll = connect(mapStateToProps)(class CheckAll extends Component {
     const filterLabel = document.querySelector('.toolBar');
     const chks = document.querySelectorAll('.paper input[type="checkbox"]');
 
-    for( let i = 0; i < chks.length; i++ ) chks[i].checked = e.target.checked;
+    for (let i = 0; i < chks.length; i += 1) {
+      chks[i].checked = e.target.checked;
+    }
 
-    ( e.target.checked === true ) ? filterLabel.classList.add('choosing') : filterLabel.classList.remove('choosing');
+    if (e.target.checked === true) {
+      filterLabel.classList.add('choosing');
+    } else {
+      filterLabel.classList.remove('choosing');
+    }
   }
 
   render() {
     return (
       <div className="checkAll">
-        <input type="checkbox" id="checkAll" className="filled-in" onChange={this.handleChange.bind(this)} />
+        <input type="checkbox" id="checkAll" className="filled-in" onChange={this.handleChange.bind(this)}/>
         <label htmlFor="checkAll"></label>
       </div>
     );
@@ -834,13 +946,13 @@ const ToolBar = connect(mapStateToProps)(class ToolBar extends Component {
     return (
       <div className="toolBar">
 
-        <CheckAll />
-        <FilterFav />
+        <CheckAll/>
+        <FilterFav/>
 
         <div className="tools">
-          <FilterNormal />
-          <FilterChoose />
-          <Download />
+          <FilterNormal/>
+          <FilterChoose/>
+          <Download/>
         </div>
 
       </div>
@@ -857,19 +969,22 @@ class Search extends Component {
     this.abstract = null;
   }
 
-  componentWillMount(){
+  componentWillMount() {
     document.body.classList.add("search");
     this.addTabClassToBody(this.props.state.category);
   }
 
-  componentWillUnmount(){
+  componentWillUnmount() {
     document.body.classList.remove("search");
   }
 
   componentDidMount() {
-    window.jQuery('ul.tabs').tabs();
-    window.jQuery('.dropdown-button').dropdown();
-    window.jQuery('.modal').modal({ dismissible: false });
+    window.jQuery('ul.tabs')
+      .tabs();
+    window.jQuery('.dropdown-button')
+      .dropdown();
+    window.jQuery('.modal')
+      .modal({dismissible: false});
     this.search(this.props.state.category);
   }
 
@@ -877,7 +992,9 @@ class Search extends Component {
     const {category: oldCategory, query: oldQuery, articleTitle: oldArticleTitle, author: oldAuthor, abstract: oldAbstract, gte: oldGte, lte: oldLte, booktitles: oldBooktitles, page: oldPage, labelFilter: oldlabelFilter} = prevProps.state;
     const {category: newCategory, query: newQuery, articleTitle: newArticleTitle, author: newAuthor, abstract: newAbstract, gte: newGte, lte: newLte, booktitles: newBooktitles, page: newPage, labelFilter: newlabelFilter} = this.props.state;
 
-    if (oldCategory !== newCategory || oldQuery !== newQuery || oldArticleTitle !== newArticleTitle || oldAuthor !== newAuthor || oldAbstract !== newAbstract || oldPage !== newPage || oldGte !== newGte || oldLte !== newLte || Array.from(oldBooktitles).join("") !== Array.from(newBooktitles).join("") || oldlabelFilter !== newlabelFilter) {
+    if (oldCategory !== newCategory || oldQuery !== newQuery || oldArticleTitle !== newArticleTitle || oldAuthor !== newAuthor || oldAbstract !== newAbstract || oldPage !== newPage || oldGte !== newGte || oldLte !== newLte || Array.from(oldBooktitles)
+        .join("") !== Array.from(newBooktitles)
+        .join("") || oldlabelFilter !== newlabelFilter) {
       this.search(newCategory);
     }
 
@@ -969,27 +1086,31 @@ class Search extends Component {
     let filterdList = [];
 
     // only Label Filter
-    if( labelFilter.indexOf(favoriteKey) === -1 && labelFilter.length > 0 ){    
-      labelFilter.map(function(e, i) {
+    if (labelFilter.indexOf(favoriteKey) === -1 && labelFilter.length > 0) {
+      labelFilter.forEach((e) => {
         filterdList = _.union(filterdList, labelList[e][2]);
-      })
+      });
 
-    // only Favorite
-    } else if ( labelFilter.indexOf(favoriteKey) !== -1 && labelFilter.length === 1 ) {
+      // only Favorite
+    } else if (labelFilter.indexOf(favoriteKey) !== -1 && labelFilter.length === 1) {
       filterdList = labelList[favoriteKey];
 
-    // both Label Filter & Favorite
-    } else if ( labelFilter.indexOf(favoriteKey) !== -1 && labelFilter.length > 1 ) {
-      labelFilter.map(function(e, i) {
-        if( e !== favoriteKey ) filterdList = _.union(filterdList, labelList[e][2]);
-      })
+      // both Label Filter & Favorite
+    } else if (labelFilter.indexOf(favoriteKey) !== -1 && labelFilter.length > 1) {
+      labelFilter.forEach((e) => {
+        if (e !== favoriteKey) {
+          filterdList = _.union(filterdList, labelList[e][2]);
+        }
+      });
       filterdList = _.intersection(filterdList, labelList[favoriteKey]);
     }
 
     // for empty filter
-    if( labelFilter.length > 0 && filterdList.length === 0 ) filterdList.push(""); 
-    
-    const labelFilterList = filterdList.length > 0 ? { terms: { _id: filterdList } } : null;
+    if (labelFilter.length > 0 && filterdList.length === 0) {
+      filterdList.push("");
+    }
+
+    const labelFilterList = filterdList.length > 0 ? {terms: {_id: filterdList}} : null;
 
     const body = {
       query: {
@@ -1001,7 +1122,7 @@ class Search extends Component {
         bool: {
           must: postFilterMust,
           filter: labelFilterList
-        },
+        }
       },
       from,
       size: this.props.state.papersFetchSize,
@@ -1032,9 +1153,10 @@ class Search extends Component {
     const {user} = this.props.state;
     const token = user ? user.token : null;
 
-    Api.searchText({body}, token).then((json) => {
-      this.props.dispatch(receivePapers(json));
-    });
+    Api.searchText({body}, token)
+      .then((json) => {
+        this.props.dispatch(receivePapers(json));
+      });
   }
 
   searchFigures() {
@@ -1078,9 +1200,10 @@ class Search extends Component {
       });
     }
 
-    Api.searchFigs({body}).then((json) => {
-      this.props.dispatch(receiveFigures(json));
-    });
+    Api.searchFigs({body})
+      .then((json) => {
+        this.props.dispatch(receiveFigures(json));
+      });
   }
 
   searchTables() {
@@ -1125,9 +1248,10 @@ class Search extends Component {
       });
     }
 
-    Api.searchTables({body}).then((json) => {
-      this.props.dispatch(receiveTables(json));
-    });
+    Api.searchTables({body})
+      .then((json) => {
+        this.props.dispatch(receiveTables(json));
+      });
   }
 
   changeQuery(category, query) {
@@ -1170,16 +1294,18 @@ class Search extends Component {
     this.changeQuery(category, this.props.state.query);
   }
 
-  addTabClassToBody(category){
+  addTabClassToBody(category) {
     const classList = document.body.classList;
-    for (let i = 0; i < classList.length; i++) {
-      if( classList[i].split('-')[0] === "tab" ) classList.remove(classList[i]);
+    for (let i = 0; i < classList.length; i += 1) {
+      if (classList[i].split('-')[0] === "tab") {
+        classList.remove(classList[i]);
+      }
     }
-    classList.add("tab-"+category);
+    classList.add(`tab-${category}`);
   }
 
   render() {
-    const {page, papers, papersTotal, papersFetchSize, aggregations, booktitles, figures, figuresTotal, tables, tablesTotal, tablesFetchSize, figuresFetchSize} = this.props.state;
+    const {page, papers, papersTotal, papersFetchSize, aggregations, figures, figuresTotal, tables, tablesTotal, tablesFetchSize, figuresFetchSize} = this.props.state;
 
     let year;
     if (aggregations.year.buckets.length > 1) {
@@ -1190,7 +1316,7 @@ class Search extends Component {
                                 min={min}
                                 max={max}
                                 minValue={gte || min}
-                                maxValue={lte || max}/>
+                                maxValue={lte || max}/>;
     }
 
     let booktitleComponents;
@@ -1212,132 +1338,147 @@ class Search extends Component {
       "texts",
       "figures",
       "tables",
-      "collocations"];
+      "collocations"
+    ];
 
     return (
-        <div>
-          <div className="subNavi z-depth-0">
-            <div className="container">
-              <div className="row">
-                <div className="results col s4 l3">
-                  <Switch>
-                    <Route path="/figures" component={(props) => (
-                        <p><span className="num">{figuresTotal || 0}</span> results</p>
-                    )}/>
-                    <Route path="/tables" component={(props) => (
-                        <p><span className="num">{tablesTotal || 0}</span> results</p>
-                    )}/>
-                    <Route component={(props) => (
-                        <p><span className="num">{papersTotal || 0}</span> results</p>
-                    )}/>
-                  </Switch>
-                </div>
+      <div>
+        <div className="subNavi z-depth-0">
+          <div className="container">
+            <div className="row">
+              <div className="results col s4 l3">
+                <Switch>
+                  <Route path="/figures" component={() =>
+                    <p><span className="num">{figuresTotal || 0}</span> results</p>
+                  }/>
+                  <Route path="/tables" component={() =>
+                    <p><span className="num">{tablesTotal || 0}</span> results</p>
+                  }/>
+                  <Route component={() =>
+                    <p><span className="num">{papersTotal || 0}</span> results</p>
+                  }/>
+                </Switch>
+              </div>
 
-                <div className="col s8 l9">
-                  <ul className="tabs tabs--alpha">
-                    {categories.map((category) => {
-                      let icon;
-                      switch (category) {
-                        case 'texts'       : icon = 'font_download'; break;
-                        case 'figures'     : icon = 'image';         break;
-                        case 'tables'      : icon = 'grid_on';       break;
-                        case 'collocations': icon = 'format_shapes'; break;
-                        default       : icon = '';
-                      }
+              <div className="col s8 l9">
+                <ul className="tabs tabs--alpha">
+                  {categories.map((category) => {
+                    let icon;
+                    switch (category) {
+                      case 'texts':
+                        icon = 'font_download';
+                        break;
+                      case 'figures':
+                        icon = 'image';
+                        break;
+                      case 'tables':
+                        icon = 'grid_on';
+                        break;
+                      case 'collocations':
+                        icon = 'format_shapes';
+                        break;
+                      default:
+                        icon = '';
+                    }
 
-                      return (
-                        <li key={category} className={'tab ' + category} onClick={this.handleClickTab.bind(this, category)}>
-                          <a className={this.props.state.category === category ? 'active' : ''}>
+                    return (
+                      <li key={category} className={`tab ${category}`}
+                          onClick={this.handleClickTab.bind(this, category)}>
+                        <a className={this.props.state.category === category ? 'active' : ''}>
                             <span className="txt">
                               <i className="material-icons hide-on-small-only">{icon}</i>
                               {category}
                             </span>
-                          </a>
-                        </li>
-                      );
-                    })
-                    }
-                  </ul>
-                </div>
+                        </a>
+                      </li>
+                    );
+                  })
+                  }
+                </ul>
               </div>
             </div>
-          </div>
-
-          <div className="row">
-
-            <div className="col s4 l3 sidebar">
-              <div className="col s4 l3">
-                <h5><i className="material-icons">find_in_page</i>Filter</h5>
-                <div>
-
-                <Switch>
-                  <Route path="/figures" component={(props) => (
-                      <div></div>
-                  )}/>
-                  <Route path="/tables" component={(props) => (
-                      <div></div>
-                  )}/>
-                  <Route component={(props) => (
-                    <div>
-                      <h6>Article Title</h6>
-                      <input className="alpha" type="search" placeholder="enter article title" onKeyPress={this.handleKeyPress.bind(this)} onChange={this.handleChangeArticleTitle.bind(this)}
-                             defaultValue={this.props.state.articleTitle}/>
-                      <h6>Author</h6>
-                      <input className="alpha" type="search" placeholder="enter author" onKeyPress={this.handleKeyPress.bind(this)} onChange={this.handleChangeAuthor.bind(this)}
-                             defaultValue={this.props.state.author}/>
-                      <h6>Abstract</h6>
-                      <input className="alpha" type="search" placeholder="enter abstract" onKeyPress={this.handleKeyPress.bind(this)} onChange={this.handleChangeAbstract.bind(this)}
-                             defaultValue={this.props.state.abstract}/>
-                    </div>
-                  )}/>
-                </Switch>
-
-                  <h6>Publication Year</h6>
-                  <div className="publication-year">
-                    {year}
-                  </div>
-
-                  <h6>Booktitle</h6>
-                  <ul>
-                    {booktitleComponents}
-                  </ul>
-
-                </div>
-              </div>
-            </div>
-
-            <div className="contents col s8 l9">
-
-              <ToolBar/>
-              <FilterEdit/>
-
-              <div className="row">
-
-                  <Switch>
-                    <Route path="/figures" component={(props) => (
-                      <div className="col s12">
-                        <Figures data={figures}/>
-                        <Paginator total={figuresTotal} size={figuresFetchSize} page={page}/>
-                      </div>
-                    )}/>
-                    <Route path="/tables" component={(props) => (
-                      <div className="col s12">
-                        <Tables data={tables}/>
-                        <Paginator total={tablesTotal} size={tablesFetchSize} page={page}/>
-                      </div>
-                    )}/>
-                    <Route component={(props) => (
-                      <div className="col s12">
-                        <Papers data={papers}/>
-                        <Paginator total={papersTotal} size={papersFetchSize} page={page}/>
-                      </div>
-                    )}/>
-                  </Switch>
-              </div>
-            </div>
-
           </div>
         </div>
+
+        <div className="row">
+
+          <div className="col s4 l3 sidebar">
+            <div className="col s4 l3">
+              <h5><i className="material-icons">find_in_page</i>Filter</h5>
+              <div>
+
+                <Switch>
+                  <Route path="/figures" component={() =>
+                    <div></div>
+                  }/>
+                  <Route path="/tables" component={() =>
+                    <div></div>
+                  }/>
+                  <Route component={() =>
+                    <div>
+                      <h6>Article Title</h6>
+                      <input className="alpha" type="search" placeholder="enter article title"
+                             onKeyPress={this.handleKeyPress.bind(this)}
+                             onChange={this.handleChangeArticleTitle.bind(this)}
+                             defaultValue={this.props.state.articleTitle}/>
+                      <h6>Author</h6>
+                      <input className="alpha" type="search" placeholder="enter author"
+                             onKeyPress={this.handleKeyPress.bind(this)} onChange={this.handleChangeAuthor.bind(this)}
+                             defaultValue={this.props.state.author}/>
+                      <h6>Abstract</h6>
+                      <input className="alpha" type="search" placeholder="enter abstract"
+                             onKeyPress={this.handleKeyPress.bind(this)} onChange={this.handleChangeAbstract.bind(this)}
+                             defaultValue={this.props.state.abstract}/>
+                    </div>
+                  }/>
+                </Switch>
+
+                <h6>Publication Year</h6>
+                <div className="publication-year">
+                  {year}
+                </div>
+
+                <h6>Booktitle</h6>
+                <ul>
+                  {booktitleComponents}
+                </ul>
+
+              </div>
+            </div>
+          </div>
+
+          <div className="contents col s8 l9">
+
+            <ToolBar/>
+            <FilterEdit/>
+
+            <div className="row">
+
+              <Switch>
+                <Route path="/figures" component={() =>
+                  <div className="col s12">
+                    <Figures data={figures}/>
+                    <Paginator total={figuresTotal} size={figuresFetchSize} page={page}/>
+                  </div>
+                }/>
+                <Route path="/tables" component={() =>
+                  <div className="col s12">
+                    <Tables data={tables}/>
+                    <Paginator total={tablesTotal} size={tablesFetchSize} page={page}/>
+                  </div>
+                }/>
+                <Route component={() =>
+                  <div className="col s12">
+                    <Papers data={papers}/>
+                    <Paginator total={papersTotal} size={papersFetchSize} page={page}/>
+                  </div>
+                }/>
+              </Switch>
+            </div>
+          </div>
+
+        </div>
+      </div>
     );
   }
 }

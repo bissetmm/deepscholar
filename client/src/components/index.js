@@ -1,4 +1,3 @@
-import util from 'util';
 import React, {Component} from 'react';
 import {connect} from 'react-redux';
 import {withRouter} from 'react-router-dom';
@@ -32,12 +31,12 @@ const Authors = connect(mapStateToProps)(class Authors extends Component {
     if (!this.props.asFull && !this.props.state.enabledAllAuthorsPaperIds.has(this.props.paperId)) {
       data = this.props.data.slice(0, 2);
     }
-    const highlightedAuthors = this.props.highlight["authors"] || [];
+    const highlightedAuthors = this.props.highlight.authors || [];
 
     const authors = data.map((author) => {
       let name = author;
       for (const highlightedAuthor of highlightedAuthors) {
-        if (highlightedAuthor.replace(/\<\/?em>/g, "") === author) {
+        if (highlightedAuthor.replace(/<\/?em>/g, "") === author) {
           name = highlightedAuthor;
           break;
         }
@@ -74,9 +73,9 @@ const FullTextToggle = connect(mapStateToProps)(class FullTextToggle extends Com
 
 const CheckForFilter = connect(mapStateToProps)(class CheckBoxForFilter extends Component {
 
-  handleChange(e) {
+  handleChange() {
     const target = document.querySelector('.toolBar');
-    if( document.querySelectorAll('.paper input:checked').length > 0 ) {
+    if (document.querySelectorAll('.paper input:checked').length > 0) {
       target.classList.add('choosing');
     } else {
       target.classList.remove('choosing');
@@ -87,7 +86,7 @@ const CheckForFilter = connect(mapStateToProps)(class CheckBoxForFilter extends 
     const paperId = this.props.paperId;
     return (
       <div className="checkbox">
-        <input type="checkbox" id={paperId} className="filled-in" onChange={this.handleChange.bind(this)} />
+        <input type="checkbox" id={paperId} className="filled-in" onChange={this.handleChange.bind(this)}/>
         <label htmlFor={paperId}></label>
       </div>
     );
@@ -97,13 +96,17 @@ const CheckForFilter = connect(mapStateToProps)(class CheckBoxForFilter extends 
 const Favorite = connect(mapStateToProps)(class CheckBoxForFilter extends Component {
 
   handleClick(e) {
-    let labelList = Object.assign({}, this.props.state.labelList);
-    let favList = labelList[favoriteKey];
+    const labelList = Object.assign({}, this.props.state.labelList);
+    const favList = labelList[favoriteKey];
     const id = e.currentTarget.dataset.id;
     const index = labelList[favoriteKey].indexOf(id);
     // exist ? remove : add;
-    ( index !== -1 ) ? favList.splice(index, 1) : favList.push(id);
-    this.props.dispatch( updateLabelList(labelList) );
+    if (index !== -1) {
+      favList.splice(index, 1);
+    } else {
+      favList.push(id);
+    }
+    this.props.dispatch(updateLabelList(labelList));
   }
 
   render() {
@@ -121,12 +124,15 @@ const FilterLabels = connect(mapStateToProps)(class FilterLabels extends Compone
 
   render() {
     const {labelList} = this.props.state;
-    const labels = Object.keys(labelList).map(key => {
-      const labelKey = key;
-      if( labelKey !== favoriteKey ){
-        return <span key={key} className={key + ' ' + labelList[labelKey][1]}></span>
-      }
-    })
+    const labels = Object.keys(labelList)
+      .map(key => {
+        const labelKey = key;
+        if (labelKey !== favoriteKey) {
+          return <span key={key} className={`${key} ${labelList[labelKey][1]}`}></span>;
+        }
+
+        return null;
+      });
 
     return (
       <span className="filterLabels">
@@ -138,7 +144,7 @@ const FilterLabels = connect(mapStateToProps)(class FilterLabels extends Compone
 
 export const Paper = withRouter(connect(mapStateToProps)(class Paper extends Component {
 
-  handleClick(paperUrl, e) {
+  handleClick(paperUrl) {
     this.props.dispatch(saveScrollY(this.props.location.key, window.scrollY));
     this.props.history.push(paperUrl);
   }
@@ -162,20 +168,22 @@ export const Paper = withRouter(connect(mapStateToProps)(class Paper extends Com
     const abstractHtml = {__html: abstract};
 
     return (
-      <article className={'paper ' + 'paper'+id}>
+      <article className={`paper paper${id}`}>
         <div className="divider"></div>
-        <CheckForFilter paperId={id} />
-        <Favorite paperId={id} />
+        <CheckForFilter paperId={id}/>
+        <Favorite paperId={id}/>
         <header>
           <h5>
-            <a href="javascript:void(0)" onClick={this.handleClick.bind(this, paperUrl)} dangerouslySetInnerHTML={articleTitle}></a>
-            <FilterLabels paperId={id} />
+            <a href="javascript:void(0)" onClick={this.handleClick.bind(this, paperUrl)}
+               dangerouslySetInnerHTML={articleTitle}></a>
+            <FilterLabels paperId={id}/>
           </h5>
           {authorComponents}
           <h6 dangerouslySetInnerHTML={journalTitle}></h6>
         </header>
         <div className="abstract"
-             dangerouslySetInnerHTML={abstractHtml}></div>{abstract !== "" && !this.props.asFull && <FullTextToggle paperId={id}/>}
+             dangerouslySetInnerHTML={abstractHtml}></div>
+        {abstract !== "" && !this.props.asFull && <FullTextToggle paperId={id}/>}
         <footer>
           <ul className="meta links valign-wrapper blue-text">
             <li>
@@ -210,7 +218,7 @@ export class Papers extends Component {
 }
 
 export const Figure = withRouter(connect(mapStateToProps)(class Figure extends Component {
-  handleClick(paperUrl, e) {
+  handleClick(paperUrl) {
     this.props.dispatch(saveScrollY(this.props.location.key, window.scrollY));
     this.props.history.push(paperUrl);
   }
@@ -241,7 +249,7 @@ export const Figure = withRouter(connect(mapStateToProps)(class Figure extends C
 }));
 
 export class Figures extends Component {
-  componentDidUpdate () {
+  componentDidUpdate() {
     const element = document.getElementById('figures');
     const lgUid = element.getAttribute('lg-uid');
     if (lgUid) {
@@ -253,7 +261,7 @@ export class Figures extends Component {
     }
   }
 
-  componentDidMount () {
+  componentDidMount() {
     window.lightGallery(document.getElementById('figures'), {
       selector: ".figure-image"
     });
@@ -261,7 +269,7 @@ export class Figures extends Component {
 
   render() {
     const figures = this.props.data.map((value, i) => {
-      return <Figure key={i} data={value} />;
+      return <Figure key={i} data={value}/>;
     });
 
     return (
@@ -273,7 +281,7 @@ export class Figures extends Component {
 }
 
 export const Table = withRouter(connect(mapStateToProps)(class Table extends Component {
-  handleClick(paperUrl, e) {
+  handleClick(paperUrl) {
     this.props.dispatch(saveScrollY(this.props.location.key, window.scrollY));
     this.props.history.push(paperUrl);
   }
@@ -304,7 +312,7 @@ export const Table = withRouter(connect(mapStateToProps)(class Table extends Com
 export class Tables extends Component {
   render() {
     const tables = this.props.data.map((value, i) => {
-      return <Table key={i} data={value} />;
+      return <Table key={i} data={value}/>;
     });
 
     return (
