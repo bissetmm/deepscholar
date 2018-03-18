@@ -4,8 +4,6 @@ const express = require("express");
 const app = express();
 const engines = require('consolidate');
 const searchHistory = require("./models/search_history");
-const passport = require("passport");
-const jwt = require("jsonwebtoken");
 const Auth = require("./auth.js");
 
 app.set('views', `${__dirname}/views`);
@@ -25,9 +23,11 @@ const defineSearchkitRouter = (typeName) => {
     index: `papers/${typeName}`,
     queryProcessor: (query, req) => {
       if (/.+\/text$/.test(req.baseUrl)) {
-        Auth.getVerifiedUserId(req.headers).then(userId => {
-          searchHistory.insert(query, userId);
-        }).catch(console.log);
+        Auth.getVerifiedUserId(req.headers)
+          .then(userId => {
+            searchHistory.insert(query, userId);
+          })
+          .catch(console.log);
       }
 
       return query;

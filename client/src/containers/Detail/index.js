@@ -7,11 +7,11 @@ import './style.css';
 
 class Detail extends Component {
 
-  componentWillMount(){
+  componentWillMount() {
     document.body.classList.add("detail");
   }
 
-  componentWillUnmount(){
+  componentWillUnmount() {
     document.body.classList.remove("detail");
   }
 
@@ -28,9 +28,10 @@ class Detail extends Component {
         }
       }
     };
-    Api.searchText({body}).then((json) => {
-      this.props.dispatch(receivePaper(json));
-    });
+    Api.searchText({body})
+      .then((json) => {
+        this.props.dispatch(receivePaper(json));
+      });
   }
 
   render() {
@@ -40,7 +41,8 @@ class Detail extends Component {
       <div className="row">
         <div className="col s12">
           {this.props.history.length > 2 &&
-          <a className="back-to-results" href="javascript:void(0)" onClick={this.props.history.goBack}><i className="material-icons">keyboard_arrow_left</i>Back to
+          <a className="back-to-results" href="javascript:void(0)" onClick={this.props.history.goBack}><i
+            className="material-icons">keyboard_arrow_left</i>Back to
             results</a>
           }
           {paper !== null &&

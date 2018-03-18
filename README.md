@@ -1,6 +1,7 @@
 <p align="center"><img src="https://github.com/paperai/deepscholar/blob/master/logo/deepscholar_logo.png" width="400"></p>
 
-# DeepScholar
+
+# DeepScholar [![Build Status](https://travis-ci.org/paperai/deepscholar.svg?branch=master)](https://travis-ci.org/paperai/deepscholar)
 `DeepScholar` is an AI-powered search engine for scholarly papers.
 
 ## Requirements

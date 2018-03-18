@@ -8,7 +8,15 @@ import Index from '../Index/index.js';
 import Search from '../Search/index.js';
 import Detail from '../Detail/index.js';
 import {ScrollToTop} from '../../components/index.js';
-import {changeQuery, deleteAllScrollY, signedIn, signedOut, getLabelList, updateLabelList, updateLabelFilter, favoriteKey} from '../../module';
+import {
+  changeQuery,
+  deleteAllScrollY,
+  signedIn,
+  signedOut,
+  getLabelList,
+  updateLabelList,
+  favoriteKey
+} from '../../module';
 import './materializeTheme.css';
 import './style.css';
 import Api from '../../api';
@@ -40,12 +48,14 @@ const NavBar = connect(mapStateToProps)(class NavBar extends Component {
 
     const token = window.localStorage.getItem(NavBar.TOKEN_STORE_KEY);
     if (token) {
-      Api.verify(token).then(user => {
-        this.signIn(user);
-      }).catch(() => {
-        window.localStorage.removeItem(NavBar.TOKEN_STORE_KEY);
-        this.props.dispatch(signedOut());
-      })
+      Api.verify(token)
+        .then(user => {
+          this.signIn(user);
+        })
+        .catch(() => {
+          window.localStorage.removeItem(NavBar.TOKEN_STORE_KEY);
+          this.props.dispatch(signedOut());
+        });
     }
 
     this.props.dispatch(getLabelList());
@@ -60,58 +70,85 @@ const NavBar = connect(mapStateToProps)(class NavBar extends Component {
 
   componentDidUpdate(prevProps) {
 
-    const {category: oldCategory, query: oldQuery, articleTitle: oldArticleTitle, author: oldAuthor, abstract: oldAbstract, gte: oldGte, lte: oldLte, booktitles: oldBooktitles, page: oldPage, labelFilter:oldlabelFilter} = prevProps.state;
-    const {category: newCategory, query: newQuery, articleTitle: newArticleTitle, author: newAuthor, abstract: newAbstract, gte: newGte, lte: newLte, booktitles: newBooktitles, page: newPage, labelFilter:newlabelFilter} = this.props.state;
+    const {category: oldCategory, query: oldQuery, articleTitle: oldArticleTitle, author: oldAuthor, abstract: oldAbstract, gte: oldGte, lte: oldLte, booktitles: oldBooktitles, page: oldPage, labelFilter: oldlabelFilter} = prevProps.state;
+    const {category: newCategory, query: newQuery, articleTitle: newArticleTitle, author: newAuthor, abstract: newAbstract, gte: newGte, lte: newLte, booktitles: newBooktitles, page: newPage, labelFilter: newlabelFilter} = this.props.state;
 
-    if (oldCategory === newCategory && oldQuery === newQuery && oldArticleTitle === newArticleTitle && oldAuthor === newAuthor && oldAbstract === newAbstract && oldPage === newPage && oldGte === newGte && oldLte === newLte && Array.from(oldBooktitles).join("") === Array.from(newBooktitles).join("") && oldlabelFilter === newlabelFilter ) {
+    if (oldCategory === newCategory && oldQuery === newQuery && oldArticleTitle === newArticleTitle && oldAuthor === newAuthor && oldAbstract === newAbstract && oldPage === newPage && oldGte === newGte && oldLte === newLte && Array.from(oldBooktitles)
+        .join("") === Array.from(newBooktitles)
+        .join("") && oldlabelFilter === newlabelFilter) {
       return;
-    }    
+    }
 
     const queries = [];
     if (newQuery !== null) {
-      queries.push(["q", newQuery]);
+      queries.push([
+        "q",
+        newQuery
+      ]);
     }
     if (newArticleTitle !== null) {
-      queries.push(["articleTitle", newArticleTitle]);
+      queries.push([
+        "articleTitle",
+        newArticleTitle
+      ]);
     }
     if (newAuthor !== null) {
-      queries.push(["author", newAuthor]);
+      queries.push([
+        "author",
+        newAuthor
+      ]);
     }
     if (newAbstract !== null) {
-      queries.push(["abstract", newAbstract]);
+      queries.push([
+        "abstract",
+        newAbstract
+      ]);
     }
     if (newPage !== null) {
-      queries.push(["page", newPage + 1]);
+      queries.push([
+        "page",
+        newPage + 1
+      ]);
     }
     if (newGte !== null) {
-      queries.push(["gte", newGte]);
+      queries.push([
+        "gte",
+        newGte
+      ]);
     }
     if (newLte !== null) {
-      queries.push(["lte", newLte]);
+      queries.push([
+        "lte",
+        newLte
+      ]);
     }
     newBooktitles.forEach(booktitle => {
-      queries.push(["booktitle[]", booktitle]);
+      queries.push([
+        "booktitle[]",
+        booktitle
+      ]);
     });
 
     const queryString = queries.map(query => {
       return `${query[0]}=${query[1]}`;
-    }).join("&");
+    })
+      .join("&");
 
     const newUrl = `/${newCategory}?${queryString}`;
     const oldUrl = this.props.location.pathname + this.props.location.search;
 
-    if( newUrl !== oldUrl ) {
+    if (newUrl !== oldUrl) {
       this.props.history.push(newUrl);
     }
 
     this.query = newQuery;
 
-    this.refs.search.value = ( this.props.state.query !== null ) ? decodeURIComponent(this.props.state.query) : '' ;
-    
+    this.refs.search.value = this.props.state.query !== null ? decodeURIComponent(this.props.state.query) : '';
+
   }
 
   handleSubmit(e) {
-    e.preventDefault();        
+    e.preventDefault();
 
     if (this.searchTimer !== null) {
       clearTimeout(this.searchTimer);
@@ -122,7 +159,9 @@ const NavBar = connect(mapStateToProps)(class NavBar extends Component {
       this.props.dispatch(deleteAllScrollY());
 
       const labelFilter = this.props.state.labelFilter.slice();
-            _.remove(labelFilter, function(n) { return n === favoriteKey; });
+      _.remove(labelFilter, n => {
+        return n === favoriteKey;
+      });
 
       this.props.dispatch(changeQuery(this.props.state.category, this.query, null, null, null, labelFilter));
     }, 0);
@@ -176,7 +215,9 @@ const NavBar = connect(mapStateToProps)(class NavBar extends Component {
                 <li><a href="#" onClick={this.handleClickSignIn.bind(this)}>Sign in</a></li>
                 }
                 {isSignedIn &&
-                <li><a href="#" className="tooltipped" data-position="bottom" data-delay="50" data-tooltip={user.profile.username} onClick={this.handleClickSignOut.bind(this)}><img className="avatar" src={src} />Sign out</a></li>
+                <li><a href="#" className="tooltipped" data-position="bottom" data-delay="50"
+                       data-tooltip={user.profile.username} onClick={this.handleClickSignOut.bind(this)}><img
+                  className="avatar" src={src}/>Sign out</a></li>
                 }
               </ul>
             </div>
@@ -188,29 +229,25 @@ const NavBar = connect(mapStateToProps)(class NavBar extends Component {
 });
 
 class App extends Component {
-  constructor(props) {
-    super(props);
-  }
-
   render() {
     return (
       <HashRouter>
         <div>
-          <Route component={(props) => (
+          <Route component={props =>
             <NavBar {...props}/>
-          )}/>
+          }/>
           <div className="container">
             <div>
               <Switch>
                 <Route exact path="/papers/:paperId" component={Detail}/>
-                <Route exact path="/" component={(props) => (
+                <Route exact path="/" component={props =>
                   <Index {...props}/>
-                )}/>
-                <Route component={(props) => (
+                }/>
+                <Route component={props =>
                   <ScrollToTop {...props}>
                     <Search {...props}/>
                   </ScrollToTop>
-                )}/>
+                }/>
               </Switch>
             </div>
           </div>
@@ -218,6 +255,6 @@ class App extends Component {
       </HashRouter>
     );
   }
-};
+}
 
 export default App;

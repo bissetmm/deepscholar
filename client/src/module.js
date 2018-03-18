@@ -4,23 +4,54 @@ import queryString from 'query-string';
 const matches = window.location.hash.match(/#\/([a-zA-Z]+).*\?(.+)/);
 const queries = matches ? matches[2] : "";
 const parsed = queryString.parse(queries);
-const category = matches ? matches[1] : null;
+const currentCategory = matches ? matches[1] : null;
 const favoriteKey = "favorite_____________";
-const labelColor = ["red", "blue", "green", "grey", "yellow", "orange", "pink", "purple" ];
-const labelList = {
-                    "label1" : ["label1", labelColor[0] , [] ] , // labelName : [name, color, paperList]
-                    "label2" : ["label2", labelColor[1] , [] ] ,
-                    "label3" : ["label3", labelColor[2] , [] ] ,
-                    "label4" : ["label4", labelColor[3] , [] ] ,
-                    "label5" : ["label5", labelColor[4] , [] ] ,
-                    [favoriteKey] : [], // Only for favorite func
-                  };
+const labelColor = [
+  "red",
+  "blue",
+  "green",
+  "grey",
+  "yellow",
+  "orange",
+  "pink",
+  "purple"
+];
+const defaultLabelList = {
+  // labelName : [name, color, paperList]
+  "label1": [
+    "label1",
+    labelColor[0],
+    []
+  ],
+  "label2": [
+    "label2",
+    labelColor[1],
+    []
+  ],
+  "label3": [
+    "label3",
+    labelColor[2],
+    []
+  ],
+  "label4": [
+    "label4",
+    labelColor[3],
+    []
+  ],
+  "label5": [
+    "label5",
+    labelColor[4],
+    []
+  ],
+  // Only for favorite func
+  [favoriteKey]: []
+};
 
 export {favoriteKey}; // To use favoriteKey on another page.
 
 const initialState = {
   user: null,
-  category: category || null,
+  category: currentCategory || null,
   query: parsed.q || null,
   articleTitle: parsed.articleTitle || null,
   author: parsed.author || null,
@@ -38,7 +69,7 @@ const initialState = {
   figuresTotal: 0,
   figuresFetchSize: 20,
   labelColor: labelColor,
-  labelList: labelList,
+  labelList: defaultLabelList,
   labelFilter: [],
   tables: [],
   tablesTotal: 0,
@@ -56,51 +87,73 @@ const initialState = {
   scrollYPositions: new Map()
 };
 
-////// ▼ Functions for Get/Set LabelList from/to DB ▼
-const _getLabelList = function(user){
+// //// ▼ Functions for Get/Set LabelList from/to DB ▼
+const _getLabelList = (user) => {
   let labelListSaved;
-  let is_available = false;
-  const getLabelListFromLocalStrage = function(){
+  let isAvailable = false;
+  const getLabelListFromLocalStrage = () => {
     const labelListInLS = window.localStorage.getItem('labelList');
-    return  ( labelListInLS && _validateLabelList( JSON.parse(labelListInLS) ) ) ? JSON.parse(labelListInLS) : labelList;
+    return labelListInLS && _validateLabelList(JSON.parse(labelListInLS)) ? JSON.parse(labelListInLS) : defaultLabelList;
+  };
+  if (typeof user !== "undefined" && typeof user.profile !== "undefined") {
+    window.jQuery.ajax({async: false, method: 'POST', url: '/api/label/get', data: {profile_id: user.profile.id}})
+      .done((data) => {
+        if (data !== 'error') {
+          labelListSaved = JSON.parse(data.label.labelList);
+          if (_validateLabelList(labelListSaved)) {
+            isAvailable = true;
+          }
+        }
+      })
+      .fail(() => {
+        console.log('LabelList Get Error.');
+      });
   }
-  if ( user !== undefined && user.profile !== undefined ) {
-    window.jQuery.ajax({ async: false, method: 'POST', url: '/api/label/get', data: { profile_id: user.profile.id } })
-    .done(function(data) {
-      if( data !== 'error' ) {
-        labelListSaved = JSON.parse(data.label.labelList);
-        if( _validateLabelList(labelListSaved) ) is_available = true;
-      }
-    }).fail(function() { console.log('LabelList Get Error.'); });
-  }
-  labelListSaved = is_available ? labelListSaved : getLabelListFromLocalStrage();
+  labelListSaved = isAvailable ? labelListSaved : getLabelListFromLocalStrage();
   return labelListSaved;
-}
+};
 
-const _saveLabelList = function(labelList, user){
-  if ( user && _validateLabelList(labelList) ) {
-    window.jQuery.ajax({ method: 'POST', url: '/api/label/set', data: { profile_id: user.profile.id, labelList: JSON.stringify(labelList) } })
-    .done(function(data) {
-      ( data === 'done' ) ? console.log('LabelList Saved.') : console.log('LabelList Save Failed.');
+const _saveLabelList = (labelList, user) => {
+  if (user && _validateLabelList(labelList)) {
+    window.jQuery.ajax({
+      method: 'POST',
+      url: '/api/label/set',
+      data: {profile_id: user.profile.id, labelList: JSON.stringify(labelList)}
     })
-    .fail(function() { console.log('LabelList Save Ajax Error.') });
+      .done((data) => {
+        if (data === 'done') {
+          console.log('LabelList Saved.');
+        } else {
+          console.log('LabelList Save Failed.');
+        }
+      })
+      .fail(() => {
+        console.log('LabelList Save Ajax Error.');
+      });
   }
   window.localStorage.setItem('labelList', JSON.stringify(labelList));
-}
+};
 
-const _validateLabelList = function(labelList){
-  let is_labelList = true;
+const _validateLabelList = (labelList) => {
+  let isLabelList = true;
   let key;
-  if( typeof labelList !== 'object' ) is_labelList = false;
-  if( !(favoriteKey in labelList) ) is_labelList = false;
+  if (typeof labelList !== 'object') {
+    isLabelList = false;
+  }
+  if (!(favoriteKey in labelList)) {
+    isLabelList = false;
+  }
   for (key in labelList) {
-    if( key !== favoriteKey ) {
-      if( typeof key !== 'string' || typeof labelList[key][0] !== 'string' || labelColor.indexOf(labelList[key][1]) == -1 || !Array.isArray(labelList[key][2]) ) is_labelList = false;
+    if (key !== favoriteKey) {
+      if (typeof key !== 'string' || typeof labelList[key][0] !== 'string' || labelColor.indexOf(labelList[key][1]) === -1 || !Array.isArray(labelList[key][2])) {
+        isLabelList = false;
+      }
     }
   }
-  return is_labelList;
-}
-////// ▲ Functions for Get/Set LabelList from/to DB ▲
+  return isLabelList;
+};
+
+// //// ▲ Functions for Get/Set LabelList from/to DB ▲
 
 export function reducers(state = initialState, action) {
   switch (action.type) {
@@ -146,7 +199,7 @@ export function reducers(state = initialState, action) {
         booktitles: {$set: newBooktitles}
       });
       return newState;
-      }
+    }
     case CHANGE_PAGE:
       return Object.assign({}, state, {
         page: action.page
@@ -178,7 +231,7 @@ export function reducers(state = initialState, action) {
     case RECEIVE_FIGURES:
       return Object.assign({}, state, {
         figures: action.figures,
-        figuresTotal: action.figuresTotal,
+        figuresTotal: action.figuresTotal
       });
     case REQUEST_TABLES:
       return Object.assign({}, state, {
@@ -188,7 +241,7 @@ export function reducers(state = initialState, action) {
     case RECEIVE_TABLES:
       return Object.assign({}, state, {
         tables: action.tables,
-        tablesTotal: action.tablesTotal,
+        tablesTotal: action.tablesTotal
       });
     case TOGGLE_FULL_TEXT:
       if (state.enabledFullTextPaperIds.has(action.id)) {
@@ -222,18 +275,20 @@ export function reducers(state = initialState, action) {
       return Object.assign({}, state, {
         scrollYPositions: new Map()
       });
-    case GET_LABEL_LIST:
+    case GET_LABEL_LIST: {
       const user = Object.assign({}, state.user);
       const labelListSaved = _getLabelList(user);
       return Object.assign({}, state, {
         labelList: labelListSaved
       });
-    case UPDATE_LABEL_LIST:
+    }
+    case UPDATE_LABEL_LIST: {
       const labelListUpdated = action.labelList;
       _saveLabelList(labelListUpdated, state.user);
       return Object.assign({}, state, {
         labelList: labelListUpdated
       });
+    }
     case UPDATE_LABEL_FILTER:
       return Object.assign({}, state, {
         labelFilter: action.filterList
@@ -434,7 +489,7 @@ const GET_LABEL_LIST = "GET_LABEL_LIST";
 
 export function getLabelList() {
   return {
-    type:GET_LABEL_LIST,
+    type: GET_LABEL_LIST
   };
 }
 
@@ -443,7 +498,7 @@ const UPDATE_LABEL_LIST = "UPDATE_LABEL_LIST";
 export function updateLabelList(labelList) {
   return {
     type: UPDATE_LABEL_LIST,
-    labelList: labelList,
+    labelList: labelList
   };
 }
 
@@ -452,6 +507,6 @@ const UPDATE_LABEL_FILTER = "UPDATE_LABEL_FILTER";
 export function updateLabelFilter(filterList) {
   return {
     type: UPDATE_LABEL_FILTER,
-    filterList: filterList,
+    filterList: filterList
   };
 }

@@ -3,48 +3,48 @@ const bodyParser = require('body-parser');
 const Label = require("./models/label");
 
 function getLabel(req, res) {
-  const profile_id = req.body.profile_id;
-  Label.findByProfileId(profile_id).then((label) => {
+  const profileId = req.body.profile_id;
+  Label.findByProfileId(profileId).then((label) => {
     // console.log('GET');
-    // console.log('profile_id : ' + profile_id);
+    // console.log('profileId : ' + profileId);
     // console.log(label);
     if (label) {
-      res.send(label);    
+      res.send(label);
     } else {
-      res.send('error');    
-    }    
+      res.send('error');
+    }
   });
 }
 
 function setLabel(req, res) {
-  const profile_id = req.body.profile_id;
+  const profileId = req.body.profile_id;
   const labelList = req.body.labelList;
   // console.log('SET');
-  // console.log('profile_id : ' + profile_id);
+  // console.log('profileId : ' + profileId);
   // console.log('labelList : ' + labelList);
-  Label.insertOrCreate(profile_id, labelList).then((label) => {
+  Label.insertOrCreate(profileId, labelList).then((label) => {
     if (label) {
-      res.send('done');    
+      res.send('done');
     } else {
-      res.send('error');    
-    }    
+      res.send('error');
+    }
   });
 }
 
 module.exports = (app) => {
 
-  const router = express.Router();
+  const router = new express.Router();
 
-  app.use( bodyParser.json() );
-  app.use( bodyParser.urlencoded({
+  app.use(bodyParser.json());
+  app.use(bodyParser.urlencoded({
     extended: true
-  })); 
+  }));
 
-  router.use('/get/', function (req, res) {
+  router.use('/get/', (req, res) => {
     getLabel(req, res);
   });
 
-  router.use('/set/', function (req, res) {
+  router.use('/set/', (req, res) => {
     setLabel(req, res);
   });
 

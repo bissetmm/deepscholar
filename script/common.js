@@ -7,7 +7,9 @@ module.exports = {
 
     return new Promise((resolved, rejected) => {
       properties.parse(envFilePath, {path: true}, (error, obj) => {
-        if (error) return rejected(error);
+        if (error) {
+          return rejected(error);
+        }
         resolved(obj);
       });
     });

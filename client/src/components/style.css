@@ -47,6 +47,7 @@
 .paper header .authors {
     font-weight: 400;
 }
+
 .paper header h5 a {
     line-height: 1.4;
     font-weight: 400;
@@ -88,33 +89,36 @@
     font-weight: 900;
 }
 
-    /* Favorite */
-    .paper .favorite {
-        position: absolute;
-        left: -4px;
-        top: 22px;
-        width: 23px;
-        height: 23px;
-        text-align: center;
-        cursor: pointer;
-    }
-    .paper:first-child .favorite {
-        top: 1px;
-    }
-    .paper .favorite i { 
-        position: absolute;
-        top: 0;
-        left: 0;
-        font-size: 23px; 
-    }
-    .paper .favorite i.on { 
-        color: #ffe403;
-        opacity: 0;
-    }        
-    .paper .favorite i.off{ 
-        color: #b9c0cc;      
-    }
+/* Favorite */
+.paper .favorite {
+    position: absolute;
+    left: -4px;
+    top: 22px;
+    width: 23px;
+    height: 23px;
+    text-align: center;
+    cursor: pointer;
+}
 
+.paper:first-child .favorite {
+    top: 1px;
+}
+
+.paper .favorite i {
+    position: absolute;
+    top: 0;
+    left: 0;
+    font-size: 23px;
+}
+
+.paper .favorite i.on {
+    color: #ffe403;
+    opacity: 0;
+}
+
+.paper .favorite i.off {
+    color: #b9c0cc;
+}
 
 /****************
 **  Figure
@@ -129,7 +133,7 @@
     text-decoration: underline;
 }
 
-.figure header h5{
+.figure header h5 {
     font-size: 1.3em;
     margin: 20px 0 10px;
 
@@ -141,11 +145,11 @@
     width: 100%;
     height: auto;
 }
+
 .figure footer p {
     margin: 10px 0;
     font-weight: 400;
 }
-
 
 /****************
 **  Table
@@ -161,7 +165,7 @@
     text-decoration: underline;
 }
 
-.table header h5{
+.table header h5 {
     font-size: 1.3em;
     margin: 20px 0 10px;
 
@@ -173,6 +177,7 @@
     width: 100%;
     height: auto;
 }
+
 .table footer p {
     margin: 10px 0;
     font-weight: 400;
