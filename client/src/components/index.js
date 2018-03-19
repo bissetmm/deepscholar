@@ -29,11 +29,11 @@ const Authors = connect(mapStateToProps)(class Authors extends Component {
   render() {
     let data = this.props.data;
     if (!this.props.asFull && !this.props.state.enabledAllAuthorsPaperIds.has(this.props.paperId)) {
-      data = this.props.data.slice(0, 2);
+      data = this.props.data.slice(0, 3);
     }
     const highlightedAuthors = this.props.highlight.authors || [];
 
-    const authors = data.map((author) => {
+    const authors = data.map((author, i) => {
       let name = author;
       for (const highlightedAuthor of highlightedAuthors) {
         if (highlightedAuthor.replace(/<\/?em>/g, "") === author) {
@@ -41,10 +41,11 @@ const Authors = connect(mapStateToProps)(class Authors extends Component {
           break;
         }
       }
-      const label = {__html: `${name}`};
+      const sepatate = ( data.length !== i+1 ) ? ' ,' : '';
+      const label = {__html: `${name}` + sepatate};
       return <li key={author} dangerouslySetInnerHTML={label}></li>;
     });
-    const haveMore = this.props.data.length > 2;
+    const haveMore = this.props.data.length > 3;
 
     return (
       <ul className="meta authors">
