@@ -41,8 +41,8 @@ const Authors = connect(mapStateToProps)(class Authors extends Component {
           break;
         }
       }
-      const sepatate = ( data.length !== i+1 ) ? ' ,' : '';
-      const label = {__html: `${name}` + sepatate};
+      const sepatate = ( data.length !== i+1 ) ? ',' : '';
+      const label = {__html: `${name} ${sepatate}`};
       return <li key={author} dangerouslySetInnerHTML={label}></li>;
     });
     const haveMore = this.props.data.length > 3;
@@ -156,7 +156,7 @@ export const Paper = withRouter(connect(mapStateToProps)(class Paper extends Com
     const pdfannoUrl = `https://paperai.github.io/pdfanno/latest/?pdf=${pdf}`;
 
     const articleTitle = {__html: highlightedArticleTitle || rawArticleTitle};
-    const journalTitle = {__html: `${highlightedJournalTitle || rawJournalTitle} ${year}`};
+    const journalTitle = {__html: `${highlightedJournalTitle || rawJournalTitle}, ${year}`};
 
     const abstractTxt = (highlightedAbstract ? highlightedAbstract[0] : rawAbstract) || "";
 
