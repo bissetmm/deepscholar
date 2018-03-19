@@ -508,16 +508,6 @@
     display: none;
 }
 
-.contents .paper .checkbox {
-    position: absolute;
-    left: -28px;
-    top: 24px;
-}
-
-.contents .paper:first-child .checkbox {
-    top: 3px;
-}
-
 .contents .table .divider {
     margin: 40px 0;
 }
@@ -543,6 +533,26 @@
 [type="checkbox"].filled-in:not(:checked) + label:after {
     border-width: 1px !important;
 }
+
+    /* for abstruct */
+    .search .contents .paper h5 {
+        margin: 16px 0 4px;
+    }
+        .search .contents .paper:first-child h5 {
+            margin-top: 20px;
+        }
+    .search .contents .paper .authors,
+    .search .contents .paper .authors a {
+        margin-top: 0;
+    }
+    .search .contents .paper h6 {
+        margin-top: 0;
+        margin-bottom: 7px;
+    }
+    .search .paper > footer {
+        margin-top: 0;
+    }
+
 
 /* Pagination */
 .pagination {

@@ -44,8 +44,9 @@
     font-weight: normal;
 }
 
-.paper header .authors {
-    font-weight: 400;
+.paper header .authors,
+.paper header .authors a {
+    font-weight: 300;
 }
 
 .paper header h5 a {
@@ -89,11 +90,22 @@
     font-weight: 900;
 }
 
+/* Checkbox */
+.contents .paper .checkbox {
+    position: absolute;
+    left: -28px;
+    top: 20px;
+}
+
+.contents .paper:first-child .checkbox {
+    top: 3px;
+}
+
 /* Favorite */
 .paper .favorite {
     position: absolute;
     left: -4px;
-    top: 22px;
+    top: 18px;
     width: 23px;
     height: 23px;
     text-align: center;

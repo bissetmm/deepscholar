@@ -84,6 +84,7 @@ const initialState = {
   },
   enabledFullTextPaperIds: new Set(),
   enabledAllAuthorsPaperIds: new Set(),
+  enabledFullAbstructPaperIds: new Set(),
   scrollYPositions: new Map()
 };
 
@@ -260,6 +261,15 @@ export function reducers(state = initialState, action) {
       }
       return Object.assign({}, state, {
         enabledAllAuthorsPaperIds: state.enabledAllAuthorsPaperIds
+      });
+    case TOGGLE_ABSTRUCT:
+      if (state.enabledFullAbstructPaperIds.has(action.id)) {
+        state.enabledFullAbstructPaperIds.delete(action.id);
+      } else {
+        state.enabledFullAbstructPaperIds.add(action.id);
+      }
+      return Object.assign({}, state, {
+        enabledFullAbstructPaperIds: state.enabledFullAbstructPaperIds
       });
     case SAVE_SCROLL_Y:
       state.scrollYPositions.set(action.locationKey, action.y);
@@ -454,6 +464,15 @@ const TOGGLE_ALL_AUTHORS = "TOGGLE_ALL_AUTHORS";
 export function toggleAllAuthors(id) {
   return {
     type: TOGGLE_ALL_AUTHORS,
+    id: id
+  };
+}
+
+const TOGGLE_ABSTRUCT = "TOGGLE_ABSTRUCT";
+
+export function toggleAbstruct(id) {
+  return {
+    type: TOGGLE_ABSTRUCT,
     id: id
   };
 }

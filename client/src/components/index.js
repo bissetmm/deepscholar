@@ -2,7 +2,7 @@ import React, {Component} from 'react';
 import {connect} from 'react-redux';
 import {withRouter} from 'react-router-dom';
 import './style.css';
-import {saveScrollY, toggleAllAuthors, toggleFullText, updateLabelList, favoriteKey} from "../module";
+import {saveScrollY, toggleAllAuthors, toggleFullText, toggleAbstruct, updateLabelList, favoriteKey} from "../module";
 
 function mapStateToProps(state) {
   return {state};
@@ -67,6 +67,18 @@ const FullTextToggle = connect(mapStateToProps)(class FullTextToggle extends Com
       <span>
         {prefix}<a href="javascript:void(0)" onClick={this.handleClick.bind(this)}>({label})</a>
       </span>
+    );
+  }
+});
+
+const AbstractToggle = connect(mapStateToProps)(class AbstractToggle extends Component {
+  handleClick() {
+    this.props.dispatch(toggleAbstruct(this.props.paperId));
+  }
+
+  render() {
+    return (
+      <a href="javascript:void(0)" onClick={this.handleClick.bind(this)}>abstract</a>
     );
   }
 });
@@ -167,6 +179,14 @@ export const Paper = withRouter(connect(mapStateToProps)(class Paper extends Com
     }
     const abstractHtml = {__html: abstract};
 
+    const fullAbstract = this.props.state.enabledFullAbstructPaperIds.has(id);
+
+    const abstractDom = fullAbstract ? (
+        <div className="abstract" dangerouslySetInnerHTML={abstractHtml}></div>
+      ) : null;
+
+    console.log(abstractDom);
+
     return (
       <article className={`paper paper${id}`}>
         <div className="divider"></div>
@@ -181,11 +201,13 @@ export const Paper = withRouter(connect(mapStateToProps)(class Paper extends Com
           {authorComponents}
           <h6 dangerouslySetInnerHTML={journalTitle}></h6>
         </header>
-        <div className="abstract"
-             dangerouslySetInnerHTML={abstractHtml}></div>
-        {abstract !== "" && !this.props.asFull && <FullTextToggle paperId={id}/>}
+        {abstractDom}
+        {fullAbstract && abstract !== "" && !this.props.asFull && <FullTextToggle paperId={id}/>}
         <footer>
           <ul className="meta links valign-wrapper blue-text">
+            <li>
+              <AbstractToggle paperId={id}/>              
+            </li>
             <li>
               <a href={pdf} target="_blank">pdf</a>
             </li>
