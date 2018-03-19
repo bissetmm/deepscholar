@@ -82,7 +82,6 @@ const initialState = {
       buckets: []
     }
   },
-  enabledFullTextPaperIds: new Set(),
   enabledAllAuthorsPaperIds: new Set(),
   enabledFullAbstructPaperIds: new Set(),
   scrollYPositions: new Map()
@@ -243,15 +242,6 @@ export function reducers(state = initialState, action) {
       return Object.assign({}, state, {
         tables: action.tables,
         tablesTotal: action.tablesTotal
-      });
-    case TOGGLE_FULL_TEXT:
-      if (state.enabledFullTextPaperIds.has(action.id)) {
-        state.enabledFullTextPaperIds.delete(action.id);
-      } else {
-        state.enabledFullTextPaperIds.add(action.id);
-      }
-      return Object.assign({}, state, {
-        enabledFullTextPaperIds: state.enabledFullTextPaperIds
       });
     case TOGGLE_ALL_AUTHORS:
       if (state.enabledAllAuthorsPaperIds.has(action.id)) {
@@ -447,15 +437,6 @@ export function receiveTables(json) {
     type: RECEIVE_TABLES,
     tables: json.hits.hits,
     tablesTotal: json.hits.total
-  };
-}
-
-const TOGGLE_FULL_TEXT = "TOGGLE_FULL_TEXT";
-
-export function toggleFullText(id) {
-  return {
-    type: TOGGLE_FULL_TEXT,
-    id: id
   };
 }
 

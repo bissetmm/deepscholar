@@ -2,7 +2,7 @@ import React, {Component} from 'react';
 import {connect} from 'react-redux';
 import {withRouter} from 'react-router-dom';
 import './style.css';
-import {saveScrollY, toggleAllAuthors, toggleFullText, toggleAbstruct, updateLabelList, favoriteKey} from "../module";
+import {saveScrollY, toggleAllAuthors, toggleAbstruct, updateLabelList, favoriteKey} from "../module";
 
 function mapStateToProps(state) {
   return {state};
@@ -50,23 +50,6 @@ const Authors = connect(mapStateToProps)(class Authors extends Component {
       <ul className="meta authors">
         {authors}{!this.props.asFull && haveMore && <AllAuthorsToggle paperId={this.props.paperId}/>}
       </ul>
-    );
-  }
-});
-
-const FullTextToggle = connect(mapStateToProps)(class FullTextToggle extends Component {
-  handleClick() {
-    this.props.dispatch(toggleFullText(this.props.paperId));
-  }
-
-  render() {
-    const isFullTextEnabled = this.props.state.enabledFullTextPaperIds.has(this.props.paperId);
-    const label = isFullTextEnabled ? "Less" : "More";
-    const prefix = isFullTextEnabled ? "" : "...";
-    return (
-      <span>
-        {prefix}<a href="javascript:void(0)" onClick={this.handleClick.bind(this)}>({label})</a>
-      </span>
     );
   }
 });
@@ -173,10 +156,8 @@ export const Paper = withRouter(connect(mapStateToProps)(class Paper extends Com
     const articleTitle = {__html: highlightedArticleTitle || rawArticleTitle};
     const journalTitle = {__html: `${highlightedJournalTitle || rawJournalTitle} ${year}`};
 
-    let abstract = (highlightedAbstract ? highlightedAbstract[0] : rawAbstract) || "";
-    if (!this.props.asFull) {
-      abstract = this.props.state.enabledFullTextPaperIds.has(id) ? abstract : abstract.substr(0, 400);
-    }
+    const abstract = (highlightedAbstract ? highlightedAbstract[0] : rawAbstract) || "";
+
     const abstractHtml = {__html: abstract};
 
     const fullAbstract = this.props.state.enabledFullAbstructPaperIds.has(id);
@@ -202,7 +183,6 @@ export const Paper = withRouter(connect(mapStateToProps)(class Paper extends Com
           <h6 dangerouslySetInnerHTML={journalTitle}></h6>
         </header>
         {abstractDom}
-        {fullAbstract && abstract !== "" && !this.props.asFull && <FullTextToggle paperId={id}/>}
         <footer>
           <ul className="meta links valign-wrapper blue-text">
             <li>
