@@ -536,22 +536,37 @@
 
     /* for abstruct */
     .search .contents .paper h5 {
-        margin: 16px 0 4px;
+        margin: 13px 0 0;
     }
         .search .contents .paper:first-child h5 {
             margin-top: 20px;
         }
+
     .search .contents .paper .authors,
     .search .contents .paper .authors a {
         margin-top: 0;
+        margin-bottom: 3px;
     }
+
     .search .contents .paper h6 {
         margin-top: 0;
-        margin-bottom: 7px;
+        margin-bottom: 0;
     }
+
+    .search .contents .paper > .abstract {
+        display: block;
+        margin: 8px 0;
+    }
+
     .search .paper > footer {
         margin-top: 0;
+        margin-bottom: 16px;
     }
+        .search .paper > footer ul.meta {
+            margin-top: 2px;
+            position: relative;
+            left: -1px;            
+        }
 
 
 /* Pagination */

@@ -93,7 +93,7 @@
 .contents .paper .checkbox {
     position: absolute;
     left: -28px;
-    top: 20px;
+    top: 17px;
 }
 
 .contents .paper:first-child .checkbox {
@@ -104,7 +104,7 @@
 .paper .favorite {
     position: absolute;
     left: -4px;
-    top: 18px;
+    top: 15px;
     width: 23px;
     height: 23px;
     text-align: center;
