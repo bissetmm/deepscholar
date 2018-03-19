@@ -131,6 +131,10 @@
     color: #b9c0cc;
 }
 
+.paper .abstractToggle span{
+    font-size: 76%;
+}
+
 /****************
 **  Figure
 ****************/

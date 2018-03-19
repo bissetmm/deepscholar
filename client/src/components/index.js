@@ -2,7 +2,7 @@ import React, {Component} from 'react';
 import {connect} from 'react-redux';
 import {withRouter} from 'react-router-dom';
 import './style.css';
-import {saveScrollY, toggleAllAuthors, toggleAbstruct, updateLabelList, favoriteKey} from "../module";
+import {saveScrollY, toggleAllAuthors, toggleAbstract, updateLabelList, favoriteKey} from "../module";
 
 function mapStateToProps(state) {
   return {state};
@@ -56,12 +56,13 @@ const Authors = connect(mapStateToProps)(class Authors extends Component {
 
 const AbstractToggle = connect(mapStateToProps)(class AbstractToggle extends Component {
   handleClick() {
-    this.props.dispatch(toggleAbstruct(this.props.paperId));
+    this.props.dispatch(toggleAbstract(this.props.paperId));
   }
 
   render() {
+    const icon = this.props.enable ? "▲" : "▼" ;
     return (
-      <a href="javascript:void(0)" onClick={this.handleClick.bind(this)}>abstract</a>
+      <a className="abstractToggle" href="javascript:void(0)" onClick={this.handleClick.bind(this)}><span>{icon}</span>abstract</a>
     );
   }
 });
@@ -156,17 +157,15 @@ export const Paper = withRouter(connect(mapStateToProps)(class Paper extends Com
     const articleTitle = {__html: highlightedArticleTitle || rawArticleTitle};
     const journalTitle = {__html: `${highlightedJournalTitle || rawJournalTitle} ${year}`};
 
-    const abstract = (highlightedAbstract ? highlightedAbstract[0] : rawAbstract) || "";
+    const abstractTxt = (highlightedAbstract ? highlightedAbstract[0] : rawAbstract) || "";
 
-    const abstractHtml = {__html: abstract};
+    const abstractHtml = {__html: abstractTxt};
 
-    const fullAbstract = this.props.state.enabledFullAbstructPaperIds.has(id);
+    const enableAbstract = this.props.state.enabledFullAbstractPaperIds.has(id);
 
-    const abstractDom = fullAbstract ? (
+    const abstract = enableAbstract ? (
         <div className="abstract" dangerouslySetInnerHTML={abstractHtml}></div>
       ) : null;
-
-    console.log(abstractDom);
 
     return (
       <article className={`paper paper${id}`}>
@@ -182,11 +181,11 @@ export const Paper = withRouter(connect(mapStateToProps)(class Paper extends Com
           {authorComponents}
           <h6 dangerouslySetInnerHTML={journalTitle}></h6>
         </header>
-        {abstractDom}
+        {abstract}
         <footer>
           <ul className="meta links valign-wrapper blue-text">
             <li>
-              <AbstractToggle paperId={id}/>              
+              <AbstractToggle paperId={id} enable={enableAbstract} />              
             </li>
             <li>
               <a href={pdf} target="_blank">pdf</a>
