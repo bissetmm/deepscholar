@@ -42,7 +42,7 @@ const Authors = connect(mapStateToProps)(class Authors extends Component {
         }
       }
       const sepatate = ( data.length !== i+1 ) ? ',' : '';
-      const label = {__html: `${name} ${sepatate}`};
+      const label = {__html: `${name}${sepatate}`};
       return <li key={author} dangerouslySetInnerHTML={label}></li>;
     });
     const haveMore = this.props.data.length > 3;
@@ -173,6 +173,7 @@ export const Paper = withRouter(connect(mapStateToProps)(class Paper extends Com
         <div className="divider"></div>
         <CheckForFilter paperId={id}/>
         <Favorite paperId={id}/>
+
         <header>
           <h5>
             <a href="javascript:void(0)" onClick={this.handleClick.bind(this, paperUrl)}
@@ -182,7 +183,7 @@ export const Paper = withRouter(connect(mapStateToProps)(class Paper extends Com
           {authorComponents}
           <h6 dangerouslySetInnerHTML={journalTitle}></h6>
         </header>
-        {abstract}
+        
         <footer>
           <ul className="meta links valign-wrapper blue-text">
             <li>
@@ -200,6 +201,9 @@ export const Paper = withRouter(connect(mapStateToProps)(class Paper extends Com
             <li><a href={pdfannoUrl} target="_blank">pdfanno</a></li>
           </ul>
         </footer>
+
+        {abstract}
+
       </article>
     );
   }

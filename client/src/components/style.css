@@ -2,7 +2,8 @@
 **  Paper
 ****************/
 .paper {
-    padding-left: 23px;
+    padding-left: 60px;
+    padding-right: 10px;
 }
 
 .paper h5 {
@@ -92,19 +93,20 @@
 /* Checkbox */
 .contents .paper .checkbox {
     position: absolute;
-    left: -28px;
-    top: 17px;
+    left: 10px;
+    top: 18px;
+    width: 20px;
+    height: 20px;
 }
-
-.contents .paper:first-child .checkbox {
-    top: 3px;
-}
+    .contents .paper:first-child .checkbox {
+        top: 1px;
+    }
 
 /* Favorite */
 .paper .favorite {
     position: absolute;
-    left: -4px;
-    top: 15px;
+    left: 34px;
+    top: 16px;
     width: 23px;
     height: 23px;
     text-align: center;
@@ -112,7 +114,7 @@
 }
 
 .paper:first-child .favorite {
-    top: 1px;
+    top: -1px;
 }
 
 .paper .favorite i {

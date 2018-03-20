@@ -92,13 +92,13 @@
 .toolBar {
     position: fixed;
     top: 132px;
-    width: 73.5vw !important;
-    max-width: 990px;
+    width: 70vw !important;
+    max-width: 860px;
     padding-left: 40px;
     background-color: #f6f8fa;
     border: 1px solid #e1e4e8;
     border-radius: 1px;
-    transform: translateX(-37px);
+    /*transform: translateX(-37px);*/
     z-index: 99;
 }
 
@@ -125,7 +125,7 @@
 
 .toolBar .checkAll {
     position: absolute;
-    left: 8px;
+    left: 9px;
     top: 8px;
     width: 20px;
     height: 20px;
@@ -220,7 +220,7 @@
 
 .toolBar .filterFav {
     position: absolute;
-    left: 32px;
+    left: 33px;
     top: 7px;
     width: 23px;
     height: 23px;
@@ -535,38 +535,52 @@
 }
 
     /* for abstruct */
+    .search .contents .paper,
+    .search .contents .paper header ul.authors li,
+    .search .contents .paper header h6,
+    .search .contents .paper footer ul.meta li {
+        font-size: 14px;
+    }
     .search .contents .paper h5 {
-        margin: 13px 0 0;
+        font-size: 144%;
+    }
+    .search .contents .paper h5 {
+        margin: 16px 0 0;
     }
         .search .contents .paper:first-child h5 {
-            margin-top: 20px;
+            margin-top: 22px;
+        }
+        .search .contents .paper h5 a {
+            line-height: 1;
         }
 
     .search .contents .paper .authors,
     .search .contents .paper .authors a {
-        margin-top: 0;
-        margin-bottom: 3px;
+        margin-top: 2px;
+        margin-bottom: 2px;
     }
 
     .search .contents .paper h6 {
         margin-top: 0;
         margin-bottom: 0;
-    }
-
-    .search .contents .paper > .abstract {
-        display: block;
-        margin: 8px 0;
-    }
+    }    
 
     .search .paper > footer {
-        margin-top: 0;
-        margin-bottom: 16px;
+        margin-top: 2px;
+        margin-bottom: 18px;
     }
         .search .paper > footer ul.meta {
-            margin-top: 2px;
+            margin: 0;
             position: relative;
             left: -1px;            
         }
+
+    .search .contents .paper > .abstract {
+        display: block;
+        position: relative;
+        top: -8px;        
+        margin: 0 0 8px;
+    }
 
 
 /* Pagination */

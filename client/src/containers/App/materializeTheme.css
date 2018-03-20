@@ -36,6 +36,7 @@ a {
 
 div.container {
     width: 94%;
+    max-width: 1155px;
 }
 
 /*********************
