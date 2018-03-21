@@ -476,7 +476,7 @@ const Download = connect(mapStateToProps)(class Download extends Component {
   }
 });
 
-const FilterEdit = connect(mapStateToProps)(class FilterEdit extends Component {
+const FilterEditModal = connect(mapStateToProps)(class FilterEditModal extends Component {
 
   handleClickColor(e) {
     const li = e.target.parentNode;
@@ -735,7 +735,7 @@ const FilterNormal = connect(mapStateToProps)(class FilterNormal extends Compone
     }
     return (
       <div>
-        {closeBtn}=
+        {closeBtn}
         <FilterListCommon name="normalFilter" onClickList={this.handleClickList.bind(this)}/>
       </div>
     );
@@ -1402,7 +1402,7 @@ class Search extends Component {
 
         <div className="row">
 
-          <div className="col s4 l3 sidebar">
+          <div className="col s3 sidebar">
             <div className="col s4 l3">
               <h5><i className="material-icons">find_in_page</i>Filter</h5>
               <div>
@@ -1447,10 +1447,11 @@ class Search extends Component {
             </div>
           </div>
 
-          <div className="contents col s8 l9">
+          <div className="contents col s9">
+
+            <FilterEditModal/>
 
             <ToolBar/>
-            <FilterEdit/>
 
             <div className="row">
 

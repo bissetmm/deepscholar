@@ -2,7 +2,7 @@ import React, {Component} from 'react';
 import {connect} from 'react-redux';
 import {withRouter} from 'react-router-dom';
 import './style.css';
-import {saveScrollY, toggleAllAuthors, toggleFullText, updateLabelList, favoriteKey} from "../module";
+import {saveScrollY, toggleAllAuthors, toggleAbstract, updateLabelList, favoriteKey} from "../module";
 
 function mapStateToProps(state) {
   return {state};
@@ -29,11 +29,11 @@ const Authors = connect(mapStateToProps)(class Authors extends Component {
   render() {
     let data = this.props.data;
     if (!this.props.asFull && !this.props.state.enabledAllAuthorsPaperIds.has(this.props.paperId)) {
-      data = this.props.data.slice(0, 2);
+      data = this.props.data.slice(0, 3);
     }
     const highlightedAuthors = this.props.highlight.authors || [];
 
-    const authors = data.map((author) => {
+    const authors = data.map((author, i) => {
       let name = author;
       for (const highlightedAuthor of highlightedAuthors) {
         if (highlightedAuthor.replace(/<\/?em>/g, "") === author) {
@@ -41,10 +41,11 @@ const Authors = connect(mapStateToProps)(class Authors extends Component {
           break;
         }
       }
-      const label = {__html: `${name}`};
+      const sepatate = data.length !== i + 1 ? ',' : '';
+      const label = {__html: `${name}${sepatate}`};
       return <li key={author} dangerouslySetInnerHTML={label}></li>;
     });
-    const haveMore = this.props.data.length > 2;
+    const haveMore = this.props.data.length > 3;
 
     return (
       <ul className="meta authors">
@@ -54,19 +55,18 @@ const Authors = connect(mapStateToProps)(class Authors extends Component {
   }
 });
 
-const FullTextToggle = connect(mapStateToProps)(class FullTextToggle extends Component {
+const AbstractToggle = connect(mapStateToProps)(class AbstractToggle extends Component {
   handleClick() {
-    this.props.dispatch(toggleFullText(this.props.paperId));
+    this.props.dispatch(toggleAbstract(this.props.paperId));
   }
 
   render() {
-    const isFullTextEnabled = this.props.state.enabledFullTextPaperIds.has(this.props.paperId);
-    const label = isFullTextEnabled ? "Less" : "More";
-    const prefix = isFullTextEnabled ? "" : "...";
+
+    const icon = this.props.enable ? "▼" : "▲";
     return (
-      <span>
-        {prefix}<a href="javascript:void(0)" onClick={this.handleClick.bind(this)}>({label})</a>
-      </span>
+      <li>
+        <a className="abstractToggle" href="javascript:void(0)" onClick={this.handleClick.bind(this)}><span>{icon}</span>abstract</a>
+      </li>
     );
   }
 });
@@ -159,19 +159,24 @@ export const Paper = withRouter(connect(mapStateToProps)(class Paper extends Com
     const pdfannoUrl = `https://paperai.github.io/pdfanno/latest/?pdf=${pdf}`;
 
     const articleTitle = {__html: highlightedArticleTitle || rawArticleTitle};
-    const journalTitle = {__html: `${highlightedJournalTitle || rawJournalTitle} ${year}`};
+    const journalTitle = {__html: `${highlightedJournalTitle || rawJournalTitle}, ${year}`};
 
-    let abstract = (highlightedAbstract ? highlightedAbstract[0] : rawAbstract) || "";
-    if (!this.props.asFull) {
-      abstract = this.props.state.enabledFullTextPaperIds.has(id) ? abstract : abstract.substr(0, 400);
-    }
-    const abstractHtml = {__html: abstract};
+    const abstractTxt = (highlightedAbstract ? highlightedAbstract[0] : rawAbstract) || "";
+
+    const abstractHtml = {__html: abstractTxt};
+
+    const enableAbstract = this.props.state.enabledFullAbstractPaperIds.has(id);
+
+    const abstract = enableAbstract || this.props.asFull ? <div className="abstract" dangerouslySetInnerHTML={abstractHtml}></div> : null;
+
+    const abstractToggle = this.props.asFull !== true ? <AbstractToggle paperId={id} enable={enableAbstract} /> : null;
 
     return (
       <article className={`paper paper${id}`}>
         <div className="divider"></div>
         <CheckForFilter paperId={id}/>
         <Favorite paperId={id}/>
+
         <header>
           <h5>
             <a href="javascript:void(0)" onClick={this.handleClick.bind(this, paperUrl)}
@@ -181,11 +186,10 @@ export const Paper = withRouter(connect(mapStateToProps)(class Paper extends Com
           {authorComponents}
           <h6 dangerouslySetInnerHTML={journalTitle}></h6>
         </header>
-        <div className="abstract"
-             dangerouslySetInnerHTML={abstractHtml}></div>
-        {abstract !== "" && !this.props.asFull && <FullTextToggle paperId={id}/>}
+
         <footer>
           <ul className="meta links valign-wrapper blue-text">
+            {abstractToggle}
             <li>
               <a href={pdf} target="_blank">pdf</a>
             </li>
@@ -198,6 +202,9 @@ export const Paper = withRouter(connect(mapStateToProps)(class Paper extends Com
             <li><a href={pdfannoUrl} target="_blank">pdfanno</a></li>
           </ul>
         </footer>
+
+        {abstract}
+
       </article>
     );
   }

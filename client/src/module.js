@@ -82,8 +82,8 @@ const initialState = {
       buckets: []
     }
   },
-  enabledFullTextPaperIds: new Set(),
   enabledAllAuthorsPaperIds: new Set(),
+  enabledFullAbstractPaperIds: new Set(),
   scrollYPositions: new Map()
 };
 
@@ -243,15 +243,6 @@ export function reducers(state = initialState, action) {
         tables: action.tables,
         tablesTotal: action.tablesTotal
       });
-    case TOGGLE_FULL_TEXT:
-      if (state.enabledFullTextPaperIds.has(action.id)) {
-        state.enabledFullTextPaperIds.delete(action.id);
-      } else {
-        state.enabledFullTextPaperIds.add(action.id);
-      }
-      return Object.assign({}, state, {
-        enabledFullTextPaperIds: state.enabledFullTextPaperIds
-      });
     case TOGGLE_ALL_AUTHORS:
       if (state.enabledAllAuthorsPaperIds.has(action.id)) {
         state.enabledAllAuthorsPaperIds.delete(action.id);
@@ -260,6 +251,15 @@ export function reducers(state = initialState, action) {
       }
       return Object.assign({}, state, {
         enabledAllAuthorsPaperIds: state.enabledAllAuthorsPaperIds
+      });
+    case TOGGLE_ABSTRACT:
+      if (state.enabledFullAbstractPaperIds.has(action.id)) {
+        state.enabledFullAbstractPaperIds.delete(action.id);
+      } else {
+        state.enabledFullAbstractPaperIds.add(action.id);
+      }
+      return Object.assign({}, state, {
+        enabledFullAbstractPaperIds: state.enabledFullAbstractPaperIds
       });
     case SAVE_SCROLL_Y:
       state.scrollYPositions.set(action.locationKey, action.y);
@@ -440,20 +440,20 @@ export function receiveTables(json) {
   };
 }
 
-const TOGGLE_FULL_TEXT = "TOGGLE_FULL_TEXT";
-
-export function toggleFullText(id) {
-  return {
-    type: TOGGLE_FULL_TEXT,
-    id: id
-  };
-}
-
 const TOGGLE_ALL_AUTHORS = "TOGGLE_ALL_AUTHORS";
 
 export function toggleAllAuthors(id) {
   return {
     type: TOGGLE_ALL_AUTHORS,
+    id: id
+  };
+}
+
+const TOGGLE_ABSTRACT = "TOGGLE_ABSTRACT";
+
+export function toggleAbstract(id) {
+  return {
+    type: TOGGLE_ABSTRACT,
     id: id
   };
 }

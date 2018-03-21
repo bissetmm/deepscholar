@@ -2,7 +2,8 @@
 **  Paper
 ****************/
 .paper {
-    padding-left: 23px;
+    padding-left: 60px;
+    padding-right: 10px;
 }
 
 .paper h5 {
@@ -17,15 +18,6 @@
 .paper p {
     margin: 10px 0;
     display: -webkit-box;
-}
-
-.paper > .abstract {
-    display: inline;
-}
-
-.paper > .abstract p {
-    font-weight: 400;
-    display: inline;
 }
 
 .paper p.truncate {
@@ -45,7 +37,7 @@
 }
 
 .paper header .authors {
-    font-weight: 400;
+    font-weight: normal;
 }
 
 .paper header h5 a {
@@ -89,11 +81,23 @@
     font-weight: 900;
 }
 
+/* Checkbox */
+.contents .paper .checkbox {
+    position: absolute;
+    left: 10px;
+    top: 18px;
+    width: 20px;
+    height: 20px;
+}
+    .contents .paper:first-child .checkbox {
+        top: 1px;
+    }
+
 /* Favorite */
 .paper .favorite {
     position: absolute;
-    left: -4px;
-    top: 22px;
+    left: 34px;
+    top: 16px;
     width: 23px;
     height: 23px;
     text-align: center;
@@ -101,7 +105,7 @@
 }
 
 .paper:first-child .favorite {
-    top: 1px;
+    top: -1px;
 }
 
 .paper .favorite i {
@@ -118,6 +122,10 @@
 
 .paper .favorite i.off {
     color: #b9c0cc;
+}
+
+.paper .abstractToggle span{
+    font-size: 76%;
 }
 
 /****************
