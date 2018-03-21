@@ -1,0 +1,67 @@
+/****************
+**
+**  Global style
+**
+****************/
+body{
+	background-color: #dbdbdb;
+}
+
+.m-t--36{
+  margin-top: -36px;
+}
+
+.m-t-30{
+  margin-top:30px;
+}
+
+h4{
+  font-size: 1.9rem;
+  font-weight: 500;
+}
+
+/****************/
+
+
+.card{
+  border-color: #d7dfe3;
+  border-radius: 4px;
+  box-shadow: 0px 5px 20px rgba(0,0,0,0.05);
+  margin-bottom:30px;
+  background-color: #fff;
+}
+
+.card-body{
+  -webkit-box-flex: 1;
+  flex: 1 1 auto;
+  padding: 1.25rem;
+}
+
+.card-subtitle{
+  font-size: 1.1rem;
+  font-weight: 500;
+  color: #333;
+}
+
+.img-circle{
+  border-radius: 100%;
+}
+
+/* .card label{
+  font-size: 1.1rem;
+  font-weight: 500;
+  color: #333;
+} */
+
+/* tabs adjust */
+.tabs{
+  box-shadow: initial;
+  border-bottom: 1px solid #ccc;
+  margin-top: 8px
+}
+
+.tabs .tab{
+  line-height: 48px;
+  height: 48px;
+  text-transform: initial;
+}
