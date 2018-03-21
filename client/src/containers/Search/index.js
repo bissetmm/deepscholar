@@ -735,7 +735,7 @@ const FilterNormal = connect(mapStateToProps)(class FilterNormal extends Compone
     }
     return (
       <div>
-        {closeBtn}=
+        {closeBtn}
         <FilterListCommon name="normalFilter" onClickList={this.handleClickList.bind(this)}/>
       </div>
     );
