@@ -1345,7 +1345,7 @@ class Search extends Component {
 
           <div className="col s3 sidebar">
             <div className="col s4 l3">
-              <h5><i className="material-icons">find_in_page</i>Filter</h5>
+
               <div>
                 <Switch>
                   <Route path="/figures" component={() =>
