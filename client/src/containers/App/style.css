@@ -34,8 +34,9 @@
     display: block;
     max-width: 140px;
     height: 100%;
+    margin-left: 18px;
     font-size: 0;
-}
+}    
 
 .header-navi .brand-logo img {
     position: relative;

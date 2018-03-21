@@ -516,7 +516,6 @@
     position: relative;
     top: -1px;
     display: inline-block;
-    /*margin: 4px;*/
     font-size: 65%;
     font-size: 65%;
     line-height: 17px;
@@ -576,7 +575,6 @@
         }
 
     .search .contents .paper > .abstract {
-        display: block;
         position: relative;
         top: -8px;        
         margin: 0 0 8px;

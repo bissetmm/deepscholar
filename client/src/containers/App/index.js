@@ -195,7 +195,7 @@ const NavBar = connect(mapStateToProps)(class NavBar extends Component {
     return (
       <div className="navbar-fixed">
         <nav className="header-navi z-depth-0">
-          <div className="nav-wrapper container">
+          <div className="nav-wrapper">
             <div className="row">
               <div className="col s4 l3">
                 <Link to="/" className="brand-logo"><img src="/images/deepscholar_logo.svg"/></Link>

@@ -34,13 +34,14 @@
 ****************/
 
 .paper > header,
-.paper > p,
-.paper > footer {
+.paper > footer,
+.paper > .abstract {
     max-width: 1000px;
     margin-left: auto;
     margin-right: auto;
 }
 
-.detail .paper .checkbox {
+.detail .paper .checkbox,
+.detail .paper .favorite {
     display: none;
 }

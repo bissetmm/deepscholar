@@ -20,15 +20,6 @@
     display: -webkit-box;
 }
 
-.paper > .abstract {
-    display: inline;
-}
-
-.paper > .abstract p {
-    font-weight: 400;
-    display: inline;
-}
-
 .paper p.truncate {
     overflow: hidden;;
     text-overflow: clip;

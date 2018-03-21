@@ -61,9 +61,12 @@ const AbstractToggle = connect(mapStateToProps)(class AbstractToggle extends Com
   }
 
   render() {
-    const icon = this.props.enable ? "▲" : "▼" ;
+
+    const icon = this.props.enable ? "▼" : "▲" ;
     return (
-      <a className="abstractToggle" href="javascript:void(0)" onClick={this.handleClick.bind(this)}><span>{icon}</span>abstract</a>
+      <li>
+        <a className="abstractToggle" href="javascript:void(0)" onClick={this.handleClick.bind(this)}><span>{icon}</span>abstract</a>
+      </li>
     );
   }
 });
@@ -164,8 +167,12 @@ export const Paper = withRouter(connect(mapStateToProps)(class Paper extends Com
 
     const enableAbstract = this.props.state.enabledFullAbstractPaperIds.has(id);
 
-    const abstract = enableAbstract ? (
+    const abstract = enableAbstract || this.props.asFull ? (
         <div className="abstract" dangerouslySetInnerHTML={abstractHtml}></div>
+      ) : null;
+
+    const abstractToggle = this.props.asFull !== true ? (
+          <AbstractToggle paperId={id} enable={enableAbstract} />
       ) : null;
 
     return (
@@ -186,9 +193,7 @@ export const Paper = withRouter(connect(mapStateToProps)(class Paper extends Com
         
         <footer>
           <ul className="meta links valign-wrapper blue-text">
-            <li>
-              <AbstractToggle paperId={id} enable={enableAbstract} />              
-            </li>
+            {abstractToggle}            
             <li>
               <a href={pdf} target="_blank">pdf</a>
             </li>
