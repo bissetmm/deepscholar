@@ -1450,8 +1450,8 @@ class Search extends Component {
           <div className="contents col s9">
 
             <FilterEditModal/>
-            
-            <ToolBar/>            
+
+            <ToolBar/>
 
             <div className="row">
 

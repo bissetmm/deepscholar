@@ -41,7 +41,7 @@ const Authors = connect(mapStateToProps)(class Authors extends Component {
           break;
         }
       }
-      const sepatate = ( data.length !== i+1 ) ? ',' : '';
+      const sepatate = data.length !== i + 1 ? ',':'';
       const label = {__html: `${name}${sepatate}`};
       return <li key={author} dangerouslySetInnerHTML={label}></li>;
     });
@@ -62,7 +62,7 @@ const AbstractToggle = connect(mapStateToProps)(class AbstractToggle extends Com
 
   render() {
 
-    const icon = this.props.enable ? "▼" : "▲" ;
+    const icon = this.props.enable ? "▼":"▲";
     return (
       <li>
         <a className="abstractToggle" href="javascript:void(0)" onClick={this.handleClick.bind(this)}><span>{icon}</span>abstract</a>
@@ -167,13 +167,9 @@ export const Paper = withRouter(connect(mapStateToProps)(class Paper extends Com
 
     const enableAbstract = this.props.state.enabledFullAbstractPaperIds.has(id);
 
-    const abstract = enableAbstract || this.props.asFull ? (
-        <div className="abstract" dangerouslySetInnerHTML={abstractHtml}></div>
-      ) : null;
+    const abstract = enableAbstract || this.props.asFull ? <div className="abstract" dangerouslySetInnerHTML={abstractHtml}></div>:null;
 
-    const abstractToggle = this.props.asFull !== true ? (
-          <AbstractToggle paperId={id} enable={enableAbstract} />
-      ) : null;
+    const abstractToggle = this.props.asFull !== true ? <AbstractToggle paperId={id} enable={enableAbstract} />:null;
 
     return (
       <article className={`paper paper${id}`}>
@@ -190,10 +186,10 @@ export const Paper = withRouter(connect(mapStateToProps)(class Paper extends Com
           {authorComponents}
           <h6 dangerouslySetInnerHTML={journalTitle}></h6>
         </header>
-        
+
         <footer>
           <ul className="meta links valign-wrapper blue-text">
-            {abstractToggle}            
+            {abstractToggle}
             <li>
               <a href={pdf} target="_blank">pdf</a>
             </li>
