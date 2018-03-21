@@ -1347,17 +1347,6 @@ class Search extends Component {
             <div className="col s4 l3">
 
               <div>
-                <Switch>
-                  <Route path="/figures" component={() =>
-                    <div></div>
-                  }/>
-                  <Route path="/tables" component={() =>
-                    <div></div>
-                  }/>
-                  <Route component={() =>
-                    <div></div>
-                  }/>
-                </Switch>
 
                 <h6>Publication Year</h6>
                 <div className="publication-year">
