@@ -70,12 +70,10 @@ const NavBar = connect(mapStateToProps)(class NavBar extends Component {
 
   componentDidUpdate(prevProps) {
 
-    const {category: oldCategory, query: oldQuery, gte: oldGte, lte: oldLte, booktitles: oldBooktitles, page: oldPage, labelFilter: oldlabelFilter} = prevProps.state;
-    const {category: newCategory, query: newQuery, gte: newGte, lte: newLte, booktitles: newBooktitles, page: newPage, labelFilter: newlabelFilter} = this.props.state;
+    const {category: oldCategory, query: oldQuery, gte: oldGte, lte: oldLte, page: oldPage, labelFilter: oldlabelFilter} = prevProps.state;
+    const {category: newCategory, query: newQuery, gte: newGte, lte: newLte, page: newPage, labelFilter: newlabelFilter} = this.props.state;
 
-    if (oldCategory === newCategory && oldQuery === newQuery && oldPage === newPage && oldGte === newGte && oldLte === newLte && Array.from(oldBooktitles)
-        .join("") === Array.from(newBooktitles)
-        .join("") && oldlabelFilter === newlabelFilter) {
+    if (oldCategory === newCategory && oldQuery === newQuery && oldPage === newPage && oldGte === newGte && oldLte === newLte && oldlabelFilter === newlabelFilter) {
       return;
     }
 
@@ -104,12 +102,6 @@ const NavBar = connect(mapStateToProps)(class NavBar extends Component {
         newLte
       ]);
     }
-    newBooktitles.forEach(booktitle => {
-      queries.push([
-        "booktitle[]",
-        booktitle
-      ]);
-    });
 
     const queryString = queries.map(query => {
       return `${query[0]}=${query[1]}`;

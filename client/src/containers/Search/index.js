@@ -21,9 +21,7 @@ import {
   requestTables,
   receiveTables,
   deleteScrollY,
-  changeYears
-  ,
-  changeBooktitle,
+  changeYears,
   updateLabelList,
   updateLabelFilter,
   favoriteKey
@@ -986,12 +984,10 @@ class Search extends Component {
   }
 
   componentDidUpdate(prevProps) {
-    const {category: oldCategory, query: oldQuery, gte: oldGte, lte: oldLte, booktitles: oldBooktitles, page: oldPage, labelFilter: oldlabelFilter} = prevProps.state;
-    const {category: newCategory, query: newQuery, gte: newGte, lte: newLte, booktitles: newBooktitles, page: newPage, labelFilter: newlabelFilter} = this.props.state;
+    const {category: oldCategory, query: oldQuery, gte: oldGte, lte: oldLte, page: oldPage, labelFilter: oldlabelFilter} = prevProps.state;
+    const {category: newCategory, query: newQuery, gte: newGte, lte: newLte, page: newPage, labelFilter: newlabelFilter} = this.props.state;
 
-    if (oldCategory !== newCategory || oldQuery !== newQuery || oldPage !== newPage || oldGte !== newGte || oldLte !== newLte || Array.from(oldBooktitles)
-        .join("") !== Array.from(newBooktitles)
-        .join("") || oldlabelFilter !== newlabelFilter) {
+    if (oldCategory !== newCategory || oldQuery !== newQuery || oldPage !== newPage || oldGte !== newGte || oldLte !== newLte || oldlabelFilter !== newlabelFilter) {
       this.search(newCategory);
     }
 
@@ -1020,7 +1016,7 @@ class Search extends Component {
   }
 
   searchPapers() {
-    const {query, page, gte, lte, booktitles, labelList, labelFilter} = this.props.state;
+    const {query, page, gte, lte, labelList, labelFilter} = this.props.state;
     this.props.dispatch(requestPapers(query, page));
     const from = page * this.props.state.papersFetchSize;
 
@@ -1057,13 +1053,6 @@ class Search extends Component {
         }
       }
     });
-    if (booktitles.size > 0) {
-      postFilterMust.push({
-        terms: {
-          "booktitle.keyword": Array.from(booktitles)
-        }
-      });
-    }
 
     let filterdList = [];
 
@@ -1255,10 +1244,6 @@ class Search extends Component {
     this.changeQuery(this.props.state.category, null);
   }
 
-  handleChangeBooktitle(key) {
-    this.props.dispatch(changeBooktitle(key));
-  }
-
   handleClickTab(category) {
     this.addTabClassToBody(category);
     this.changeQuery(category, this.props.state.query);
@@ -1289,20 +1274,6 @@ class Search extends Component {
                                 maxValue={lte || max}/>;
     }
 
-    let booktitleComponents;
-    // if (aggregations.booktitle.buckets.length > 1) {
-    //   booktitleComponents = aggregations.booktitle.buckets.map((booktitle, index) => {
-    //     const id = `booktitle${index}`;
-    //     return (
-    //       <li key={id}>
-    //         <input id={id} type="checkbox" className="filled-in"
-    //                onChange={this.handleChangeBooktitle.bind(this, booktitle.key)}
-    //                checked={booktitles.has(booktitle.key)}/>
-    //         <label htmlFor={id}>{booktitle.key} ({booktitle.doc_count})</label>
-    //       </li>
-    //     );
-    //   });
-    // }
 
     const categories = [
       "texts",
@@ -1392,11 +1363,6 @@ class Search extends Component {
                 <div className="publication-year">
                   {year}
                 </div>
-
-                <h6>Booktitle</h6>
-                <ul>
-                  {booktitleComponents}
-                </ul>
 
               </div>
             </div>

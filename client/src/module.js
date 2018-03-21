@@ -55,7 +55,6 @@ const initialState = {
   query: parsed.q || null,
   gte: Number(parsed.gte) || null,
   lte: Number(parsed.lte) || null,
-  booktitles: new Set(parsed["booktitle[]"] || []),
   page: (parsed.page || 1) - 1,
   paperId: null,
   paper: null,
@@ -169,7 +168,6 @@ export function reducers(state = initialState, action) {
         labelFilter: action.labelFilter || [],
         gte: null,
         lte: null,
-        booktitles: new Set(),
         page: 0,
         scrollYPositions: new Map()
       });
@@ -180,20 +178,6 @@ export function reducers(state = initialState, action) {
         page: 0,
         scrollYPositions: new Map()
       });
-    case CHANGE_BOOKTITLE: {
-      const newBooktitles = new Set(state.booktitles);
-      if (newBooktitles.has(action.booktitle)) {
-        newBooktitles.delete(action.booktitle);
-      } else {
-        newBooktitles.add(action.booktitle);
-      }
-      const newState = update(state, {
-        page: {$set: 0},
-        scrollYPositions: {$set: new Map()},
-        booktitles: {$set: newBooktitles}
-      });
-      return newState;
-    }
     case CHANGE_PAGE:
       return Object.assign({}, state, {
         page: action.page
@@ -328,15 +312,6 @@ export function changeYears(gte, lte) {
     type: CHANGE_YEARS,
     gte,
     lte
-  };
-}
-
-const CHANGE_BOOKTITLE = "CHANGE_BOOKTITLE";
-
-export function changeBooktitle(booktitle) {
-  return {
-    type: CHANGE_BOOKTITLE,
-    booktitle
   };
 }
 
