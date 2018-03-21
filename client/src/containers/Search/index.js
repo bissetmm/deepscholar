@@ -964,7 +964,6 @@ class Search extends Component {
   constructor(props) {
     super(props);
     this.searchTimer = null;
-    this.articleTitle = null;
     this.author = null;
     this.abstract = null;
   }
@@ -989,10 +988,10 @@ class Search extends Component {
   }
 
   componentDidUpdate(prevProps) {
-    const {category: oldCategory, query: oldQuery, articleTitle: oldArticleTitle, author: oldAuthor, abstract: oldAbstract, gte: oldGte, lte: oldLte, booktitles: oldBooktitles, page: oldPage, labelFilter: oldlabelFilter} = prevProps.state;
-    const {category: newCategory, query: newQuery, articleTitle: newArticleTitle, author: newAuthor, abstract: newAbstract, gte: newGte, lte: newLte, booktitles: newBooktitles, page: newPage, labelFilter: newlabelFilter} = this.props.state;
+    const {category: oldCategory, query: oldQuery, author: oldAuthor, abstract: oldAbstract, gte: oldGte, lte: oldLte, booktitles: oldBooktitles, page: oldPage, labelFilter: oldlabelFilter} = prevProps.state;
+    const {category: newCategory, query: newQuery, author: newAuthor, abstract: newAbstract, gte: newGte, lte: newLte, booktitles: newBooktitles, page: newPage, labelFilter: newlabelFilter} = this.props.state;
 
-    if (oldCategory !== newCategory || oldQuery !== newQuery || oldArticleTitle !== newArticleTitle || oldAuthor !== newAuthor || oldAbstract !== newAbstract || oldPage !== newPage || oldGte !== newGte || oldLte !== newLte || Array.from(oldBooktitles)
+    if (oldCategory !== newCategory || oldQuery !== newQuery || oldAuthor !== newAuthor || oldAbstract !== newAbstract || oldPage !== newPage || oldGte !== newGte || oldLte !== newLte || Array.from(oldBooktitles)
         .join("") !== Array.from(newBooktitles)
         .join("") || oldlabelFilter !== newlabelFilter) {
       this.search(newCategory);
@@ -1023,8 +1022,8 @@ class Search extends Component {
   }
 
   searchPapers() {
-    const {query, articleTitle, author, abstract, page, gte, lte, booktitles, labelList, labelFilter} = this.props.state;
-    this.props.dispatch(requestPapers(query, articleTitle, author, abstract, page));
+    const {query, author, abstract, page, gte, lte, booktitles, labelList, labelFilter} = this.props.state;
+    this.props.dispatch(requestPapers(query, author, abstract, page));
     const from = page * this.props.state.papersFetchSize;
 
     const queryMust = [];
@@ -1050,11 +1049,7 @@ class Search extends Component {
         }
       );
     }
-    if (articleTitle) {
-      queryMust.push({
-        match: {articleTitle}
-      });
-    }
+
     if (author) {
       queryMust.push({
         match: {authors: author}
@@ -1261,7 +1256,7 @@ class Search extends Component {
     }
 
     this.searchTimer = setTimeout(() => {
-      this.props.dispatch(changeQuery(category, query, this.articleTitle, this.author, this.abstract, this.props.state.labelFilter));
+      this.props.dispatch(changeQuery(category, query, this.author, this.abstract, this.props.state.labelFilter));
     }, 0);
   }
 
@@ -1271,10 +1266,6 @@ class Search extends Component {
     }
 
     this.changeQuery(this.props.state.category, null);
-  }
-
-  handleChangeArticleTitle(e) {
-    this.articleTitle = e.target.value;
   }
 
   handleChangeAuthor(e) {
@@ -1416,11 +1407,6 @@ class Search extends Component {
                   }/>
                   <Route component={() =>
                     <div>
-                      <h6>Article Title</h6>
-                      <input className="alpha" type="search" placeholder="enter article title"
-                             onKeyPress={this.handleKeyPress.bind(this)}
-                             onChange={this.handleChangeArticleTitle.bind(this)}
-                             defaultValue={this.props.state.articleTitle}/>
                       <h6>Author</h6>
                       <input className="alpha" type="search" placeholder="enter author"
                              onKeyPress={this.handleKeyPress.bind(this)} onChange={this.handleChangeAuthor.bind(this)}

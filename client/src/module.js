@@ -53,7 +53,6 @@ const initialState = {
   user: null,
   category: currentCategory || null,
   query: parsed.q || null,
-  articleTitle: parsed.articleTitle || null,
   author: parsed.author || null,
   abstract: parsed.abstract || null,
   gte: Number(parsed.gte) || null,
@@ -169,7 +168,6 @@ export function reducers(state = initialState, action) {
       return Object.assign({}, state, {
         category: action.category || null,
         query: action.query || null,
-        articleTitle: action.articleTitle || null,
         author: action.author || null,
         abstract: action.abstract || null,
         labelFilter: action.labelFilter || [],
@@ -318,12 +316,11 @@ export function signedOut() {
 
 const CHANGE_QUERY = "CHANGE_QUERY";
 
-export function changeQuery(category, query, articleTitle, author, abstract, labelFilter) {
+export function changeQuery(category, query, author, abstract, labelFilter) {
   return {
     type: CHANGE_QUERY,
     category,
     query,
-    articleTitle,
     author,
     abstract,
     labelFilter
@@ -378,11 +375,10 @@ export function receivePaper(json) {
 
 const REQUEST_PAPERS = "REQUEST_PAPERS";
 
-export function requestPapers(query, articleTitle, author, abstract, page) {
+export function requestPapers(query, author, abstract, page) {
   return {
     type: REQUEST_PAPERS,
     query,
-    articleTitle,
     author,
     abstract,
     page

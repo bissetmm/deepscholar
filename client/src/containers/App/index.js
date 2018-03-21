@@ -70,10 +70,10 @@ const NavBar = connect(mapStateToProps)(class NavBar extends Component {
 
   componentDidUpdate(prevProps) {
 
-    const {category: oldCategory, query: oldQuery, articleTitle: oldArticleTitle, author: oldAuthor, abstract: oldAbstract, gte: oldGte, lte: oldLte, booktitles: oldBooktitles, page: oldPage, labelFilter: oldlabelFilter} = prevProps.state;
-    const {category: newCategory, query: newQuery, articleTitle: newArticleTitle, author: newAuthor, abstract: newAbstract, gte: newGte, lte: newLte, booktitles: newBooktitles, page: newPage, labelFilter: newlabelFilter} = this.props.state;
+    const {category: oldCategory, query: oldQuery, author: oldAuthor, abstract: oldAbstract, gte: oldGte, lte: oldLte, booktitles: oldBooktitles, page: oldPage, labelFilter: oldlabelFilter} = prevProps.state;
+    const {category: newCategory, query: newQuery, author: newAuthor, abstract: newAbstract, gte: newGte, lte: newLte, booktitles: newBooktitles, page: newPage, labelFilter: newlabelFilter} = this.props.state;
 
-    if (oldCategory === newCategory && oldQuery === newQuery && oldArticleTitle === newArticleTitle && oldAuthor === newAuthor && oldAbstract === newAbstract && oldPage === newPage && oldGte === newGte && oldLte === newLte && Array.from(oldBooktitles)
+    if (oldCategory === newCategory && oldQuery === newQuery && oldAuthor === newAuthor && oldAbstract === newAbstract && oldPage === newPage && oldGte === newGte && oldLte === newLte && Array.from(oldBooktitles)
         .join("") === Array.from(newBooktitles)
         .join("") && oldlabelFilter === newlabelFilter) {
       return;
@@ -84,12 +84,6 @@ const NavBar = connect(mapStateToProps)(class NavBar extends Component {
       queries.push([
         "q",
         newQuery
-      ]);
-    }
-    if (newArticleTitle !== null) {
-      queries.push([
-        "articleTitle",
-        newArticleTitle
       ]);
     }
     if (newAuthor !== null) {
