@@ -964,8 +964,6 @@ class Search extends Component {
   constructor(props) {
     super(props);
     this.searchTimer = null;
-    this.author = null;
-    this.abstract = null;
   }
 
   componentWillMount() {
@@ -988,10 +986,10 @@ class Search extends Component {
   }
 
   componentDidUpdate(prevProps) {
-    const {category: oldCategory, query: oldQuery, author: oldAuthor, abstract: oldAbstract, gte: oldGte, lte: oldLte, booktitles: oldBooktitles, page: oldPage, labelFilter: oldlabelFilter} = prevProps.state;
-    const {category: newCategory, query: newQuery, author: newAuthor, abstract: newAbstract, gte: newGte, lte: newLte, booktitles: newBooktitles, page: newPage, labelFilter: newlabelFilter} = this.props.state;
+    const {category: oldCategory, query: oldQuery, gte: oldGte, lte: oldLte, booktitles: oldBooktitles, page: oldPage, labelFilter: oldlabelFilter} = prevProps.state;
+    const {category: newCategory, query: newQuery, gte: newGte, lte: newLte, booktitles: newBooktitles, page: newPage, labelFilter: newlabelFilter} = this.props.state;
 
-    if (oldCategory !== newCategory || oldQuery !== newQuery || oldAuthor !== newAuthor || oldAbstract !== newAbstract || oldPage !== newPage || oldGte !== newGte || oldLte !== newLte || Array.from(oldBooktitles)
+    if (oldCategory !== newCategory || oldQuery !== newQuery || oldPage !== newPage || oldGte !== newGte || oldLte !== newLte || Array.from(oldBooktitles)
         .join("") !== Array.from(newBooktitles)
         .join("") || oldlabelFilter !== newlabelFilter) {
       this.search(newCategory);
@@ -1022,8 +1020,8 @@ class Search extends Component {
   }
 
   searchPapers() {
-    const {query, author, abstract, page, gte, lte, booktitles, labelList, labelFilter} = this.props.state;
-    this.props.dispatch(requestPapers(query, author, abstract, page));
+    const {query, page, gte, lte, booktitles, labelList, labelFilter} = this.props.state;
+    this.props.dispatch(requestPapers(query, page));
     const from = page * this.props.state.papersFetchSize;
 
     const queryMust = [];
@@ -1048,17 +1046,6 @@ class Search extends Component {
           }
         }
       );
-    }
-
-    if (author) {
-      queryMust.push({
-        match: {authors: author}
-      });
-    }
-    if (abstract) {
-      queryMust.push({
-        match: {abstract}
-      });
     }
 
     const postFilterMust = [];
@@ -1256,7 +1243,7 @@ class Search extends Component {
     }
 
     this.searchTimer = setTimeout(() => {
-      this.props.dispatch(changeQuery(category, query, this.author, this.abstract, this.props.state.labelFilter));
+      this.props.dispatch(changeQuery(category, query, this.props.state.labelFilter));
     }, 0);
   }
 
@@ -1266,14 +1253,6 @@ class Search extends Component {
     }
 
     this.changeQuery(this.props.state.category, null);
-  }
-
-  handleChangeAuthor(e) {
-    this.author = e.target.value;
-  }
-
-  handleChangeAbstract(e) {
-    this.abstract = e.target.value;
   }
 
   handleChangeBooktitle(key) {
@@ -1397,7 +1376,6 @@ class Search extends Component {
             <div className="col s4 l3">
               <h5><i className="material-icons">find_in_page</i>Filter</h5>
               <div>
-
                 <Switch>
                   <Route path="/figures" component={() =>
                     <div></div>
@@ -1406,16 +1384,7 @@ class Search extends Component {
                     <div></div>
                   }/>
                   <Route component={() =>
-                    <div>
-                      <h6>Author</h6>
-                      <input className="alpha" type="search" placeholder="enter author"
-                             onKeyPress={this.handleKeyPress.bind(this)} onChange={this.handleChangeAuthor.bind(this)}
-                             defaultValue={this.props.state.author}/>
-                      <h6>Abstract</h6>
-                      <input className="alpha" type="search" placeholder="enter abstract"
-                             onKeyPress={this.handleKeyPress.bind(this)} onChange={this.handleChangeAbstract.bind(this)}
-                             defaultValue={this.props.state.abstract}/>
-                    </div>
+                    <div></div>
                   }/>
                 </Switch>
 
