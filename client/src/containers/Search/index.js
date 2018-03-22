@@ -1236,7 +1236,7 @@ class Search extends Component {
       _.remove(labelFilter, n => {
         return n === favoriteKey;
       });
-      
+
       this.props.dispatch(changeQuery(category, query, labelFilter));
     }, 0);
   }

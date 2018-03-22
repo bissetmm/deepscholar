@@ -1,4 +1,3 @@
-import update from 'immutability-helper';
 import queryString from 'query-string';
 
 const matches = window.location.hash.match(/#\/([a-zA-Z]+).*\?(.+)/);
