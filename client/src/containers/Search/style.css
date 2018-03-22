@@ -452,33 +452,6 @@
     }
 }
 
-/****************
-**  Lead
-****************/
-
-.sidebar h5 {
-    position: relative;
-    left: -3px;
-    font-weight: 500;
-    font-size: 20px !important;
-    letter-spacing: 0.1em;
-    margin-top: 16px !important;
-    margin-bottom: 24px !important;
-}
-
-.sidebar h5 .material-icons {
-    position: relative;
-    top: 2px;
-    font-size: 19px;
-    vertical-align: top;
-    margin-right: 4px;
-}
-
-.sidebar h6 {
-    font-weight: 500;
-    font-size: 0.85rem !important;
-    letter-spacing: 0.075em;
-}
 
 /****************
 **  Publication Year

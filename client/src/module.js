@@ -1,4 +1,3 @@
-import update from 'immutability-helper';
 import queryString from 'query-string';
 
 const matches = window.location.hash.match(/#\/([a-zA-Z]+).*\?(.+)/);
@@ -53,12 +52,8 @@ const initialState = {
   user: null,
   category: currentCategory || null,
   query: parsed.q || null,
-  articleTitle: parsed.articleTitle || null,
-  author: parsed.author || null,
-  abstract: parsed.abstract || null,
   gte: Number(parsed.gte) || null,
   lte: Number(parsed.lte) || null,
-  booktitles: new Set(parsed["booktitle[]"] || []),
   page: (parsed.page || 1) - 1,
   paperId: null,
   paper: null,
@@ -169,13 +164,9 @@ export function reducers(state = initialState, action) {
       return Object.assign({}, state, {
         category: action.category || null,
         query: action.query || null,
-        articleTitle: action.articleTitle || null,
-        author: action.author || null,
-        abstract: action.abstract || null,
         labelFilter: action.labelFilter || [],
         gte: null,
         lte: null,
-        booktitles: new Set(),
         page: 0,
         scrollYPositions: new Map()
       });
@@ -186,20 +177,6 @@ export function reducers(state = initialState, action) {
         page: 0,
         scrollYPositions: new Map()
       });
-    case CHANGE_BOOKTITLE: {
-      const newBooktitles = new Set(state.booktitles);
-      if (newBooktitles.has(action.booktitle)) {
-        newBooktitles.delete(action.booktitle);
-      } else {
-        newBooktitles.add(action.booktitle);
-      }
-      const newState = update(state, {
-        page: {$set: 0},
-        scrollYPositions: {$set: new Map()},
-        booktitles: {$set: newBooktitles}
-      });
-      return newState;
-    }
     case CHANGE_PAGE:
       return Object.assign({}, state, {
         page: action.page
@@ -318,14 +295,11 @@ export function signedOut() {
 
 const CHANGE_QUERY = "CHANGE_QUERY";
 
-export function changeQuery(category, query, articleTitle, author, abstract, labelFilter) {
+export function changeQuery(category, query, labelFilter) {
   return {
     type: CHANGE_QUERY,
     category,
     query,
-    articleTitle,
-    author,
-    abstract,
     labelFilter
   };
 }
@@ -337,15 +311,6 @@ export function changeYears(gte, lte) {
     type: CHANGE_YEARS,
     gte,
     lte
-  };
-}
-
-const CHANGE_BOOKTITLE = "CHANGE_BOOKTITLE";
-
-export function changeBooktitle(booktitle) {
-  return {
-    type: CHANGE_BOOKTITLE,
-    booktitle
   };
 }
 
@@ -378,13 +343,10 @@ export function receivePaper(json) {
 
 const REQUEST_PAPERS = "REQUEST_PAPERS";
 
-export function requestPapers(query, articleTitle, author, abstract, page) {
+export function requestPapers(query, page) {
   return {
     type: REQUEST_PAPERS,
     query,
-    articleTitle,
-    author,
-    abstract,
     page
   };
 }

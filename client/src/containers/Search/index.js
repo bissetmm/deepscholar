@@ -21,9 +21,7 @@ import {
   requestTables,
   receiveTables,
   deleteScrollY,
-  changeYears
-  ,
-  changeBooktitle,
+  changeYears,
   updateLabelList,
   updateLabelFilter,
   favoriteKey
@@ -964,9 +962,6 @@ class Search extends Component {
   constructor(props) {
     super(props);
     this.searchTimer = null;
-    this.articleTitle = null;
-    this.author = null;
-    this.abstract = null;
   }
 
   componentWillMount() {
@@ -989,12 +984,10 @@ class Search extends Component {
   }
 
   componentDidUpdate(prevProps) {
-    const {category: oldCategory, query: oldQuery, articleTitle: oldArticleTitle, author: oldAuthor, abstract: oldAbstract, gte: oldGte, lte: oldLte, booktitles: oldBooktitles, page: oldPage, labelFilter: oldlabelFilter} = prevProps.state;
-    const {category: newCategory, query: newQuery, articleTitle: newArticleTitle, author: newAuthor, abstract: newAbstract, gte: newGte, lte: newLte, booktitles: newBooktitles, page: newPage, labelFilter: newlabelFilter} = this.props.state;
+    const {category: oldCategory, query: oldQuery, gte: oldGte, lte: oldLte, page: oldPage, labelFilter: oldlabelFilter} = prevProps.state;
+    const {category: newCategory, query: newQuery, gte: newGte, lte: newLte, page: newPage, labelFilter: newlabelFilter} = this.props.state;
 
-    if (oldCategory !== newCategory || oldQuery !== newQuery || oldArticleTitle !== newArticleTitle || oldAuthor !== newAuthor || oldAbstract !== newAbstract || oldPage !== newPage || oldGte !== newGte || oldLte !== newLte || Array.from(oldBooktitles)
-        .join("") !== Array.from(newBooktitles)
-        .join("") || oldlabelFilter !== newlabelFilter) {
+    if (oldCategory !== newCategory || oldQuery !== newQuery || oldPage !== newPage || oldGte !== newGte || oldLte !== newLte || oldlabelFilter !== newlabelFilter) {
       this.search(newCategory);
     }
 
@@ -1023,8 +1016,8 @@ class Search extends Component {
   }
 
   searchPapers() {
-    const {query, articleTitle, author, abstract, page, gte, lte, booktitles, labelList, labelFilter} = this.props.state;
-    this.props.dispatch(requestPapers(query, articleTitle, author, abstract, page));
+    const {query, page, gte, lte, labelList, labelFilter} = this.props.state;
+    this.props.dispatch(requestPapers(query, page));
     const from = page * this.props.state.papersFetchSize;
 
     const queryMust = [];
@@ -1050,21 +1043,6 @@ class Search extends Component {
         }
       );
     }
-    if (articleTitle) {
-      queryMust.push({
-        match: {articleTitle}
-      });
-    }
-    if (author) {
-      queryMust.push({
-        match: {authors: author}
-      });
-    }
-    if (abstract) {
-      queryMust.push({
-        match: {abstract}
-      });
-    }
 
     const postFilterMust = [];
     postFilterMust.push({
@@ -1075,13 +1053,6 @@ class Search extends Component {
         }
       }
     });
-    if (booktitles.size > 0) {
-      postFilterMust.push({
-        terms: {
-          "booktitle.keyword": Array.from(booktitles)
-        }
-      });
-    }
 
     let filterdList = [];
 
@@ -1261,32 +1232,13 @@ class Search extends Component {
     }
 
     this.searchTimer = setTimeout(() => {
-      this.props.dispatch(changeQuery(category, query, this.articleTitle, this.author, this.abstract, this.props.state.labelFilter));
+      const labelFilter = this.props.state.labelFilter.slice();
+      _.remove(labelFilter, n => {
+        return n === favoriteKey;
+      });
+
+      this.props.dispatch(changeQuery(category, query, labelFilter));
     }, 0);
-  }
-
-  handleKeyPress(e) {
-    if (e.key !== "Enter") {
-      return;
-    }
-
-    this.changeQuery(this.props.state.category, null);
-  }
-
-  handleChangeArticleTitle(e) {
-    this.articleTitle = e.target.value;
-  }
-
-  handleChangeAuthor(e) {
-    this.author = e.target.value;
-  }
-
-  handleChangeAbstract(e) {
-    this.abstract = e.target.value;
-  }
-
-  handleChangeBooktitle(key) {
-    this.props.dispatch(changeBooktitle(key));
   }
 
   handleClickTab(category) {
@@ -1319,20 +1271,6 @@ class Search extends Component {
                                 maxValue={lte || max}/>;
     }
 
-    let booktitleComponents;
-    // if (aggregations.booktitle.buckets.length > 1) {
-    //   booktitleComponents = aggregations.booktitle.buckets.map((booktitle, index) => {
-    //     const id = `booktitle${index}`;
-    //     return (
-    //       <li key={id}>
-    //         <input id={id} type="checkbox" className="filled-in"
-    //                onChange={this.handleChangeBooktitle.bind(this, booktitle.key)}
-    //                checked={booktitles.has(booktitle.key)}/>
-    //         <label htmlFor={id}>{booktitle.key} ({booktitle.doc_count})</label>
-    //       </li>
-    //     );
-    //   });
-    // }
 
     const categories = [
       "texts",
@@ -1404,44 +1342,13 @@ class Search extends Component {
 
           <div className="col s3 sidebar">
             <div className="col s4 l3">
-              <h5><i className="material-icons">find_in_page</i>Filter</h5>
-              <div>
 
-                <Switch>
-                  <Route path="/figures" component={() =>
-                    <div></div>
-                  }/>
-                  <Route path="/tables" component={() =>
-                    <div></div>
-                  }/>
-                  <Route component={() =>
-                    <div>
-                      <h6>Article Title</h6>
-                      <input className="alpha" type="search" placeholder="enter article title"
-                             onKeyPress={this.handleKeyPress.bind(this)}
-                             onChange={this.handleChangeArticleTitle.bind(this)}
-                             defaultValue={this.props.state.articleTitle}/>
-                      <h6>Author</h6>
-                      <input className="alpha" type="search" placeholder="enter author"
-                             onKeyPress={this.handleKeyPress.bind(this)} onChange={this.handleChangeAuthor.bind(this)}
-                             defaultValue={this.props.state.author}/>
-                      <h6>Abstract</h6>
-                      <input className="alpha" type="search" placeholder="enter abstract"
-                             onKeyPress={this.handleKeyPress.bind(this)} onChange={this.handleChangeAbstract.bind(this)}
-                             defaultValue={this.props.state.abstract}/>
-                    </div>
-                  }/>
-                </Switch>
+              <div>
 
                 <h6>Publication Year</h6>
                 <div className="publication-year">
                   {year}
                 </div>
-
-                <h6>Booktitle</h6>
-                <ul>
-                  {booktitleComponents}
-                </ul>
 
               </div>
             </div>

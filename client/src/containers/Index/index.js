@@ -33,7 +33,7 @@ class Index extends Component {
 
     this.searchTimer = setTimeout(() => {
       const q = this.query === null ? "?page=1" : `?q=${this.query}&page=1`;
-      this.props.dispatch(changeQuery("texts", this.query, null, null, null, []));
+      this.props.dispatch(changeQuery("texts", this.query));
       this.props.history.push(`/texts${q}`);
     }, 0);
 
