@@ -94,27 +94,6 @@ div.container {
     border: 1px solid #ffffff !important;
 }
 
-/****************
-**  Input Field
-****************/
-
-input.alpha[type=search]:not(.browser-default) {
-    height: 1.5rem !important;
-    border-bottom: 1px solid #475265;
-}
-
-input.alpha[type=search]:not(.browser-default):focus {
-    border-bottom: 1px solid #fb5e60;
-    -webkit-box-shadow: none;
-    box-shadow: none;
-}
-
-@media only screen and (max-width: 600px) {
-    input.alpha[type=search]:placeholder-shown,
-    input.alpha[type=search]::-webkit-input-placeholder {
-        color: transparent;
-    }
-}
 
 /*********************
 **  Tabs
