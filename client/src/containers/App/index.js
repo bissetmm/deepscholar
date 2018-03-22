@@ -44,6 +44,7 @@ const NavBar = connect(mapStateToProps)(class NavBar extends Component {
       const user = event.data.user;
       this.signIn(user);
       this.props.dispatch(getLabelList());
+      this.props.dispatch(changeQuery(this.props.state.category, this.query));
     });
 
     const token = window.localStorage.getItem(NavBar.TOKEN_STORE_KEY);
