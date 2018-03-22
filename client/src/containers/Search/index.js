@@ -1232,16 +1232,13 @@ class Search extends Component {
     }
 
     this.searchTimer = setTimeout(() => {
-      this.props.dispatch(changeQuery(category, query, this.props.state.labelFilter));
+      const labelFilter = this.props.state.labelFilter.slice();
+      _.remove(labelFilter, n => {
+        return n === favoriteKey;
+      });
+      
+      this.props.dispatch(changeQuery(category, query, labelFilter));
     }, 0);
-  }
-
-  handleKeyPress(e) {
-    if (e.key !== "Enter") {
-      return;
-    }
-
-    this.changeQuery(this.props.state.category, null);
   }
 
   handleClickTab(category) {

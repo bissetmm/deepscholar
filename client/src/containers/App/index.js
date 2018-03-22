@@ -137,7 +137,7 @@ const NavBar = connect(mapStateToProps)(class NavBar extends Component {
         return n === favoriteKey;
       });
 
-      this.props.dispatch(changeQuery(this.props.state.category, this.query, null, null, null, labelFilter));
+      this.props.dispatch(changeQuery(this.props.state.category, this.query, labelFilter));
     }, 0);
   }
 
