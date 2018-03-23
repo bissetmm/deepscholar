@@ -37,6 +37,19 @@ h4{
   padding: 1.25rem;
 }
 
+.card-action .material-icons{
+  position: absolute;
+  top:14px;
+  right: 24px;
+  cursor: pointer;
+}
+
+.card-content .config .label .material-icons{
+  position: absolute;
+  top:14px;
+  right: 24px;
+  cursor: pointer;
+}
 .card-subtitle{
   font-size: 1.1rem;
   font-weight: 500;
