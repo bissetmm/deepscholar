@@ -5,54 +5,39 @@ import {Tabs, Tab} from 'react-materialize';
 import {Pagination} from 'react-materialize';
 import {Icon} from 'react-materialize';
 
-import {Collapse} from 'react-collapse';
-import {presets} from 'react-motion';
+import CollapseCard from './collapseCard';
 
 function mapStateToProps(state) {
   return {state};
 }
 
-
-
-
-const Breadcrumbs = (props) => (
-  <div>
-    <h5 className="breadcrumbs-title">Profile</h5>
-    <ol className="breadcrumbs">
-    <li><a href="index.html">Home </a></li>
-      <li className="active">Profile</li>
-    </ol>
-  </div>
-);
-
-const text = [
-  "You think water moves fast? You should see ice. It moves like it has a mind. Like it knows it killed the world once and got a taste for murder. After the avalanche, it took us a week to climb out. Now, I don't know exactly when we turned on each other, but I know that seven of us survived the slide... and only five made it out. Now we took an oath, that I'm breaking now. We said we'd say it was the snow that killed the other two, but it wasn't. Nature is lethal but it doesn't hold a candle to man.",
-  "Your bones don't break, mine do. That's clear. Your cells react to bacteria and viruses differently than mine. You don't get sick, I do. That's also clear. But for some reason, you and I react the exact same way to water. We swallow it too fast, we choke. We get some in our lungs, we drown. However unreal it may seem, we are connected, you and I. We're on the same curve, just on opposite ends.",
-  "Do you see any Teletubbies in here? Do you see a slender plastic tag clipped to my shirt with my name printed on it? Do you see a little Asian child with a blank expression on his face sitting outside on a mechanical helicopter that shakes when you put quarters in it? No? Well, that's what you see at a toy store. And you must think you're in a toy store, because you're here shopping for an infant named Jeb.",
-  "You see? It's curious. Ted did figure it out - time travel. And when we get back, we gonna tell everyone. How it's possible, how it's done, what the dangers are. But then why fifty years in the future when the spacecraft encounters a black hole does the computer call it an 'unknown entry event'? Why don't they know? If they don't know, that means we never told anyone. And if we never told anyone it means we never made it back. Hence we die down here. Just as a matter of deductive logic."
-];
-
-const getText = num => text.slice(0, num).map((p, i) => <p key={i}>{p}</p>);
-
-const data = [
-  {
-    name: 'Hiroyuki Shindo',
-    orcid: 'https://orcid.org/0000-0003-1081-9194',
-    country: 'Japan',
-    Keywords:[{keyword:'Natural Language Processing'},{keyword:'Machine Learning'}],
-    website:'HTTP://WWW.HSHINDO.COM',
-    otherids:'SCOPUS AUTHOR ID: 56567565300'    
-  }
-]
-
+// const Breadcrumbs = (props) => (
+//   <div>
+//     <h5 className="breadcrumbs-title">Profile</h5>
+//     <ol className="breadcrumbs">
+//     <li><a href="index.html">Home </a></li>
+//       <li className="active">Profile</li>
+//     </ol>
+//   </div>
+// );
 
 
 class Profile extends React.Component {
 
   constructor(props) {
     super(props);
-    //this.state = {isOpened: this.props.isOpened, paragraphs: 4};
-    this.data = data[0];
+    this.state = {
+      title:'',
+      prolile:{
+        name: 'Hiroyuki Shindo',
+        orcid: 'https://orcid.org/0000-0003-1081-9194',
+        country: 'Japan',
+        Keywords:[{val:'Natural Language Processing',source:'Hiroyuki Shindo (2018-03-13)'},{val:'Machine Learning',source:'Hiroyuki Shindo (2018-03-13)'}],
+        website:'HTTP://WWW.HSHINDO.COM',
+        otherids:'SCOPUS AUTHOR ID: 56567565300',
+        source:'Hiroyuki Shindo (2018-03-13)'
+      }
+    }
   }
 
   render() {
@@ -64,7 +49,7 @@ class Profile extends React.Component {
         <div className="container-field">
           <div className="row page-titles">
             <div className="col s12 m12 l12">
-              <Breadcrumbs/>
+              {/* breadcrumbs */}
             </div>
           </div>
 
@@ -75,23 +60,12 @@ class Profile extends React.Component {
                   <div className="card-content m-t-30">
                     <div className="center">
                       <img src="/images/user_bg.png" className="img-circle" width="150"/>
-                      <h4 id="public-fullname" className="m-t-10">{this.data.name}</h4>
+                      <h4 id="public-fullname" className="m-t-10">{this.state.prolile.name}</h4>
                     </div>
                     <div className="card-subtitle">ORCID ID</div>
-                    <h6 className="orcid-number">{this.data.orcid}</h6>
+                    <h6 className="orcid-number">{this.state.prolile.orcid}</h6>
                   </div>
-                  {/* workspace-section */}
-                  <div className="card-action">
-                    {/* ul.workspace-section-heading */}
-                    <div className="card-subtitle">Country</div>
-                    <Icon>remove_circle_outline</Icon>
-                    <div id="public-country-div" className="public-content">
-                      <span name="country">Japan</span>
-                      <div className="source-line separator">
-                      <p>Sources:<br/>Hiroyuki Shindo (2018-03-13)</p>
-                      </div>
-                    </div>
-                  </div>
+                  <CollapseCard title={'Keywords'} data={this.state.prolile.Keywords} source={this.state.prolile.source}/>
                   {/* workspace-section */}
                   <div className="card-action">
                     <div className="card-subtitle">Keywords</div>
@@ -156,12 +130,12 @@ class Profile extends React.Component {
                               <ul className="source-edit-list">
                                 <li>
                                   <h6 class="workspace-title">
-                                  <span ng-bind="work.title.value">Neural modeling of multi-predicate interactions for Japanese predicate argument structure analysis</span>
-                                  <span class="journaltitle" ng-bind="work.journalTitle.value">ACL 2017 - 55th Annual Meeting of the Association for Computational Linguistics, Proceedings of the Conference (Long Papers)</span>
+                                  <span >Neural modeling of multi-predicate interactions for Japanese predicate argument structure analysis</span>
+                                  <span class="journaltitle" >ACL 2017 - 55th Annual Meeting of the Association for Computational Linguistics, Proceedings of the Conference (Long Papers)</span>
                                   </h6>
                                   <div class="info-detail">
-                                  <span ng-bind="work.publicationDate.year" class="ng-binding ng-scope">2017</span>
-                                  <span class="capitalize ng-binding" ng-bind="work.workType.value">conference-paper</span>
+                                  <span class="ng-binding ng-scope">2017</span>
+                                  <span class="capitalize ng-binding" >conference-paper</span>
                                   </div>
 
                                   <ul>

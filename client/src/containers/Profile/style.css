@@ -3,77 +3,89 @@
 **  Global style
 **
 ****************/
-body{
-	background-color: #dbdbdb;
+
+body {
+  background-color: #dbdbdb;
 }
 
-.m-t--36{
+.m-t--36 {
   margin-top: -36px;
 }
 
-.m-t-30{
-  margin-top:30px;
+.m-t-30 {
+  margin-top: 30px;
 }
 
-h4{
+h4 {
   font-size: 1.9rem;
   font-weight: 500;
 }
 
 /****************/
 
-
-.card{
+.card {
   border-color: #d7dfe3;
   border-radius: 4px;
-  box-shadow: 0px 5px 20px rgba(0,0,0,0.05);
-  margin-bottom:30px;
+  box-shadow: 0px 5px 20px rgba(0, 0, 0, 0.05);
+  margin-bottom: 30px;
   background-color: #fff;
 }
 
-.card-body{
+.card-body {
   -webkit-box-flex: 1;
   flex: 1 1 auto;
   padding: 1.25rem;
 }
 
-.card-action .material-icons{
+.card-action .material-icons {
   position: absolute;
-  top:14px;
+  top: 14px;
   right: 24px;
   cursor: pointer;
 }
 
-.card-content .config .label .material-icons{
+.card-content .config .label .material-icons {
   position: absolute;
-  top:14px;
+  top: 14px;
   right: 24px;
   cursor: pointer;
 }
-.card-subtitle{
+
+.card-subtitle {
   font-size: 1.1rem;
   font-weight: 500;
   color: #333;
 }
 
-.img-circle{
+.img-circle {
   border-radius: 100%;
 }
 
-/* .card label{
-  font-size: 1.1rem;
-  font-weight: 500;
-  color: #333;
-} */
+/* collapsed panel */
+.off {
+  max-height: 0;
+  overflow: hidden;
+  transition: all .5s ease-out;
+}
+
+.on {
+  max-height: 999px;
+  height: 100%;
+  transition: all .8s ease-in;
+  will-change: transform;
+  -webkit-backface-visibility: hidden;
+  backface-visibility: hidden;
+}
 
 /* tabs adjust */
-.tabs{
+
+.tabs {
   box-shadow: initial;
   border-bottom: 1px solid #ccc;
   margin-top: 8px
 }
 
-.tabs .tab{
+.tabs .tab {
   line-height: 48px;
   height: 48px;
   text-transform: initial;
