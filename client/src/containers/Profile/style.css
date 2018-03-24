@@ -190,6 +190,10 @@ div.top:not(:first-child) {
   font-weight: 600;
 }
 
+.experience li.date{
+  font-size: 90%;
+}
+
 .experience li.affiliation a{
   cursor: pointer;
 }
@@ -203,7 +207,7 @@ div.top:not(:first-child) {
   width: 9px;
   height: 9px;
   border-radius: 4px;
-  top: 45px;
+  top: 23px;
   left: -29px;
   content: "";
 }
