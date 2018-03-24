@@ -7,6 +7,7 @@ import {Icon} from 'react-materialize';
 import CollapseCard from './collapseCard';
 import CollapseCardArray from './collapseCardArray';
 import WorkList from './workList';
+import AffiliationList from './affiliationList';
 
 function mapStateToProps(state) {
   return {state};
@@ -83,9 +84,10 @@ class Profile extends React.Component {
           }
         }
       }
-    ],
-    education:[{
-        affiliation:{
+      ],
+      affiliation:[
+        {
+          type:'Education',
           name:'Nara Institute of Science and Technology',
           city:'Ikoma',
           region:'Nara',
@@ -102,10 +104,10 @@ class Profile extends React.Component {
           },
           roletitle:null,
           departmentName:null,
-          OrganizationIdentifiers:{
+          identifer:{
             grid:{value:'grid.260493.a',url:'https://www.grid.ac/institutes/grid.260493.a'},
             orgDisambiguatedName:'Nara Institute of Science and Technology',
-            orgDisambiguatedUrl:{value:'Http://www.naist.jp/en/',URL:'Http://www.naist.jp/en/'},
+            orgDisambiguatedUrl:{value:'Http://www.naist.jp/en/',url:'Http://www.naist.jp/en/'},
             othergrid:{
               isni:'0000 0000 9227 2257',
               orgred:'15696064',
@@ -119,46 +121,43 @@ class Profile extends React.Component {
             day:'09'
           },
           source:'Hiroyuki Shindo'
-        }
-      },
-      ],
-      employment:[{
-        affiliation:{
+        },
+        {
+          type:'Employment',
           name:'Nara Institute of Science and Technology',
-          city:'Ikoma',
-          region:'Nara',
-          countoryForDisplay:'Japan',
-          startDate:{
-            year:'2014',
-            month:'04',
-            day:'01'
-          },
-          endDate:{
-            year:'present',
-            month:null,
-            day:null
-          },
-          roletitle:null,
-          departmentName:null,
-          OrganizationIdentifiers:{
-            grid:{value:'grid.260493.a',url:'https://www.grid.ac/institutes/grid.260493.a'},
-            orgDisambiguatedName:'Nara Institute of Science and Technology',
-            orgDisambiguatedUrl:{value:'Http://www.naist.jp/en/',URL:'Http://www.naist.jp/en/'},
-            othergrid:{
-              isni:'0000 0000 9227 2257',
-              orgred:'15696064',
-              wikidata:'Q843253',
-              wikipedia_url:[{url:'https://en.wikipedia.org/wiki/Nara_Institute_of_Science_and_Technology (preferred)'},{url:'https://en.wikipedia.org/wiki/Nara_Institute_of_Science_and_Technology'}]
-            }
-          },
-          createDate:{
-            year:'2018',
-            month:'03',
-            day:'09'
-          },
-          source:'Hiroyuki Shindo'
+            city:'Ikoma',
+            region:'Nara',
+            countoryForDisplay:'Japan',
+            startDate:{
+              year:'2014',
+              month:'04',
+              day:'01'
+            },
+            endDate:{
+              year:'present',
+              month:null,
+              day:null
+            },
+            roletitle:'Assistant Professor',
+            departmentName:'(Information Science)',
+            identifer:{
+              grid:{value:'grid.260493.a',url:'https://www.grid.ac/institutes/grid.260493.a'},
+              orgDisambiguatedName:'Nara Institute of Science and Technology',
+              orgDisambiguatedUrl:{value:'Http://www.naist.jp/en/',url:'Http://www.naist.jp/en/'},
+              othergrid:{
+                isni:'0000 0000 9227 2257',
+                orgred:'15696064',
+                wikidata:'Q843253',
+                wikipedia_url:[{url:'https://en.wikipedia.org/wiki/Nara_Institute_of_Science_and_Technology (preferred)'},{url:'https://en.wikipedia.org/wiki/Nara_Institute_of_Science_and_Technology'}]
+              }
+            },
+            createDate:{
+              year:'2018',
+              month:'03',
+              day:'09'
+            },
+            source:'Hiroyuki Shindo'
         }
-      },
       ]
     }
   }
@@ -203,7 +202,7 @@ class Profile extends React.Component {
             <div className="col l8 m8 s5">
               <div className="card">
                 <Tabs className='tab-demo z-depth-1'>
-                  <Tab title="Works" active>
+                  <Tab title="Works">
                     <div className="card-body">
                     <ul id="work-list">
                     {this.state.work.map((item)=>{
@@ -216,9 +215,17 @@ class Profile extends React.Component {
                     </div>
                   </Tab>
 
-                  <Tab title="Education">
+                  <Tab title="Affiliation" active>
                     <div className="card-body">
-                      <h6>Education</h6>
+                      <div id="edu-list">
+                        <div className="experience">
+                          {this.state.affiliation.map((item)=>{
+                            return(
+                              <AffiliationList data={item} />
+                            )
+                          })}
+                        </div>
+                      </div>
                     </div>
                   </Tab>
                 </Tabs>

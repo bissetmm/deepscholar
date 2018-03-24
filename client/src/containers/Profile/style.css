@@ -20,6 +20,10 @@ body {
   margin-bottom: 0;
 }
 
+.m-b-30{
+  margin-bottom: 30px;
+}
+
 h4 {
   font-size: 1.9rem;
   font-weight: 500;
@@ -66,6 +70,10 @@ h4 {
   cursor: pointer;
 }
 
+.card .card-action a:not(.btn):not(.btn-large):not(.btn-large):not(.btn-floating) {
+  color: #1e50a2;
+}
+
 .card-content .config .label .material-icons {
   position: absolute;
   top: 14px;
@@ -106,9 +114,14 @@ div.top:not(:first-child) {
 
 /* work list */
 
-#work-list {
+#work-list,#edu-list {
   padding-left: 1.25rem;
   padding-right: 1.25rem;
+}
+
+#work-list h6,#edu-list h6{
+  font-size: 18px;
+  line-height: 1.25;
 }
 
 #work-list li {
@@ -125,11 +138,6 @@ div.top:not(:first-child) {
   top: 0;
   right: -10px;
   cursor: pointer;
-}
-
-.work-list-container h6 {
-  font-size: 18px;
-  line-height: 1.25;
 }
 
 .work-list-container dl {
@@ -168,6 +176,38 @@ div.top:not(:first-child) {
 .work-list-footer .text-right{
   text-align: right;
 }
+
+.experience{
+  border-left: 1px solid #a7a7a7;
+  padding-left: 24px;
+  font-weight: normal;
+}
+.experience ul{
+  position: relative;
+}
+.experience li.type{
+  font-size: 12px;
+  font-weight: 600;
+}
+
+.experience li.affiliation a{
+  cursor: pointer;
+}
+
+.experience li.affiliation a:hover{
+  opacity: 0.6;
+}
+.experience li.affiliation a:before {
+  background: #a7a7a7;
+  position: absolute;
+  width: 9px;
+  height: 9px;
+  border-radius: 4px;
+  top: 45px;
+  left: -29px;
+  content: "";
+}
+
 /* tabs adjust */
 
 .tabs {
