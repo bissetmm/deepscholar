@@ -4,8 +4,8 @@ import './style.css';
 import {Tabs, Tab} from 'react-materialize';
 import {Pagination} from 'react-materialize';
 import {Icon} from 'react-materialize';
-
 import CollapseCard from './collapseCard';
+import CollapseCardArray from './collapseCardArray';
 
 function mapStateToProps(state) {
   return {state};
@@ -23,26 +23,26 @@ function mapStateToProps(state) {
 
 
 class Profile extends React.Component {
-
   constructor(props) {
     super(props);
     this.state = {
-      title:'',
       prolile:{
         name: 'Hiroyuki Shindo',
         orcid: 'https://orcid.org/0000-0003-1081-9194',
         country: 'Japan',
-        Keywords:[{val:'Natural Language Processing',source:'Hiroyuki Shindo (2018-03-13)'},{val:'Machine Learning',source:'Hiroyuki Shindo (2018-03-13)'}],
-        website:'HTTP://WWW.HSHINDO.COM',
-        otherids:'SCOPUS AUTHOR ID: 56567565300',
+        keywords:[
+          {data:'Natural Language Processing',source:'Hiroyuki Shindo (2018-03-13)'},
+          {data:'Machine Learning',source:'Hiroyuki Shindo (2018-03-13)'}],
+        website:[
+          {data:'http://www.hshindo.com',source:'Hiroyuki Shindo (2018-03-13)'}],
+        otherids:[
+          {data:'SCOPUS AUTHOR ID: 56567565300',source:'Scopus - Elsevier (2018-03-09)'}],
         source:'Hiroyuki Shindo (2018-03-13)'
       }
     }
   }
 
   render() {
-
-    
 
     return(
       <div className="page-wrapper m-t--36">
@@ -63,47 +63,15 @@ class Profile extends React.Component {
                       <h4 id="public-fullname" className="m-t-10">{this.state.prolile.name}</h4>
                     </div>
                     <div className="card-subtitle">ORCID ID</div>
-                    <h6 className="orcid-number">{this.state.prolile.orcid}</h6>
+                    <h6 className="orcid-number"><a href={this.state.prolile.orcid} target="_blank">{this.state.prolile.orcid}</a></h6>
                   </div>
-                  <CollapseCard title={'Keywords'} data={this.state.prolile.Keywords} source={this.state.prolile.source}/>
-                  {/* workspace-section */}
-                  <div className="card-action">
-                    <div className="card-subtitle">Keywords</div>
-                    <Icon>remove_circle_outline</Icon>
-                    <div id="public-keyword-div" className="public-content">
-                      <span name="keyword">Natural Language Processing</span>
-                      <div className="source-line separator">
-                      <p>Sources:<br/>Hiroyuki Shindo (2018-03-13)</p>
-                      </div>
-                      <span name="keyword">Machine Learning</span>
-                      <div className="source-line separator">
-                      <p>Sources:<br/>Hiroyuki Shindo (2018-03-13)</p>
-                      </div>
-                    </div>
+                  <div>
+                  <CollapseCard title={"Country"} data={this.state.prolile.country} source={this.state.prolile.source} href={false}/>  
+                  <CollapseCardArray title={'Keyword'} data={this.state.prolile.keywords} source={this.state.prolile.source} href={false}/>
+                  <CollapseCardArray title={"Website"} data={this.state.prolile.website} source={this.state.prolile.source} href={true}/>
+                  <CollapseCardArray title={"Otherids"} data={this.state.prolile.otherids} source={this.state.prolile.source} href={true}/>  
+
                   </div>
-                  {/* workspace-section */}
-                  <div className="card-action">
-                    <div className="card-subtitle">Websites</div>
-                    <Icon>remove_circle_outline</Icon>
-                    <div id="public-researcher-urls-div" class="public-content">
-                      <a href="http://www.hshindo.com" target="researcherUrl.urlName" rel="me nofollow">http://www.hshindo.com</a>
-                      <div class="source-line separator">
-                      <p>Sources:<br/>Hiroyuki Shindo (2018-03-13)</p>
-                      </div>
-                    </div>
-                  </div>
-                  {/* workspace-section */}
-                  <div className="card-action">
-                    <div className="card-subtitle">Other IDs</div>
-                    <Icon>remove_circle_outline</Icon>
-                    <div id="public-external-identifiers-div" class="public-content">
-                    <a href="http://www.scopus.com/inward/authorDetails.url?authorID=56567565300&amp;partnerID=MN8TOARS" target="externalIdentifier.value">Scopus Author ID: 56567565300</a>
-                    <div class="source-line separator">
-                    <p>Sources:<br/>Scopus - Elsevier (2018-03-09)</p>
-                    </div>
-                    </div>
-                  </div>
-                  
                 </div>
               </div>
             </div>

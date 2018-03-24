@@ -71,10 +71,15 @@ h4 {
 .on {
   max-height: 999px;
   height: 100%;
-  transition: all .8s ease-in;
+  /* transition: all .8s ease-in;
   will-change: transform;
   -webkit-backface-visibility: hidden;
-  backface-visibility: hidden;
+  backface-visibility: hidden; */
+}
+
+div.top:not(:first-child){
+  border-top:1px dotted #ccc;
+  
 }
 
 /* tabs adjust */
