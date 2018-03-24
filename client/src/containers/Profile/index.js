@@ -202,7 +202,7 @@ class Profile extends React.Component {
             <div className="col l8 m8 s5">
               <div className="card">
                 <Tabs className='tab-demo z-depth-1'>
-                  <Tab title="Works">
+                  <Tab title="Works" active>
                     <div className="card-body">
                     <ul id="work-list">
                     {this.state.work.map((item)=>{
@@ -215,7 +215,7 @@ class Profile extends React.Component {
                     </div>
                   </Tab>
 
-                  <Tab title="Affiliation" active>
+                  <Tab title="Affiliation">
                     <div className="card-body">
                       <div id="edu-list">
                         <div className="experience">
