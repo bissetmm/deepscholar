@@ -16,6 +16,10 @@ body {
   margin-top: 30px;
 }
 
+.m-b-0{
+  margin-bottom: 0;
+}
+
 h4 {
   font-size: 1.9rem;
   font-weight: 500;
@@ -35,6 +39,24 @@ h4 {
   -webkit-box-flex: 1;
   flex: 1 1 auto;
   padding: 1.25rem;
+}
+
+.user_bg{
+  position: relative;
+}
+
+.user_bg .initial_flort{
+  position: absolute;
+  top: 0;
+  right: 0;
+  bottom: 0;
+  left: 0;
+  margin: auto;
+  width: 80%;
+  height: 6.4rem;
+  color: #fff;
+  font-size:4.2rem;
+  font-weight: 400;
 }
 
 .card-action .material-icons {
@@ -62,6 +84,7 @@ h4 {
 }
 
 /* collapsed panel */
+
 .off {
   max-height: 0;
   overflow: hidden;
@@ -77,11 +100,74 @@ h4 {
   backface-visibility: hidden; */
 }
 
-div.top:not(:first-child){
-  border-top:1px dotted #ccc;
-  
+div.top:not(:first-child) {
+  border-top: 1px dotted #ccc;
 }
 
+/* work list */
+
+#work-list {
+  padding-left: 1.25rem;
+  padding-right: 1.25rem;
+}
+
+#work-list li {
+  border-bottom: 3px solid #eee;
+  margin-bottom: 20px;
+}
+
+.work-list-container {
+  position: relative;
+}
+
+.work-list-container .material-icons {
+  position: absolute;
+  top: 0;
+  right: -10px;
+  cursor: pointer;
+}
+
+.work-list-container h6 {
+  font-size: 18px;
+  line-height: 1.25;
+}
+
+.work-list-container dl {
+  margin-top: 0;
+  font-weight: normal;
+}
+
+.work-list-container dl dt {
+  font-weight: 600;
+}
+
+.work-list-container dl dd,
+.work-list-container dl dt {
+  margin-left: 0;
+  line-height: 1.45;
+  margin-top: 4px;
+}
+
+.work-list-container dl dd.small {
+  font-size: 90%;
+}
+
+.work-list-container dl dd span.title {
+  font-weight: 600;
+}
+
+.work-list-container .worksSrvc_detail {
+  border-top: 1px dotted #ccc;
+}
+
+.work-list-footer.row {
+  font-weight: normal;
+  font-size: 90%;
+}
+
+.work-list-footer .text-right{
+  text-align: right;
+}
 /* tabs adjust */
 
 .tabs {
@@ -94,4 +180,9 @@ div.top:not(:first-child){
   line-height: 48px;
   height: 48px;
   text-transform: initial;
+  font-weight: normal;
+}
+
+.tabs .tab a{
+  font-size: 80%;
 }

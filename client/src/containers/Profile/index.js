@@ -6,27 +6,28 @@ import {Pagination} from 'react-materialize';
 import {Icon} from 'react-materialize';
 import CollapseCard from './collapseCard';
 import CollapseCardArray from './collapseCardArray';
+import WorkList from './workList';
 
 function mapStateToProps(state) {
   return {state};
 }
 
-// const Breadcrumbs = (props) => (
-//   <div>
-//     <h5 className="breadcrumbs-title">Profile</h5>
-//     <ol className="breadcrumbs">
-//     <li><a href="index.html">Home </a></li>
-//       <li className="active">Profile</li>
-//     </ol>
-//   </div>
-// );
-
+// Provisional use. Change to appropriate component
+const Breadcrumbs = (props) => (
+  <div>
+    <h5 className="breadcrumbs-title">{props.current}</h5>
+    <ol className="breadcrumbs">
+    <li><a href="index.html">{props.root} </a></li>
+    <li className="active">{props.current}</li>
+    </ol>
+  </div>
+);
 
 class Profile extends React.Component {
   constructor(props) {
     super(props);
     this.state = {
-      prolile:{
+      profile:{
         name: 'Hiroyuki Shindo',
         orcid: 'https://orcid.org/0000-0003-1081-9194',
         country: 'Japan',
@@ -38,18 +39,139 @@ class Profile extends React.Component {
         otherids:[
           {data:'SCOPUS AUTHOR ID: 56567565300',source:'Scopus - Elsevier (2018-03-09)'}],
         source:'Hiroyuki Shindo (2018-03-13)'
+      },
+      work:[
+       {title:'Neural modeling of multi-predicate interactions for Japanese predicate argument structure analysis',
+        journaltitle:'ACL 2017 - 55th Annual Meeting of the Association for Computational Linguistics, Proceedings of the Conference (Long Papers)',
+        publicationDate:{
+          year:'2017',
+          month:null,
+          day:null
+        },
+        workType:'conference-paper',
+        workExternalIdentifierHtml:{value:'10.18653/v1/P17-1146',url:'https://doi.org/10.18653/v1/P17-1146'},
+        workExternalIdentifierType:{value:'2-s2.0-85040945840',url:null},
+        worksSrvc:{
+          details:{
+            putCode:'http://www.scopus.com/inward/record.url?eid=2-s2.0-85040945840&partnerID=MN8TOARS',
+            citation:'@article{Shindo2017,title = {Neural modeling of multi-predicate interactions for Japanese predicate argument structure analysis},journal = {ACL 2017 - 55th Annual Meeting of the Association for Computational Linguistics, Proceedings of the Conference (Long Papers)},year = {2017},volume = {1},pages = {1591-1600},author = {Ouchi, H. and Shindo, H. and Matsumoto, Y.}}',
+            Contributors:[
+              {name:'Ouchi, H.'},{name:'Shindo, H.'},{name:'Matsumoto, Y.'}
+            ],
+            CreatedDate:'2018-03-09'
+          }
+        }
+        },
+        {title:'Generating artificial error data for indonesian preposition error corrections',
+        journaltitle:'International Journal of Technology',
+        publicationDate:{
+          year:'2017',
+          month:null,
+          day:null
+        },
+        workType:'journal-article',
+        workExternalIdentifierHtml:{value:'10.14716/ijtech.v8i3.4825',url:'https://doi.org/10.14716/ijtech.v8i3.4825'},
+        workExternalIdentifierType:{value:'2-s2.0-85018424419',url:null},
+        worksSrvc:{
+          details:{
+             putCode:'http://www.scopus.com/inward/record.url?eid=2-s2.0-85018424419&partnerID=MN8TOARS',
+             citation:'@article{Shindo2017,title = {Generating artificial error data for indonesian preposition error corrections},journal = {International Journal of Technology},year = {2017},volume = {8},number = {3},pages = {549-558},author = {Irmawati, B. and Shindo, H. and Matsumoto, Y.}}',
+             Contributors:[
+               {name:'Irmawati, B.'},{name:'Shindo, H.'},{name:'Matsumoto, Y.'}
+             ],
+             CreatedDate:'2018-03-09'
+          }
+        }
       }
+    ],
+    education:[{
+        affiliation:{
+          name:'Nara Institute of Science and Technology',
+          city:'Ikoma',
+          region:'Nara',
+          countoryForDisplay:'Japan',
+          startDate:{
+            year:'2012',
+            month:'10',
+            day:'01'
+          },
+          endDate:{
+            year:'2013',
+            month:'09',
+            day:'30'
+          },
+          roletitle:null,
+          departmentName:null,
+          OrganizationIdentifiers:{
+            grid:{value:'grid.260493.a',url:'https://www.grid.ac/institutes/grid.260493.a'},
+            orgDisambiguatedName:'Nara Institute of Science and Technology',
+            orgDisambiguatedUrl:{value:'Http://www.naist.jp/en/',URL:'Http://www.naist.jp/en/'},
+            othergrid:{
+              isni:'0000 0000 9227 2257',
+              orgred:'15696064',
+              wikidata:'Q843253',
+              wikipedia_url:[{url:'https://en.wikipedia.org/wiki/Nara_Institute_of_Science_and_Technology (preferred)'},{url:'https://en.wikipedia.org/wiki/Nara_Institute_of_Science_and_Technology'}]
+            }
+          },
+          createDate:{
+            year:'2018',
+            month:'03',
+            day:'09'
+          },
+          source:'Hiroyuki Shindo'
+        }
+      },
+      ],
+      employment:[{
+        affiliation:{
+          name:'Nara Institute of Science and Technology',
+          city:'Ikoma',
+          region:'Nara',
+          countoryForDisplay:'Japan',
+          startDate:{
+            year:'2014',
+            month:'04',
+            day:'01'
+          },
+          endDate:{
+            year:'present',
+            month:null,
+            day:null
+          },
+          roletitle:null,
+          departmentName:null,
+          OrganizationIdentifiers:{
+            grid:{value:'grid.260493.a',url:'https://www.grid.ac/institutes/grid.260493.a'},
+            orgDisambiguatedName:'Nara Institute of Science and Technology',
+            orgDisambiguatedUrl:{value:'Http://www.naist.jp/en/',URL:'Http://www.naist.jp/en/'},
+            othergrid:{
+              isni:'0000 0000 9227 2257',
+              orgred:'15696064',
+              wikidata:'Q843253',
+              wikipedia_url:[{url:'https://en.wikipedia.org/wiki/Nara_Institute_of_Science_and_Technology (preferred)'},{url:'https://en.wikipedia.org/wiki/Nara_Institute_of_Science_and_Technology'}]
+            }
+          },
+          createDate:{
+            year:'2018',
+            month:'03',
+            day:'09'
+          },
+          source:'Hiroyuki Shindo'
+        }
+      },
+      ]
     }
   }
 
   render() {
+    const user_initial = this.state.profile.name.slice(0,1)
 
     return(
       <div className="page-wrapper m-t--36">
         <div className="container-field">
           <div className="row page-titles">
             <div className="col s12 m12 l12">
-              {/* breadcrumbs */}
+              <Breadcrumbs current={'Profile'} root={'home'}/>
             </div>
           </div>
 
@@ -59,18 +181,20 @@ class Profile extends React.Component {
                 <div className="card-body">
                   <div className="card-content m-t-30">
                     <div className="center">
-                      <img src="/images/user_bg.png" className="img-circle" width="150"/>
-                      <h4 id="public-fullname" className="m-t-10">{this.state.prolile.name}</h4>
+                      <div className="user_bg">
+                        <img src="/images/user_bg.png" className="img-circle" width="150"/>
+                        <div className="initial_flort">{user_initial}</div>
+                      </div>
+                      <h4 id="public-fullname" className="m-t-10">{this.state.profile.name}</h4>
                     </div>
                     <div className="card-subtitle">ORCID ID</div>
-                    <h6 className="orcid-number"><a href={this.state.prolile.orcid} target="_blank">{this.state.prolile.orcid}</a></h6>
+                    <h6 className="orcid-number"><a href={this.state.profile.orcid} target="_blank">{this.state.profile.orcid}</a></h6>
                   </div>
                   <div>
-                  <CollapseCard title={"Country"} data={this.state.prolile.country} source={this.state.prolile.source} href={false}/>  
-                  <CollapseCardArray title={'Keyword'} data={this.state.prolile.keywords} source={this.state.prolile.source} href={false}/>
-                  <CollapseCardArray title={"Website"} data={this.state.prolile.website} source={this.state.prolile.source} href={true}/>
-                  <CollapseCardArray title={"Otherids"} data={this.state.prolile.otherids} source={this.state.prolile.source} href={true}/>  
-
+                  <CollapseCard title={"Country"} data={this.state.profile.country} source={this.state.profile.source} href={false}/>  
+                  <CollapseCardArray title={'Keyword'} data={this.state.profile.keywords} source={this.state.profile.source} href={false}/>
+                  <CollapseCardArray title={"Website"} data={this.state.profile.website} source={this.state.profile.source} href={true}/>
+                  <CollapseCardArray title={"Otherids"} data={this.state.profile.otherids} source={this.state.profile.source} href={true}/>
                   </div>
                 </div>
               </div>
@@ -78,119 +202,26 @@ class Profile extends React.Component {
 
             <div className="col l8 m8 s5">
               <div className="card">
-                
-              <Tabs className='tab-demo z-depth-1'>
+                <Tabs className='tab-demo z-depth-1'>
                   <Tab title="Works" active>
                     <div className="card-body">
-                      <div className="card-content m-t-30">
-                        
-                      </div>
+                    <ul id="work-list">
+                    {this.state.work.map((item)=>{
+                      return(
+                        <WorkList data={item}/>
+                      )
+                    })}
+                    </ul>
+                    <Pagination items={10} activePage={2} maxButtons={8} />
+                    </div>
+                  </Tab>
 
-                      <div className="card-content m-t-30">
-                        
-                      </div>
-
-                      
-                      <div className="card-content m-t-30">
-                        <ul id="body-work-list">
-                          <li>
-                            <div className="work-list-container">
-                              <ul className="source-edit-list">
-                                <li>
-                                  <h6 class="workspace-title">
-                                  <span >Neural modeling of multi-predicate interactions for Japanese predicate argument structure analysis</span>
-                                  <span class="journaltitle" >ACL 2017 - 55th Annual Meeting of the Association for Computational Linguistics, Proceedings of the Conference (Long Papers)</span>
-                                  </h6>
-                                  <div class="info-detail">
-                                  <span class="ng-binding ng-scope">2017</span>
-                                  <span class="capitalize ng-binding" >conference-paper</span>
-                                  </div>
-
-                                  <ul>
-                                    <li>
-                                    <span class="type ng-scope">DOI</span>: <a href="https://doi.org/10.18653/v1/P17-1146" class="ng-scope" target="orcid.blank">10.18653/v1/P17-1146</a>
-                                    </li>
-                                    <li>
-                                    <span class="type ng-scope">EID</span>: 2-s2.0-85040945840
-                                    </li>
-                                  </ul>
-
-
-                                  <div class="more-info ng-scope">
-                                    <div class="content">
-                                      <span class="dotted-bar"></span>
-                                      <div class="row">
-                                        <div class="col-md-6 ng-scope">
-                                          <div class="bottomBuffer">
-                                            <strong>
-                                            URL </strong>
-                                          </div>
-                                          <div>
-                                            <a href="#">http://www.scopus.com/inward/record.url?eid=2-s2.0-85040945840&amp;partnerID=MN8TOARS</a>
-                                          </div>
-                                        </div>
-                                      </div>
-                                    </div>
-
-                                    <div class="row bottomBuffer ng-scope">
-                                      <div class="col-md-12">
-                                        <strong>Citation</strong> <span> (<span class="ng-scope"><i class="ng-binding">bibtex</i></span>)
-                                        </span>
-                                        <span  class="ng-scope">
-                                        <a class="toggle-tag-option"></a>
-                                        </span>
-                                      </div>
-                                      <div class="col-md-12">
-                                        <div class="col-md-offset-1 col-md-11 col-sm-offset-1 col-sm-11 col-xs-12 citation-raw ng-binding ng-scope">
-                                          
-                                        </div>
-                                      </div>
-                                    </div>
-
-                                    <div class="row bottomBuffer">
-                                      <div class="col-md-6 ng-scope">
-                                        <div class="bottomBuffer">
-                                        <strong> Contributor </strong>
-                                          <div class="ng-binding ng-scope">Ouchi, H. <span class="ng-binding"></span>
-                                          </div>
-                                          <div class="ng-binding ng-scope">Shindo, H. <span class="ng-binding"></span>
-                                          </div>
-                                          <div class="ng-binding ng-scope">Matsumoto, Y. <span class="ng-binding"></span>
-                                          </div>
-                                        </div>
-                                      </div>
-                                      <div class="col-md-6">
-                                        <div class="bottomBuffer">
-                                          <strong>Created</strong><br/>
-                                          <div class="ng-binding">2018-03-09</div>
-                                        </div>
-                                      </div>
-                                      <div class="col-md-12">
-                                        <div class="bottomBuffer">
-                                          <div class="badge-container-42442820">
-                                          
-                                          </div>
-                                        </div>
-                                      </div>
-                                    </div>
-                                  </div>
-                                </li>
-                              </ul>
-                            </div>
-                          </li>
-                        </ul>
-                      </div>
-                      <Pagination items={10} activePage={2} maxButtons={8} />
-                      </div>
-                    </Tab>
-
-                    <Tab title="Education">
-                      <div className="card-body">
-                      Education
-                      </div>
-                    </Tab>
-                  </Tabs>
-                
+                  <Tab title="Education">
+                    <div className="card-body">
+                      <h6>Education</h6>
+                    </div>
+                  </Tab>
+                </Tabs>
               </div>
             </div>
           </div>
