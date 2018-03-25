@@ -8,6 +8,15 @@ body {
   background-color: #dbdbdb;
 }
 
+/* Interim change. Adjust the background of the search page 
+2018.03.23 MM
+**************************/
+body.search{
+  background-color: #fff;
+}
+/**************************
+ Delete when search page is complete */
+
 .m-t--36 {
   margin-top: -36px;
 }
@@ -122,6 +131,7 @@ div.top:not(:first-child) {
 #work-list h6,#edu-list h6{
   font-size: 18px;
   line-height: 1.25;
+  width: 98%;
 }
 
 #work-list li {
